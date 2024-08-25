@@ -1,4 +1,4 @@
-module github.com/1001bit/diaryhood/services/gateway
+module github.com/1001bit/pathgoer/services/gateway
 
 go 1.22.5
 

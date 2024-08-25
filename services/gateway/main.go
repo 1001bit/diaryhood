@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/1001bit/diaryhood/services/gateway/internal/router"
+	"github.com/1001bit/pathgoer/services/gateway/internal/router"
 	"github.com/1001bit/overenv"
 )
 
