@@ -1,0 +1,15 @@
+services:
+  gateway:
+    build: ./services/gateway
+    environment:
+      - PORT=${GATEWAY_PORT}
+    restart: always
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    command: ./main
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
