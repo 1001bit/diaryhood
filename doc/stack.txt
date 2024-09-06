@@ -1,0 +1,7 @@
+Services:
+    Gateway: Golang
+
+Frontend:
+    JS: Vanilla.JS
+    CSS: Vanilla
+    HTML: HTMX

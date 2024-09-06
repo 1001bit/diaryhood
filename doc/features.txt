@@ -1,0 +1,25 @@
+L0:
+    - Log in and sign up
+
+L1:
+    - Set of player's paths, with a "goer" in each
+    - Step counter for each path
+    - One-time tasks, which add player-chosen amount of steps
+
+L1.5:
+    - Path levels
+
+L2:
+    - Set of tasks, that must be done X times in some period of time (every week, every X days)
+    - Weekday tasks
+
+L2.5:
+    - Distance stat, which is basically 0.7 meters per step
+
+L3:
+    - Time stat
+    - Possibility to add time for a task
+    - Tasks, that start a timer
+
+L4:
+    - Possibility to add your own stats with/instead of steps
