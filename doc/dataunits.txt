@@ -1,0 +1,10 @@
+User:
+    - Name - varchar(32) - unique
+    - Hash - varchar(72)
+
+Path:
+    - OwnerName - User.Name
+    - Name - varchar(32)
+    - Emoji 
+    - Steps - unsigned big
+

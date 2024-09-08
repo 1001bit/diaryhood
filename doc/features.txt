@@ -6,20 +6,18 @@ L1:
     - Step counter for each path
     - One-time tasks, which add player-chosen amount of steps
 
-L1.5:
-    - Path levels
-
 L2:
-    - Set of tasks, that must be done X times in some period of time (every week, every X days)
-    - Weekday tasks
-
-L2.5:
-    - Distance stat, which is basically 0.7 meters per step
+    - Path levels
+    - Streak
 
 L3:
-    - Time stat
+    - Tasks that are done X times every some period of time
+    - Weekday tasks
+
+L4:
+    - Time stat for a task
     - Possibility to add time for a task
     - Tasks, that start a timer
 
-L4:
+L5:
     - Possibility to add your own stats with/instead of steps

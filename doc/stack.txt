@@ -1,7 +1,8 @@
 Services:
-    Gateway: Golang
+    Gateway: 
+        - Current: Own (Golang)
+        - Candidates: nginx
 
 Frontend:
-    JS: Vanilla.JS
-    CSS: Vanilla
-    HTML: HTMX
+    CSS, Typescript -> Vanilla.js, htmx
+    
