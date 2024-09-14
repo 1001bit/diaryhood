@@ -1,8 +1,17 @@
 Services:
+    Dummy:
+        Says hello world
     Gateway: 
-        - Current: Own (Golang)
-        - Candidates: nginx
+        Candidates: nginx
+
+Authentication:
+    Candidates: jwt
 
 Frontend:
-    CSS, Typescript -> Vanilla.js, htmx
+    CSS:
+        Candidates: Vanilla
+    Typescript -> Javascript:
+        Candidates: Vanilla
+    Extra:
+        Candidates: HTMX
     

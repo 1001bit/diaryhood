@@ -1,15 +1,9 @@
 services:
-  gateway:
-    build: ./services/gateway
+  dummy:
+    build: ./services/dummy
     environment:
-      - PORT=${GATEWAY_PORT}
+      - PORT=${DUMMY_PORT}
     restart: always
     ports:
-      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+      - "${DUMMY_PORT}:${DUMMY_PORT}"
     command: ./main
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - ${ADMINER_PORT}:8080
