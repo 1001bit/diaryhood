@@ -1,10 +1,12 @@
-User:
-    - Name - varchar(32) - unique
-    - Hash - varchar(72)
+User
+    Name - varchar(32) - unique
+    Hash - varchar(72)
+    Date - Date(up to days)
 
-Path:
-    - OwnerName - User.Name
-    - Name - varchar(32)
-    - Emoji 
-    - Steps - unsigned big
+Path
+    OwnerName - User.Name
+    Name - varchar(32)
+    Emoji - Char
+    Steps - unsigned big
+    Private - Boolean
 

@@ -1,23 +1,25 @@
-L0:
-    - Log in and sign up
+L0
+    Profile page
+    Log in and sign up
 
-L1:
-    - Set of player's paths, with a "goer" in each
-    - Step counter for each path
-    - One-time tasks, which add player-chosen amount of steps
+L1
+    Paths for each player
+    Step counter for each path
+    One-time tasks, which add some amount of steps
 
-L2:
-    - Path levels
-    - Streak
+L2
+    Home page
+    Path levels
+    Streak
 
-L3:
-    - Tasks that are done X times every some period of time
-    - Weekday tasks
+L3
+    Tasks that are done X times every some period of time
+    Weekday tasks
 
-L4:
-    - Time stat for a task
-    - Possibility to add time for a task
-    - Tasks, that start a timer
+L4
+    Time stat for a task
+    Possibility to add time for a task
+    Tasks, that start a timer
 
-L5:
-    - Possibility to add your own stats with/instead of steps
+L5
+    Possibility to add your own stats along/instead of steps

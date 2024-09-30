@@ -1,1 +1,1 @@
-- App should encourage players to split their tasks into smaller ones
+App should encourage players to split their tasks into smaller ones

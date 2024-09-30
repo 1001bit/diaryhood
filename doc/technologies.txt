@@ -1,0 +1,31 @@
+Orchestrator
+    Docker Compose
+
+Microservices
+    Website BFF 
+        Rest server
+        rest reverse proxy
+        gRPC client
+
+    Storage 
+        Rest server
+
+    Auth
+        gPRC server
+
+    User
+        gRPC server
+
+    Path
+        gRPC server
+
+___________________________
+
+
+Auth
+    jwt(rsa, http-only cookie)
+    Google OAuth/Selfmade
+
+Frontend
+    Vanilla.css
+    Vanilla.js
