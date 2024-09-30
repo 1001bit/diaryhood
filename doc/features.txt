@@ -1,5 +1,6 @@
 L0
     Profile page
+    Home page
     Log in and sign up
 
 L1
@@ -8,7 +9,6 @@ L1
     One-time tasks, which add some amount of steps
 
 L2
-    Home page
     Path levels
     Streak
 
