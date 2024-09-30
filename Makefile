@@ -2,6 +2,7 @@
 
 # Variables
 DOCKER_COMPOSE = docker compose
+TEMPL = templ
 
 # Do all
 all: build up
@@ -10,6 +11,11 @@ all: build up
 build:
 	@echo "Building Docker containers..."
 	$(DOCKER_COMPOSE) build
+
+# Generate go from templ files
+templ:
+	@echo "Generating go from templ files..."
+	$(TEMPL) generate /services/gateway/go.mod
 
 # Start the Docker containers
 up:

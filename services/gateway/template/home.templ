@@ -1,0 +1,16 @@
+package template
+
+templ Home() {
+	<html lang="en">
+		<head>
+			@baseHead("Home")
+			<link rel="stylesheet" href="/css/home/home.css"/>
+		</head>
+		<body>
+			@nav()
+			<main>
+				<h1>It's home!</h1>
+			</main>
+		</body>
+	</html>
+}
