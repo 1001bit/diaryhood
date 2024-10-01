@@ -5,7 +5,7 @@ DOCKER_COMPOSE = docker compose
 TEMPL = templ
 
 # Do all
-all: build up
+all: templ build up
 
 # Build the Docker containers
 build:
@@ -32,4 +32,4 @@ clean:
 	@echo "Cleaning up Docker resources..."
 	$(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
 
-.PHONY: all build up down clean
+.PHONY: all build up templ down clean
