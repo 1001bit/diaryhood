@@ -1,6 +1,6 @@
 [X] Gateway service
 [X] Base Home page using templ
 [X] Storage service
-[ ] Build complete home page
+[X] Build basic layout
 [ ] Build auth
 [ ] Build complete profile page
