@@ -1,21 +1,31 @@
 services:
-  gateway:
-    build: ./services/gateway
-    environment:
-      - PORT=${GATEWAY_PORT}
-      - STORAGE_HOST=${STORAGE_HOST}
-      - STORAGE_PORT=${STORAGE_PORT}
-    restart: always
-    ports:
-      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
-    command: ./main
-  storage:
-    build: ./services/storage
-    environment:
-      - PORT=${STORAGE_PORT}
-    restart: always
-    ports:
-      - "${STORAGE_PORT}:${STORAGE_PORT}"
-    command: ./main
-    volumes:
-      - ./storage:/app/storage:ro
+    gateway:
+        build: ./services/gateway
+        environment:
+            - PORT=${GATEWAY_PORT}
+            - STORAGE_HOST=${STORAGE_HOST}
+            - STORAGE_PORT=${STORAGE_PORT}
+        restart: always
+        ports:
+            - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+        command: ./main
+
+    storage:
+        build: ./services/storage
+        environment:
+            - PORT=${STORAGE_PORT}
+        restart: always
+        ports:
+            - "${STORAGE_PORT}:${STORAGE_PORT}"
+        command: ./main
+        volumes:
+            - ./storage:/app/storage:ro
+
+    keycloak:
+        image: quay.io/keycloak/keycloak:latest
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+            - KC_DB=dev-file
+        ports:
+            - 8080:8080

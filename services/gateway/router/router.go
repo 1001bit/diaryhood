@@ -10,17 +10,26 @@ import (
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 )
 
 func New() *chi.Mux {
 	r := chi.NewRouter()
+
+	// Middleware
+	// Logging
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	// Recovery
 	r.Use(middleware.Recoverer)
+	// Limits
 	r.Use(middleware.Timeout(time.Second * 10))
+	r.Use(httprate.LimitByIP(100, time.Minute))
+	// Path cleaning
 	r.Use(middleware.RedirectSlashes)
 	r.Use(middleware.CleanPath)
 
+	// Paths
 	// Home
 	r.Get("/", templ.Handler(template.Home()).ServeHTTP)
 
