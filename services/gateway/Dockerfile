@@ -17,3 +17,5 @@ FROM debian:bookworm-slim
 WORKDIR /app
 
 COPY --from=builder /app/main ./main
+
+ENTRYPOINT ["./main"]

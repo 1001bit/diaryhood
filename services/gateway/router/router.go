@@ -34,7 +34,7 @@ func New() *chi.Mux {
 	r.Get("/", templ.Handler(template.Home()).ServeHTTP)
 
 	// Storage
-	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("STORAGE_PORT"))
+	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))
 	r.Get("/storage/*", http.StripPrefix("/storage", storageClient.ReverseProxy()).ServeHTTP)
 	r.Get("/favicon.ico", storageClient.ReverseProxy())
 
