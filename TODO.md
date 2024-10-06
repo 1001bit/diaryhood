@@ -4,7 +4,8 @@
 [X] Build basic layout
 [ ] User service
     [X] User database
-    [ ] gRPC server
+    [X] gRPC server
+    [ ] Database model
 [ ] Profile page
     [ ] frontend
     [ ] gRPC client

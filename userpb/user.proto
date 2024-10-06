@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package userpb;
+
+option go_package = "github.com/1001bit/pathgoer/userpb";
+
+service UserService {
+    rpc GetProfile(ProfileRequest) returns (ProfileResponse) {}
+}
+
+message ProfileRequest {
+    string username = 1;
+}
+
+message ProfileResponse {
+    string date = 1;
+}

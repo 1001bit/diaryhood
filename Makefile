@@ -3,6 +3,7 @@
 # Variables
 DOCKER_COMPOSE = docker compose
 TEMPL = templ
+PROTOC = protoc
 
 # Do all
 all: templ build up
@@ -16,6 +17,16 @@ build:
 templ:
 	@echo "Generating go from templ files..."
 	$(TEMPL) generate /services/gateway/go.mod
+
+# Generate golang protoc
+protoc:
+	@echo "Generating user protoc..."
+	$(PROTOC) \
+	--go_out=services/user --go_out=services/gateway \
+	--go_opt=paths=source_relative \
+    --go-grpc_out=services/user --go-grpc_out=services/gateway \
+	--go-grpc_opt=paths=source_relative \
+    userpb/user.proto
 
 # Start the Docker containers
 up:
@@ -31,5 +42,3 @@ down:
 clean:
 	@echo "Cleaning up Docker resources..."
 	$(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
-
-.PHONY: all build up templ down clean
