@@ -7,10 +7,13 @@ import (
 	"os"
 
 	"github.com/1001bit/pathgoer/services/gateway/router"
+	"github.com/1001bit/pathgoer/services/gateway/userclient"
 )
 
 func main() {
-	r := router.New()
+	userclient := userclient.MustNew(os.Getenv("USER_HOST"), os.Getenv("PORT"))
+
+	r := router.New(userclient)
 
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	log.Println("Listening on", addr)

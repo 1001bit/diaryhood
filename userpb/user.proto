@@ -9,9 +9,10 @@ service UserService {
 }
 
 message ProfileRequest {
-    string username = 1;
+    string name = 1;
 }
 
 message ProfileResponse {
-    string date = 1;
+    string name = 1;
+    string date = 2;
 }

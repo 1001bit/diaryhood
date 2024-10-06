@@ -1,0 +1,16 @@
+package template
+
+templ Profile(name, date string) {
+	<html lang="en">
+		<head>
+			@baseHead(name)
+		</head>
+		<body>
+			@nav(name)
+			<main>
+				<h3>{ name }'s profile!</h3>
+				<p>member since { date }</p>
+			</main>
+		</body>
+	</html>
+}

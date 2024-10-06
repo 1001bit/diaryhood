@@ -7,13 +7,15 @@ import (
 
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
 	"github.com/1001bit/pathgoer/services/gateway/template"
+	"github.com/1001bit/pathgoer/services/gateway/userclient"
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 )
 
-func New() *chi.Mux {
+func New(userclient *userclient.Client) *chi.Mux {
+	// Router
 	r := chi.NewRouter()
 
 	// Middleware
@@ -32,6 +34,9 @@ func New() *chi.Mux {
 	// Paths
 	// Home
 	r.Get("/", templ.Handler(template.Home()).ServeHTTP)
+
+	// Profile
+	r.Get("/profile/{name}", ProfileHandler(userclient))
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))

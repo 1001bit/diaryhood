@@ -2,8 +2,9 @@ services:
     gateway:
         build: ./services/gateway
         environment:
-            - PORT=${SERVER_PORT}
-            - STORAGE_HOST=${STORAGE_HOST}
+            PORT: ${SERVER_PORT}
+            STORAGE_HOST: ${STORAGE_HOST}
+            USER_HOST: ${USER_HOST}
         ports:
             - 80:${SERVER_PORT}
         networks:
@@ -17,12 +18,12 @@ services:
         ports:
             - 8080:8080
         networks:
-            - user
+            - user-postgres
 
     storage:
         build: ./services/storage
         environment:
-            - PORT=${SERVER_PORT}
+            PORT: ${SERVER_PORT}
         volumes:
             - ./storage:/app/storage:ro
         networks:
@@ -32,7 +33,11 @@ services:
     user:
         build: ./services/user
         environment:
-            - PORT=${SERVER_PORT}
+            PORT: ${SERVER_PORT}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_HOST: ${USER_POSTGRES_HOST}
         networks:
             - user-postgres
             - user
