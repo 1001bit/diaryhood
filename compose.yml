@@ -10,6 +10,14 @@ services:
             - storage
         restart: always
 
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks:
+            - user
+
     storage:
         build: ./services/storage
         environment:
@@ -20,6 +28,39 @@ services:
             - storage
         restart: always
 
+    user:
+        build: ./services/user
+        environment:
+            - PORT=${SERVER_PORT}
+        networks:
+            - user
+        restart: always
+        depends_on:
+            - user-postgres
+
+    user-postgres:
+        image: postgres:17-alpine
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        networks:
+            - user
+        volumes:
+            - user-postgres:/var/lib/postgresql/data
+            - ./user.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
 networks:
     storage:
         driver: bridge
+    user:
+        driver: bridge
+
+volumes:
+    user-postgres: null
