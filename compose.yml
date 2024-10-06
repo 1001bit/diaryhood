@@ -4,21 +4,21 @@ services:
         environment:
             - PORT=${SERVER_PORT}
             - STORAGE_HOST=${STORAGE_HOST}
-        restart: always
         ports:
             - 80:${SERVER_PORT}
         networks:
             - storage
+        restart: always
 
     storage:
         build: ./services/storage
         environment:
             - PORT=${SERVER_PORT}
-        restart: always
         volumes:
             - ./storage:/app/storage:ro
         networks:
             - storage
+        restart: always
 
 networks:
     storage:
