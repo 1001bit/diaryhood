@@ -50,7 +50,7 @@ p {
 }
 
 /* Navbar */
-.nav {
+#navbar {
 	display: flex;
 	position: relative;
 	justify-content: space-between;
@@ -59,17 +59,17 @@ p {
 	box-sizing: border-box;
 }
 
-.nav-left {
+.left {
 	text-align: left;
 }
 
-.nav-center {
+.center {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
 	text-align: center;
 }
 
-.nav-right {
+.right {
 	text-align: right;
 }

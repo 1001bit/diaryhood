@@ -9,5 +9,6 @@
 [X] Profile page
     [X] frontend
     [X] gRPC client
+[X] Compile typescript
 [ ] Authentication
 [ ] Authorization

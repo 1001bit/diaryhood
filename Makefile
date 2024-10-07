@@ -4,9 +4,12 @@
 DOCKER_COMPOSE = docker compose
 TEMPL = templ
 PROTOC = protoc
+TSCOMPILER = ./tscompiler
+
+TS_PATH = typescript
 
 # Do all
-all: templ build up
+all: templ tscompile build up
 
 # Build the Docker containers
 build:
@@ -27,6 +30,11 @@ protoc:
     --go-grpc_out=services/user --go-grpc_out=services/gateway \
 	--go-grpc_opt=paths=source_relative \
     userpb/user.proto
+
+# Compile typescript files
+tscompile:
+	@echo "Compiling typescript files..."
+	$(TSCOMPILER) $(TS_PATH)
 
 # Start the Docker containers
 up:
