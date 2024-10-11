@@ -20,6 +20,7 @@ func ProfileHandler(userclient *userclient.Client) http.HandlerFunc {
 			if status.Code(err) != codes.NotFound {
 				log.Println(err)
 			}
+			template.ErrorNotFound().Render(r.Context(), w)
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}

@@ -24,7 +24,7 @@ func New(store *usermodel.UserStore) *Server {
 }
 
 func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*userpb.ProfileResponse, error) {
-	user, err := s.store.GetProfile(ctx, req.Name)
+	profile, err := s.store.GetProfile(ctx, req.Name)
 
 	if err != nil {
 		if err != sql.ErrNoRows {
@@ -34,7 +34,7 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*u
 	}
 
 	return &userpb.ProfileResponse{
-		Name: user.Name,
-		Date: user.Date,
+		Name: profile.Name,
+		Date: profile.Date,
 	}, nil
 }

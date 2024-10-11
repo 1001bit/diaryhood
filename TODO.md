@@ -13,7 +13,8 @@
 [ ] Authentication
     [ ] Frontend
     [ ] Backend
-        [ ] UUID generation and caching in redis
-        [ ] Magic link with UUID send
-        [ ] Authentication on magic page
+        [ ] OTP generation, cachying and sending
+        [ ] Authentication by OTP
+        [ ] JWT Generation
 [ ] Authorization
+    [ ] JWT Verification

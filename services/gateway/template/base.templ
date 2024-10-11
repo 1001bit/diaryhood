@@ -2,7 +2,7 @@ package template
 
 templ nav(title string) {
 	<div id="navbar">
-		<a href="#"><h2 class="left">pathgoer</h2></a>
+		<a href="/"><h2 class="left">pathgoer</h2></a>
 		<h2 class="center">{ title }</h2>
 		if username, ok := ctx.Value("username").(string); ok {
 			<a href={ templ.SafeURL("/profile/" + username) }><h2 class="right" id="you">{ username }</h2></a>

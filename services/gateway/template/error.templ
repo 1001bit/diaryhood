@@ -1,0 +1,15 @@
+package template
+
+templ ErrorNotFound() {
+	<html lang="en">
+		<head>
+			@baseHead("404")
+		</head>
+		<body>
+			@nav("404")
+			<main>
+				<p>This page cannot be found or is unavailable</p>
+			</main>
+		</body>
+	</html>
+}

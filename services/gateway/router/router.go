@@ -43,5 +43,11 @@ func New(userclient *userclient.Client) *chi.Mux {
 	r.Get("/storage/*", http.StripPrefix("/storage", storageClient.ReverseProxy()).ServeHTTP)
 	r.Get("/favicon.ico", storageClient.ReverseProxy())
 
+	// 404
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		template.ErrorNotFound().Render(r.Context(), w)
+		w.WriteHeader(http.StatusNotFound)
+	})
+
 	return r
 }
