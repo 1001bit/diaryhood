@@ -28,6 +28,13 @@ a {
 	text-decoration: none;
 }
 
+h1 {
+	margin: 0;
+	font-weight: 500;
+	font-size: 64px;
+	line-height: 52px;
+}
+
 h2 {
 	margin: 0;
 	font-weight: 500;

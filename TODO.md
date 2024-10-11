@@ -11,4 +11,9 @@
     [X] gRPC client
 [X] Compile typescript
 [ ] Authentication
+    [ ] Frontend
+    [ ] Backend
+        [ ] UUID generation and caching in redis
+        [ ] Magic link with UUID send
+        [ ] Authentication on magic page
 [ ] Authorization
