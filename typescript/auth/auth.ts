@@ -23,5 +23,24 @@ document.addEventListener("click", function (event) {
 // Enter login
 loginButton.addEventListener("click", () => {
 	const login = loginInput.value;
-	console.log(login);
+	fetch("/auth/login", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			login: login,
+		}),
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				// TODO: handle success
+				// TODO: handle OTP input
+				// TODO: handle new user
+				break;
+			default:
+				// TODO: handle error
+				break;
+		}
+	});
 });

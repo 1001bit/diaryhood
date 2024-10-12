@@ -5,15 +5,13 @@ package userpb;
 option go_package = "./authpb";
 
 service AuthService {
-    rpc Authenticate(AuthRequest) returns (AuthResponse) {}
+    rpc SendEmail(EmailRequest) returns (EmailResponse) {}
 }
 
-message AuthRequest {
+message EmailRequest {
     string login = 1;
 }
 
-message AuthResponse {
-    string accessJWT = 1;
-    string refreshJWT = 2;
-    string username = 3;
+message EmailResponse {
+    bool newAccount = 1;
 }

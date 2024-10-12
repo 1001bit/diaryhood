@@ -5,20 +5,13 @@ services:
             PORT: ${SERVER_PORT}
             STORAGE_HOST: ${STORAGE_HOST}
             USER_HOST: ${USER_HOST}
+            AUTH_HOST: ${AUTH_HOST}
         ports:
             - 80:${SERVER_PORT}
         networks:
             - storage
             - user
         restart: always
-
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
-        networks:
-            - user-postgres
 
     storage:
         build: ./services/storage
@@ -45,6 +38,15 @@ services:
         depends_on:
             - user-postgres
 
+    auth:
+        build: ./services/auth
+        environment:
+            PORT: ${SERVER_PORT}
+            USER_HOST: ${USER_HOST}
+        networks:
+            - user
+        restart: always
+
     user-postgres:
         image: postgres:17-alpine
         environment:
@@ -62,6 +64,14 @@ services:
             timeout: 30s
             retries: 5
             start_period: 30s
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks:
+            - user-postgres
 
 networks:
     storage:

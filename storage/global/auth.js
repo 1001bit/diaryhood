@@ -14,5 +14,21 @@ document.addEventListener("click", function (event) {
 });
 loginButton.addEventListener("click", () => {
     const login = loginInput.value;
-    console.log(login);
+    fetch("/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            login: login,
+        }),
+    }).then((res) => {
+        switch (res.status) {
+            case 200:
+                break;
+            default:
+                loginButton.value = "user with such username/email not found";
+                break;
+        }
+    });
 });

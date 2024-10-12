@@ -1,15 +1,15 @@
-package userclient
+package authclient
 
 import (
 	"fmt"
 
-	"github.com/1001bit/pathgoer/services/gateway/userpb"
+	"github.com/1001bit/pathgoer/services/gateway/authpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Client struct {
-	userpb.UserServiceClient
+	authpb.AuthServiceClient
 }
 
 func New(host, port string) (*Client, error) {
@@ -21,6 +21,6 @@ func New(host, port string) (*Client, error) {
 	}
 
 	return &Client{
-		UserServiceClient: userpb.NewUserServiceClient(conn),
+		AuthServiceClient: authpb.NewAuthServiceClient(conn),
 	}, nil
 }

@@ -38,3 +38,19 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*u
 		Date: profile.Date,
 	}, nil
 }
+
+func (s *Server) GetCredentials(ctx context.Context, req *userpb.CredentialsRequest) (*userpb.CredentialsResponse, error) {
+	creds, err := s.store.GetCredentials(ctx, req.Login)
+
+	if err != nil {
+		if err != sql.ErrNoRows {
+			log.Println(err)
+		}
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &userpb.CredentialsResponse{
+		Name:  creds.Name,
+		Email: creds.Email,
+	}, nil
+}

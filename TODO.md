@@ -10,11 +10,14 @@
     [X] frontend
     [X] gRPC client
 [X] Compile typescript
+[ ] Readme
 [ ] Authentication
     [ ] Frontend
         [X] Auth box
-        [ ] Request send
+        [X] Request send
+        [ ] Responses handle
     [ ] Backend
+        [X] Login request receive 
         [ ] OTP generation, cachying and sending
         [ ] Authentication by OTP
         [ ] JWT Generation

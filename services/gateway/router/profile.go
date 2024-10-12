@@ -1,14 +1,11 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/1001bit/pathgoer/services/gateway/userclient"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func ProfileHandler(userclient *userclient.Client) http.HandlerFunc {
@@ -17,9 +14,6 @@ func ProfileHandler(userclient *userclient.Client) http.HandlerFunc {
 
 		response, err := userclient.GetProfile(r.Context(), &userpb.ProfileRequest{Name: name})
 		if err != nil {
-			if status.Code(err) != codes.NotFound {
-				log.Println(err)
-			}
 			template.ErrorNotFound().Render(r.Context(), w)
 			w.WriteHeader(http.StatusNotFound)
 			return

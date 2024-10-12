@@ -8,6 +8,10 @@ TSCOMPILER = ./tscompiler
 
 TS_PATH = typescript
 
+AUTH_PATH = services/auth
+GATEWAY_PATH = services/gateway
+USER_PATH = services/user
+
 # Do all
 all: templ tscompile build up
 
@@ -25,14 +29,15 @@ templ:
 protoc:
 	@echo "\nGenerating user protoc..."
 	$(PROTOC) \
-	--go_out=services/gateway --go-grpc_out=services/gateway \
-    --go_out=services/user --go-grpc_out=services/user \
+	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
+    --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
+	--go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
     protobuf/user.proto
 
 	@echo "\nGenerating auth protoc..."
 	$(PROTOC) \
-	--go_out=services/gateway --go-grpc_out=services/gateway \
-    --go_out=services/auth --go-grpc_out=services/auth \
+	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
+    --go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
     protobuf/auth.proto
 
 # Compile typescript files

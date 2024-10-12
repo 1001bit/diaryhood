@@ -3,7 +3,7 @@ package userclient
 import (
 	"fmt"
 
-	"github.com/1001bit/pathgoer/services/gateway/userpb"
+	"github.com/1001bit/pathgoer/services/auth/userpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
