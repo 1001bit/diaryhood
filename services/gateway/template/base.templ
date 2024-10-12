@@ -5,20 +5,21 @@ templ nav(title string) {
 		<a href="/"><h2 class="left">pathgoer</h2></a>
 		<h2 class="center">{ title }</h2>
 		if username, ok := ctx.Value("username").(string); ok {
-			<a href={ templ.SafeURL("/profile/" + username) }><h2 class="right" id="you">{ username }</h2></a>
+			<a href={ templ.SafeURL("/profile/" + username) }><h2 class="right">{ username }</h2></a>
 		} else {
-			<a href="#login"><h2 class="right" id="you">log in</h2></a>
+			<a href="#login"><h2 class="right" id="login-open">log in</h2></a>
 		}
 	</div>
 	if _, ok := ctx.Value("username").(string); !ok {
 		@authBox()
+		<script src="/storage/global/auth.js"></script>
 	}
 }
 
 templ authBox() {
 	<div id="auth-box" style="display: none;">
-		<input class="big" type="text" placeholder="e-mail or username"/>
-		<input class="big" type="button" value="get one-time password"/>
+		<input class="big" type="text" placeholder="e-mail or username" id="login-input"/>
+		<input class="big" type="button" value="get one-time password" id="login-button"/>
 	</div>
 }
 
