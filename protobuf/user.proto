@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package userpb;
 
-option go_package = "github.com/1001bit/pathgoer/userpb";
+option go_package = "./userpb";
 
 service UserService {
     rpc GetProfile(ProfileRequest) returns (ProfileResponse) {}

@@ -16,6 +16,8 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedIndexedAccess": true,
 
+		"removeComments": true,
+
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"lib": ["ES2021", "DOM"]
