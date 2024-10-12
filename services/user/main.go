@@ -6,10 +6,10 @@ import (
 	"net"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/storage/database"
-	"github.com/1001bit/pathgoer/services/storage/server"
-	"github.com/1001bit/pathgoer/services/storage/usermodel"
-	"github.com/1001bit/pathgoer/services/storage/userpb"
+	"github.com/1001bit/pathgoer/services/user/database"
+	"github.com/1001bit/pathgoer/services/user/server"
+	"github.com/1001bit/pathgoer/services/user/usermodel"
+	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc"
 )
 

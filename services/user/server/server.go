@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/1001bit/pathgoer/services/storage/usermodel"
-	"github.com/1001bit/pathgoer/services/storage/userpb"
+	"github.com/1001bit/pathgoer/services/user/usermodel"
+	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
