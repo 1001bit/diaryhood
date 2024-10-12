@@ -1,1 +1,2 @@
 App should encourage players to split their tasks into smaller ones
+On path creation, user can customize all the units besides steps and "import" their progress from real life.

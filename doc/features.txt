@@ -1,8 +1,10 @@
+Doing:
 L0
     Profile page
     Home page
     Log in and sign up
 
+Will be doing:
 L1
     Paths for each player
     Step counter for each path
