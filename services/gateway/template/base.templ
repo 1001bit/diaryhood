@@ -10,6 +10,16 @@ templ nav(title string) {
 			<a href="#login"><h2 class="right" id="you">log in</h2></a>
 		}
 	</div>
+	if _, ok := ctx.Value("username").(string); !ok {
+		@authBox()
+	}
+}
+
+templ authBox() {
+	<div id="auth-box" style="display: none;">
+		<input class="big" type="text" placeholder="e-mail or username"/>
+		<input class="big" type="button" value="get one-time password"/>
+	</div>
 }
 
 templ baseHead(title string) {

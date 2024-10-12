@@ -2,8 +2,9 @@
 
 :root {
 	--acc1: #ffd54c;
+	--acc1-dim: #ffd54cda;
 	--main1: #f9f9f9;
-	--main1-dim: #939393;
+	--main1-dim: #f9f9f98f;
 	--main2: #111111;
 }
 
@@ -26,6 +27,10 @@ main {
 a {
 	color: var(--acc1);
 	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 h1 {
@@ -79,4 +84,77 @@ p {
 
 .right {
 	text-align: right;
+}
+
+/* Input */
+input {
+	border-radius: 4px;
+	padding-inline: 8px;
+	padding-block: 4px;
+	font-weight: 400;
+	font-size: 24px;
+	line-height: 31px;
+	font-family: inherit;
+}
+
+input .big {
+	padding-inline: 16px;
+	padding-block: 8px;
+}
+
+/* text */
+input[type="text"] {
+	background: var(--main2);
+	border: 2px solid var(--main1-dim);
+	color: var(--main1);
+}
+
+input[type="text"]:focus {
+	outline: none;
+	border: 2px solid var(--main1);
+}
+
+input[type="text"]:hover {
+	border: 2px solid var(--main1);
+}
+
+input[type="text"]::placeholder {
+	color: var(--main1-dim);
+}
+
+/* button */
+input[type="button"] {
+	background: var(--acc1);
+	color: var(--main2);
+	border: none;
+}
+
+input[type="button"]:hover {
+	background: var(--acc1-dim);
+	cursor: pointer;
+}
+
+input[type="button"]:active {
+	transform: scale(0.98);
+}
+
+/* Auth box */
+#auth-box {
+	padding-inline: 40px;
+	padding-block: 28px;
+	gap: 24px;
+	display: flex;
+	flex-direction: column;
+
+	width: fit-content;
+	height: fit-content;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	background: var(--main2);
+	border-radius: 4px;
+	border: 2px solid var(--main1-dim);
 }

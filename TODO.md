@@ -12,6 +12,8 @@
 [X] Compile typescript
 [ ] Authentication
     [ ] Frontend
+        [X] Auth box
+        [ ] Request send
     [ ] Backend
         [ ] OTP generation, cachying and sending
         [ ] Authentication by OTP
