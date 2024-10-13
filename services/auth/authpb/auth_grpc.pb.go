@@ -35,7 +35,7 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 
 func (c *authServiceClient) SendEmail(ctx context.Context, in *EmailRequest, opts ...grpc.CallOption) (*EmailResponse, error) {
 	out := new(EmailResponse)
-	err := c.cc.Invoke(ctx, "/userpb.AuthService/SendEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/authpb.AuthService/SendEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _AuthService_SendEmail_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userpb.AuthService/SendEmail",
+		FullMethod: "/authpb.AuthService/SendEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).SendEmail(ctx, req.(*EmailRequest))
@@ -92,7 +92,7 @@ func _AuthService_SendEmail_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AuthService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "userpb.AuthService",
+	ServiceName: "authpb.AuthService",
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

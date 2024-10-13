@@ -5,17 +5,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/authclient"
+	"github.com/1001bit/pathgoer/services/gateway/authpb"
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
 	"github.com/1001bit/pathgoer/services/gateway/template"
-	"github.com/1001bit/pathgoer/services/gateway/userclient"
+	"github.com/1001bit/pathgoer/services/gateway/userpb"
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 )
 
-func New(userclient *userclient.Client, authclient *authclient.Client) *chi.Mux {
+func New(userclient userpb.UserServiceClient, authclient authpb.AuthServiceClient) *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 

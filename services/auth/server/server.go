@@ -6,8 +6,8 @@ import (
 	"regexp"
 
 	"github.com/1001bit/pathgoer/services/auth/authpb"
+	"github.com/1001bit/pathgoer/services/auth/emailpb"
 	"github.com/1001bit/pathgoer/services/auth/otp"
-	"github.com/1001bit/pathgoer/services/auth/userclient"
 	"github.com/1001bit/pathgoer/services/auth/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -16,14 +16,16 @@ import (
 type Server struct {
 	authpb.UnimplementedAuthServiceServer
 
-	userclient *userclient.Client
-	otpStorage *otp.Storage
+	userclient  userpb.UserServiceClient
+	emailclient emailpb.EmailServiceClient
+	otpStorage  *otp.Storage
 }
 
-func New(userclient *userclient.Client, otpStorage *otp.Storage) *Server {
+func New(userclient userpb.UserServiceClient, emailclient emailpb.EmailServiceClient, otpStorage *otp.Storage) *Server {
 	return &Server{
-		userclient: userclient,
-		otpStorage: otpStorage,
+		userclient:  userclient,
+		emailclient: emailclient,
+		otpStorage:  otpStorage,
 	}
 }
 
@@ -32,7 +34,7 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 		Login: req.Login,
 	})
 
-	name := ""
+	name := "guest"
 	email := ""
 
 	if err != nil {
@@ -52,8 +54,14 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	// TODO: Send email with OTP
-	log.Println(name, email, otp)
+	_, err = s.emailclient.SendOTP(ctx, &emailpb.OTPRequest{
+		Email: email,
+		Otp:   otp,
+		Name:  name,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return &authpb.EmailResponse{}, nil
 }

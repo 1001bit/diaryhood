@@ -6,23 +6,27 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/gateway/authclient"
+	"github.com/1001bit/pathgoer/services/gateway/authpb"
+	"github.com/1001bit/pathgoer/services/gateway/grpcclient"
 	"github.com/1001bit/pathgoer/services/gateway/router"
-	"github.com/1001bit/pathgoer/services/gateway/userclient"
+	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
 func main() {
 	// userclient
-	userclient, err := userclient.New(os.Getenv("USER_HOST"), os.Getenv("PORT"))
+	conn, err := grpcclient.New(os.Getenv("USER_HOST"), os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	userclient := userpb.NewUserServiceClient(conn)
 
 	// authclient
-	authclient, err := authclient.New(os.Getenv("AUTH_HOST"), os.Getenv("PORT"))
+	conn, err = grpcclient.New(os.Getenv("AUTH_HOST"), os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	authclient := authpb.NewAuthServiceClient(conn)
+	log.Println("authclient connected on " + os.Getenv("AUTH_HOST") + ":" + os.Getenv("PORT"))
 
 	// http server
 	r := router.New(userclient, authclient)

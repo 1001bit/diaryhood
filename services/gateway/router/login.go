@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/gateway/authclient"
 	"github.com/1001bit/pathgoer/services/gateway/authpb"
 )
 
@@ -12,7 +11,7 @@ type UserRequest struct {
 	Login string `json:"login"`
 }
 
-func LoginHandler(client *authclient.Client) http.HandlerFunc {
+func LoginHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &UserRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)

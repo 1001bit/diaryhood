@@ -23,6 +23,14 @@ services:
             - storage
         restart: always
 
+    email:
+        build: ./services/email
+        environment:
+            PORT: ${SERVER_PORT}
+        networks:
+            - email
+        restart: always
+
     user:
         build: ./services/user
         environment:
@@ -44,11 +52,13 @@ services:
         environment:
             PORT: ${SERVER_PORT}
             USER_HOST: ${USER_HOST}
+            EMAIL_HOST: ${EMAIL_HOST}
             AUTH_REDIS_HOST: ${AUTH_REDIS_HOST}
             REDIS_PORT: ${REDIS_PORT}
         networks:
             - user
             - auth-redis
+            - email
         restart: always
         depends_on:
             - auth-redis
@@ -95,6 +105,8 @@ networks:
     user:
         driver: bridge
     auth-redis:
+        driver: bridge
+    email:
         driver: bridge
 
 volumes:

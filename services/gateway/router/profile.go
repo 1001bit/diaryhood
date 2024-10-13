@@ -4,11 +4,10 @@ import (
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/template"
-	"github.com/1001bit/pathgoer/services/gateway/userclient"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
-func ProfileHandler(userclient *userclient.Client) http.HandlerFunc {
+func ProfileHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name := r.PathValue("name")
 

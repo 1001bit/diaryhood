@@ -11,6 +11,7 @@ TS_PATH = typescript
 AUTH_PATH = services/auth
 GATEWAY_PATH = services/gateway
 USER_PATH = services/user
+EMAIL_PATH = services/email
 
 # Do all
 all: templ tscompile build up
@@ -39,6 +40,12 @@ protoc:
 	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
     --go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
     protobuf/auth.proto
+
+	@echo "\nGenerating email protoc..."
+	$(PROTOC) \
+	--go_out=$(EMAIL_PATH) --go-grpc_out=$(EMAIL_PATH) \
+    --go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
+    protobuf/email.proto
 
 # Compile typescript files
 tscompile:
