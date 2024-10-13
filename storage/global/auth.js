@@ -20,28 +20,33 @@ loginInput.addEventListener("focus", () => {
 function setInputStyle(colorVar) {
     loginInput.style.border = `2px solid var(--${colorVar})`;
 }
+function setInputPlaceholder(text) {
+    loginInput.value = "";
+    loginInput.placeholder = text;
+}
+function showInfo(text) {
+    loginInfo.innerHTML = text;
+}
 function requestEmail() {
-    const login = loginInput.value;
     fetch("/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            login: login,
+            login: loginInput.value,
         }),
     }).then((res) => {
         switch (res.status) {
             case 200:
                 doSendOTP = true;
                 setInputStyle("acc1");
-                loginInput.value = "";
-                loginInput.placeholder = "one-time password";
-                loginInfo.innerHTML = "check your email";
+                setInputPlaceholder("one-time password");
+                showInfo("check your email");
                 break;
             default:
                 setInputStyle("err");
-                loginInfo.innerHTML = "user not found";
+                showInfo("user not found");
                 break;
         }
     });
@@ -52,6 +57,7 @@ loginButton.addEventListener("click", () => {
         setInputStyle("err");
         return;
     }
+    showInfo("...");
     if (!doSendOTP) {
         requestEmail();
     }

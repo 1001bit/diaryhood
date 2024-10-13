@@ -160,6 +160,10 @@ input[type="button"]:active {
 	border: 2px solid var(--main1-dim);
 }
 
+#login-box:hover {
+	border: 2px solid var(--main1);
+}
+
 #login-info {
 	/* make it wrap to new line if overload */
 	white-space: pre-wrap;

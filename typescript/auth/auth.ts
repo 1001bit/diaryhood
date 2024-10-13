@@ -38,6 +38,16 @@ function setInputStyle(colorVar: string) {
 	loginInput.style.border = `2px solid var(--${colorVar})`;
 }
 
+function setInputPlaceholder(text: string) {
+	loginInput.value = "";
+	loginInput.placeholder = text;
+}
+
+// set loginInfo text
+function showInfo(text: string) {
+	loginInfo.innerHTML = text;
+}
+
 // Request an email with OTP
 function requestEmail() {
 	fetch("/auth/login", {
@@ -54,14 +64,13 @@ function requestEmail() {
 				// Success
 				doSendOTP = true;
 				setInputStyle("acc1");
-				loginInput.value = "";
-				loginInput.placeholder = "one-time password";
-				loginInfo.innerHTML = "check your email";
+				setInputPlaceholder("one-time password");
+				showInfo("check your email");
 				break;
 			default:
 				// Error
 				setInputStyle("err");
-				loginInfo.innerHTML = "user not found";
+				showInfo("user not found");
 				break;
 		}
 	});
@@ -76,6 +85,8 @@ loginButton.addEventListener("click", () => {
 		setInputStyle("err");
 		return;
 	}
+
+	showInfo("...");
 
 	if (!doSendOTP) {
 		requestEmail();
