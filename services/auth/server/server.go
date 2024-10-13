@@ -29,13 +29,24 @@ func New(userclient userpb.UserServiceClient, emailclient emailpb.EmailServiceCl
 	}
 }
 
-func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*authpb.EmailResponse, error) {
-	userResponse, err := s.userclient.GetCredentials(ctx, &userpb.CredentialsRequest{
-		Login: req.Login,
-	})
+func (s *Server) VerifyOTP(ctx context.Context, req *authpb.OTPRequest) (*authpb.OTPResponse, error) {
+	if !s.otpStorage.VerifyOTP(ctx, req.Login, req.Otp) {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
 
-	name := "guest"
-	email := ""
+	return &authpb.OTPResponse{}, nil
+}
+
+func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*authpb.EmailResponse, error) {
+	var (
+		login = req.Login // sent by user. Can be email or username
+		email = ""        // real email
+		name  = ""        // real name
+	)
+
+	userResponse, err := s.userclient.GetCredentials(ctx, &userpb.CredentialsRequest{
+		Login: login,
+	})
 
 	if err != nil {
 		if !isEmail(req.Login) {
@@ -43,12 +54,13 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 		}
 		// if user send their username and there is no such username
 		email = req.Login
+		name = "guest"
 	} else {
 		email = userResponse.GetEmail()
 		name = userResponse.GetName()
 	}
 
-	otp, err := s.otpStorage.GenerateOTP(ctx, email)
+	otp, err := s.otpStorage.GenerateOTP(ctx, login)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")

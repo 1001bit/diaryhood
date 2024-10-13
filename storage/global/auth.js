@@ -4,7 +4,7 @@ const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
 const loginOpen = document.getElementById("login-open");
-let doSendOTP = false;
+let login = "";
 loginOpen.addEventListener("click", () => {
     loginBox.style.display = "flex";
 });
@@ -39,7 +39,7 @@ function requestEmail() {
     }).then((res) => {
         switch (res.status) {
             case 200:
-                doSendOTP = true;
+                login = loginInput.value;
                 setInputStyle("acc1");
                 setInputPlaceholder("one-time password");
                 showInfo("check your email");
@@ -51,14 +51,36 @@ function requestEmail() {
         }
     });
 }
-function requestOTP() { }
+function requestOTP() {
+    fetch("/auth/otp", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            login: login,
+            otp: loginInput.value,
+        }),
+    }).then((res) => {
+        switch (res.status) {
+            case 200:
+                localStorage.setItem("login", login);
+                location.reload();
+                break;
+            default:
+                setInputStyle("err");
+                showInfo("wrong one-time password");
+                break;
+        }
+    });
+}
 loginButton.addEventListener("click", () => {
     if (loginInput.value === "") {
         setInputStyle("err");
         return;
     }
     showInfo("...");
-    if (!doSendOTP) {
+    if (login === "") {
         requestEmail();
     }
     else {

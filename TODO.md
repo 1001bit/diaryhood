@@ -12,16 +12,15 @@
 [X] Compile typescript
 [ ] Readme
 [ ] Authentication
-    [ ] Frontend
+    [X] Frontend
         [X] Auth box
         [X] Request send
         [X] Responses handle
-        [ ] OTP Request send
+        [X] OTP Request send
     [ ] Backend
         [X] Login request receive 
         [X] OTP generation and cachying
         [ ] OTP Email send
-        [ ] Authentication by OTP
         [ ] JWT Generation
 [ ] Authorization
     [ ] JWT Verification

@@ -41,6 +41,7 @@ func New(userclient userpb.UserServiceClient, authclient authpb.AuthServiceClien
 
 	// Auth
 	r.Post("/auth/login", LoginHandler(authclient))
+	r.Post("/auth/otp", OTPHandler(authclient))
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))

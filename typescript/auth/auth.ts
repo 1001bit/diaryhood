@@ -12,7 +12,7 @@ const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 const loginOpen = document.getElementById("login-open") as HTMLElement;
 
 // is on second stage of authentication
-let doSendOTP = false;
+let login = "";
 
 // Open login box
 loginOpen.addEventListener("click", () => {
@@ -62,7 +62,7 @@ function requestEmail() {
 		switch (res.status) {
 			case 200:
 				// Success
-				doSendOTP = true;
+				login = loginInput.value;
 				setInputStyle("acc1");
 				setInputPlaceholder("one-time password");
 				showInfo("check your email");
@@ -77,7 +77,31 @@ function requestEmail() {
 }
 
 // Send OTP to server to verify
-function requestOTP() {}
+function requestOTP() {
+	fetch("/auth/otp", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			login: login,
+			otp: loginInput.value,
+		}),
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				// Success
+				localStorage.setItem("login", login);
+				location.reload();
+				break;
+			default:
+				// Error
+				setInputStyle("err");
+				showInfo("wrong one-time password");
+				break;
+		}
+	});
+}
 
 // Enter login
 loginButton.addEventListener("click", () => {
@@ -88,7 +112,7 @@ loginButton.addEventListener("click", () => {
 
 	showInfo("...");
 
-	if (!doSendOTP) {
+	if (login === "") {
 		requestEmail();
 	} else {
 		requestOTP();
