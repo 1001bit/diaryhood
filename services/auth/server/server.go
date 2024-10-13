@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/1001bit/pathgoer/services/auth/authpb"
+	"github.com/1001bit/pathgoer/services/auth/otp"
 	"github.com/1001bit/pathgoer/services/auth/userclient"
 	"github.com/1001bit/pathgoer/services/auth/userpb"
 	"google.golang.org/grpc/codes"
@@ -16,11 +17,13 @@ type Server struct {
 	authpb.UnimplementedAuthServiceServer
 
 	userclient *userclient.Client
+	otpStorage *otp.Storage
 }
 
-func New(userclient *userclient.Client) *Server {
+func New(userclient *userclient.Client, otpStorage *otp.Storage) *Server {
 	return &Server{
 		userclient: userclient,
+		otpStorage: otpStorage,
 	}
 }
 
@@ -43,8 +46,14 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 		name = userResponse.GetName()
 	}
 
+	otp, err := s.otpStorage.GenerateOTP(ctx, email)
+	if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Internal, "an error occurred")
+	}
+
 	// TODO: Send email with OTP
-	log.Println(email, name)
+	log.Println(name, email, otp)
 
 	return &authpb.EmailResponse{}, nil
 }

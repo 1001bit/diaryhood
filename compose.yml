@@ -30,7 +30,8 @@ services:
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
-            POSTGRES_HOST: ${USER_POSTGRES_HOST}
+            POSTGRES_PORT: ${POSTGRES_PORT}
+            USER_POSTGRES_HOST: ${USER_POSTGRES_HOST}
         networks:
             - user-postgres
             - user
@@ -43,9 +44,22 @@ services:
         environment:
             PORT: ${SERVER_PORT}
             USER_HOST: ${USER_HOST}
+            AUTH_REDIS_HOST: ${AUTH_REDIS_HOST}
+            REDIS_PORT: ${REDIS_PORT}
         networks:
             - user
+            - auth-redis
         restart: always
+        depends_on:
+            - auth-redis
+
+    auth-redis:
+        image: redis:7.4-alpine
+        restart: always
+        volumes:
+            - auth-redis:/data
+        networks:
+            - auth-redis
 
     user-postgres:
         image: postgres:17-alpine
@@ -80,6 +94,9 @@ networks:
         driver: bridge
     user:
         driver: bridge
+    auth-redis:
+        driver: bridge
 
 volumes:
     user-postgres: null
+    auth-redis: null

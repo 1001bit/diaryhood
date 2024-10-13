@@ -13,7 +13,7 @@ type Config struct {
 	Name string
 	Pass string
 	Host string
-	Port int
+	Port string
 }
 
 func NewFromEnv() (*sql.DB, error) {
@@ -21,11 +21,11 @@ func NewFromEnv() (*sql.DB, error) {
 		User: os.Getenv("POSTGRES_USER"),
 		Name: os.Getenv("POSTGRES_DB"),
 		Pass: os.Getenv("POSTGRES_PASSWORD"),
-		Host: os.Getenv("POSTGRES_HOST"),
-		Port: 5432,
+		Host: os.Getenv("USER_POSTGRES_HOST"),
+		Port: os.Getenv("POSTGRES_PORT"),
 	}
 
-	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", config.Host, config.User, config.Pass, config.Name, config.Port)
+	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.Host, config.User, config.Pass, config.Name, config.Port)
 
 	return sql.Open("postgres", connStr)
 }

@@ -19,7 +19,8 @@
         [ ] OTP Request send
     [ ] Backend
         [X] Login request receive 
-        [ ] OTP generation, cachying and sending
+        [X] OTP generation and cachying
+        [ ] OTP Email send
         [ ] Authentication by OTP
         [ ] JWT Generation
 [ ] Authorization
