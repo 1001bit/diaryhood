@@ -46,9 +46,7 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 	// TODO: Send email with OTP
 	log.Println(email, name)
 
-	return &authpb.EmailResponse{
-		NewAccount: len(name) == 0,
-	}, nil
+	return &authpb.EmailResponse{}, nil
 }
 
 func isEmail(e string) bool {

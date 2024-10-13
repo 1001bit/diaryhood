@@ -1,46 +1,85 @@
-const authBox = document.getElementById("auth-box") as HTMLDivElement;
+// main login div
+const loginBox = document.getElementById("login-box") as HTMLDivElement;
+// text input
 const loginInput = document.getElementById("login-input") as HTMLInputElement;
+// enter button
 const loginButton = document.getElementById(
 	"login-button"
 ) as HTMLButtonElement;
-
+// additional info
+const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
+// button to open main loginBox
 const loginOpen = document.getElementById("login-open") as HTMLElement;
 
-// Open auth box
+// is on second stage of authentication
+let doSendOTP = false;
+
+// Open login box
 loginOpen.addEventListener("click", () => {
-	authBox.style.display = "flex";
+	loginBox.style.display = "flex";
 });
 
 // Close auth box
 document.addEventListener("click", function (event) {
 	const target = event.target as Node;
 
-	if (!authBox.contains(target) && !loginOpen.contains(target)) {
-		authBox.style.display = "none";
+	if (!loginBox.contains(target) && !loginOpen.contains(target)) {
+		loginBox.style.display = "none";
 	}
 });
 
-// Enter login
-loginButton.addEventListener("click", () => {
-	const login = loginInput.value;
+// remove loginInput style on focus
+loginInput.addEventListener("focus", () => {
+	loginInput.removeAttribute("style");
+});
+
+// set loginInput style
+function setInputStyle(colorVar: string) {
+	loginInput.style.border = `2px solid var(--${colorVar})`;
+}
+
+// Request an email with OTP
+function requestEmail() {
 	fetch("/auth/login", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			login: login,
+			login: loginInput.value,
 		}),
 	}).then((res) => {
 		switch (res.status) {
 			case 200:
-				// TODO: handle success
-				// TODO: handle OTP input
-				// TODO: handle new user
+				// Success
+				doSendOTP = true;
+				setInputStyle("acc1");
+				loginInput.value = "";
+				loginInput.placeholder = "one-time password";
+				loginInfo.innerHTML = "check your email";
 				break;
 			default:
-				// TODO: handle error
+				// Error
+				setInputStyle("err");
+				loginInfo.innerHTML = "user not found";
 				break;
 		}
 	});
+}
+
+// Send OTP to server to verify
+function requestOTP() {}
+
+// Enter login
+loginButton.addEventListener("click", () => {
+	if (loginInput.value === "") {
+		setInputStyle("err");
+		return;
+	}
+
+	if (!doSendOTP) {
+		requestEmail();
+	} else {
+		requestOTP();
+	}
 });

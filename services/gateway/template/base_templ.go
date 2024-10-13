@@ -81,7 +81,7 @@ func nav(title string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if _, ok := ctx.Value("username").(string); !ok {
-			templ_7745c5c3_Err = authBox().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = loginBox().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -94,7 +94,7 @@ func nav(title string) templ.Component {
 	})
 }
 
-func authBox() templ.Component {
+func loginBox() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -112,7 +112,7 @@ func authBox() templ.Component {
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"auth-box\" style=\"display: none;\"><input class=\"big\" type=\"text\" placeholder=\"e-mail or username\" id=\"login-input\"> <input class=\"big\" type=\"button\" value=\"get one-time password\" id=\"login-button\"></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"login-box\" style=\"display: none;\"><input class=\"big\" type=\"text\" placeholder=\"email or username\" id=\"login-input\"> <input class=\"big\" type=\"button\" value=\"enter\" id=\"login-button\"><p id=\"login-info\">enter your username or email</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -145,7 +145,7 @@ func baseHead(title string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/base.templ`, Line: 30, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/base.templ`, Line: 31, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {

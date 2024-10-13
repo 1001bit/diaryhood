@@ -12,6 +12,4 @@ message EmailRequest {
     string login = 1;
 }
 
-message EmailResponse {
-    bool newAccount = 1;
-}
+message EmailResponse {}

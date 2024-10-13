@@ -11,15 +11,16 @@ templ nav(title string) {
 		}
 	</div>
 	if _, ok := ctx.Value("username").(string); !ok {
-		@authBox()
+		@loginBox()
 		<script src="/storage/global/auth.js"></script>
 	}
 }
 
-templ authBox() {
-	<div id="auth-box" style="display: none;">
-		<input class="big" type="text" placeholder="e-mail or username" id="login-input"/>
-		<input class="big" type="button" value="get one-time password" id="login-button"/>
+templ loginBox() {
+	<div id="login-box" style="display: none;">
+		<input class="big" type="text" placeholder="email or username" id="login-input"/>
+		<input class="big" type="button" value="enter" id="login-button"/>
+		<p id="login-info">enter your username or email</p>
 	</div>
 }
 

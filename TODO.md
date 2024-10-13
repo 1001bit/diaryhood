@@ -15,7 +15,8 @@
     [ ] Frontend
         [X] Auth box
         [X] Request send
-        [ ] Responses handle
+        [X] Responses handle
+        [ ] OTP Request send
     [ ] Backend
         [X] Login request receive 
         [ ] OTP generation, cachying and sending

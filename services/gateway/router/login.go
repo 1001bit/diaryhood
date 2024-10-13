@@ -2,7 +2,6 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/authclient"
@@ -22,13 +21,11 @@ func LoginHandler(client *authclient.Client) http.HandlerFunc {
 			return
 		}
 
-		resp, err := client.SendEmail(r.Context(), &authpb.EmailRequest{Login: req.Login})
+		_, err = client.SendEmail(r.Context(), &authpb.EmailRequest{Login: req.Login})
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-		w.Write([]byte(fmt.Sprintf(
-			`{"newAccount": %t}`, resp.NewAccount,
-		)))
+		w.WriteHeader(http.StatusOK)
 	}
 }

@@ -1,18 +1,26 @@
 "use strict";
-const authBox = document.getElementById("auth-box");
+const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
+const loginInfo = document.getElementById("login-info");
 const loginOpen = document.getElementById("login-open");
+let doSendOTP = false;
 loginOpen.addEventListener("click", () => {
-    authBox.style.display = "flex";
+    loginBox.style.display = "flex";
 });
 document.addEventListener("click", function (event) {
     const target = event.target;
-    if (!authBox.contains(target) && !loginOpen.contains(target)) {
-        authBox.style.display = "none";
+    if (!loginBox.contains(target) && !loginOpen.contains(target)) {
+        loginBox.style.display = "none";
     }
 });
-loginButton.addEventListener("click", () => {
+loginInput.addEventListener("focus", () => {
+    loginInput.removeAttribute("style");
+});
+function setInputStyle(colorVar) {
+    loginInput.style.border = `2px solid var(--${colorVar})`;
+}
+function requestEmail() {
     const login = loginInput.value;
     fetch("/auth/login", {
         method: "POST",
@@ -25,10 +33,29 @@ loginButton.addEventListener("click", () => {
     }).then((res) => {
         switch (res.status) {
             case 200:
+                doSendOTP = true;
+                setInputStyle("acc1");
+                loginInput.value = "";
+                loginInput.placeholder = "one-time password";
+                loginInfo.innerHTML = "check your email";
                 break;
             default:
-                loginButton.value = "user with such username/email not found";
+                setInputStyle("err");
+                loginInfo.innerHTML = "user not found";
                 break;
         }
     });
+}
+function requestOTP() { }
+loginButton.addEventListener("click", () => {
+    if (loginInput.value === "") {
+        setInputStyle("err");
+        return;
+    }
+    if (!doSendOTP) {
+        requestEmail();
+    }
+    else {
+        requestOTP();
+    }
 });
