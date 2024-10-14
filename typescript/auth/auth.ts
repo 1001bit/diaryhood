@@ -12,7 +12,7 @@ const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 const loginOpen = document.getElementById("login-open") as HTMLElement;
 
 // is on second stage of authentication
-let login = "";
+let email = "";
 
 // Open login box
 loginOpen.addEventListener("click", () => {
@@ -62,7 +62,9 @@ function requestEmail() {
 		switch (res.status) {
 			case 200:
 				// Success
-				login = loginInput.value;
+				res.json().then((data) => {
+					email = data.email;
+				});
 				setInputStyle("acc1");
 				setInputPlaceholder("one-time password");
 				showInfo("check your email");
@@ -84,14 +86,13 @@ function requestOTP() {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			login: login,
+			email: email,
 			otp: loginInput.value,
 		}),
 	}).then((res) => {
 		switch (res.status) {
 			case 200:
 				// Success
-				localStorage.setItem("login", login);
 				location.reload();
 				break;
 			default:
@@ -112,7 +113,7 @@ loginButton.addEventListener("click", () => {
 
 	showInfo("...");
 
-	if (login === "") {
+	if (email === "") {
 		requestEmail();
 	} else {
 		requestOTP();

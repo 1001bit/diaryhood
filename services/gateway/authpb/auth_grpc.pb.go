@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	SendEmail(ctx context.Context, in *EmailRequest, opts ...grpc.CallOption) (*EmailResponse, error)
-	VerifyOTP(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*OTPResponse, error)
+	VerifyOTP(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*JWTResponse, error)
 }
 
 type authServiceClient struct {
@@ -43,8 +43,8 @@ func (c *authServiceClient) SendEmail(ctx context.Context, in *EmailRequest, opt
 	return out, nil
 }
 
-func (c *authServiceClient) VerifyOTP(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*OTPResponse, error) {
-	out := new(OTPResponse)
+func (c *authServiceClient) VerifyOTP(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*JWTResponse, error) {
+	out := new(JWTResponse)
 	err := c.cc.Invoke(ctx, "/authpb.AuthService/VerifyOTP", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (c *authServiceClient) VerifyOTP(ctx context.Context, in *OTPRequest, opts 
 // for forward compatibility
 type AuthServiceServer interface {
 	SendEmail(context.Context, *EmailRequest) (*EmailResponse, error)
-	VerifyOTP(context.Context, *OTPRequest) (*OTPResponse, error)
+	VerifyOTP(context.Context, *OTPRequest) (*JWTResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -68,7 +68,7 @@ type UnimplementedAuthServiceServer struct {
 func (UnimplementedAuthServiceServer) SendEmail(context.Context, *EmailRequest) (*EmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendEmail not implemented")
 }
-func (UnimplementedAuthServiceServer) VerifyOTP(context.Context, *OTPRequest) (*OTPResponse, error) {
+func (UnimplementedAuthServiceServer) VerifyOTP(context.Context, *OTPRequest) (*JWTResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyOTP not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}

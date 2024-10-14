@@ -22,17 +22,17 @@ func NewStorage(host, port string) *Storage {
 	}
 }
 
-func (r *Storage) VerifyOTP(ctx context.Context, login, otp string) bool {
-	resOtp, err := r.redisClient.Get(ctx, "otp:"+login).Result()
+func (r *Storage) VerifyOTP(ctx context.Context, email, otp string) bool {
+	resOtp, err := r.redisClient.Get(ctx, "otp:"+email).Result()
 
 	return err == nil && resOtp == otp
 }
 
-func (r *Storage) GenerateOTP(ctx context.Context, login string) (string, error) {
+func (r *Storage) GenerateOTP(ctx context.Context, email string) (string, error) {
 	otp, err := generateOTP()
 	if err != nil {
 		return "", err
 	}
 
-	return otp, r.redisClient.Set(ctx, "otp:"+login, otp, expiration).Err()
+	return otp, r.redisClient.Set(ctx, "otp:"+email, otp, expiration).Err()
 }

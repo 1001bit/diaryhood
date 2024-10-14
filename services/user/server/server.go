@@ -26,11 +26,11 @@ func New(store *usermodel.UserStore) *Server {
 func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*userpb.ProfileResponse, error) {
 	profile, err := s.store.GetProfile(ctx, req.Name)
 
-	if err != nil {
-		if err != sql.ErrNoRows {
-			log.Println(err)
-		}
+	if err == sql.ErrNoRows {
 		return nil, status.Error(codes.NotFound, "not found")
+	} else if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 
 	return &userpb.ProfileResponse{
@@ -42,15 +42,23 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*u
 func (s *Server) GetCredentials(ctx context.Context, req *userpb.CredentialsRequest) (*userpb.CredentialsResponse, error) {
 	creds, err := s.store.GetCredentials(ctx, req.Login)
 
-	if err != nil {
-		if err != sql.ErrNoRows {
-			log.Println(err)
-		}
+	if err == sql.ErrNoRows {
 		return nil, status.Error(codes.NotFound, "not found")
+	} else if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 
 	return &userpb.CredentialsResponse{
 		Name:  creds.Name,
 		Email: creds.Email,
+	}, nil
+}
+
+func (s *Server) Authenticate(ctx context.Context, req *userpb.AuthRequest) (*userpb.AuthResponse, error) {
+	// TODO: Retreive data from db by email, or create a new user
+	return &userpb.AuthResponse{
+		Name: "bobie",
+		Id:   1,
 	}, nil
 }

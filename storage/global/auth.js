@@ -4,7 +4,7 @@ const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
 const loginOpen = document.getElementById("login-open");
-let login = "";
+let email = "";
 loginOpen.addEventListener("click", () => {
     loginBox.style.display = "flex";
 });
@@ -39,7 +39,9 @@ function requestEmail() {
     }).then((res) => {
         switch (res.status) {
             case 200:
-                login = loginInput.value;
+                res.json().then((data) => {
+                    email = data.email;
+                });
                 setInputStyle("acc1");
                 setInputPlaceholder("one-time password");
                 showInfo("check your email");
@@ -58,14 +60,16 @@ function requestOTP() {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            login: login,
+            email: email,
             otp: loginInput.value,
         }),
     }).then((res) => {
         switch (res.status) {
             case 200:
-                localStorage.setItem("login", login);
-                location.reload();
+                res.json().then((data) => {
+                    localStorage.setItem("name", data.name);
+                    location.reload();
+                });
                 break;
             default:
                 setInputStyle("err");
@@ -80,7 +84,7 @@ loginButton.addEventListener("click", () => {
         return;
     }
     showInfo("...");
-    if (login === "") {
+    if (email === "") {
         requestEmail();
     }
     else {

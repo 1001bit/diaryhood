@@ -7,6 +7,7 @@ option go_package = "./userpb";
 service UserService {
     rpc GetProfile(ProfileRequest) returns (ProfileResponse) {}
     rpc GetCredentials(CredentialsRequest) returns (CredentialsResponse) {}
+    rpc Authenticate(AuthRequest) returns (AuthResponse) {}
 }
 
 message ProfileRequest {
@@ -24,5 +25,14 @@ message CredentialsRequest {
 
 message CredentialsResponse {
     string email = 1;
+    string name = 2;
+}
+
+message AuthRequest {
+    string email = 1;
+}
+
+message AuthResponse {
+    int32 id = 1;
     string name = 2;
 }
