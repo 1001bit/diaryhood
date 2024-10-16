@@ -43,6 +43,8 @@ func (s *Server) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.L
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
+	// TODO: Generate access token
+	// TODO: Generate refresh token UUID and store in redis
 	return &authpb.LoginResponse{
 		Access:  authResp.Name + string(authResp.Id),
 		Refresh: authResp.Name + string(authResp.Id),
