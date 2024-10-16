@@ -29,7 +29,7 @@ func New(userclient userpb.UserServiceClient, emailclient emailpb.EmailServiceCl
 	}
 }
 
-func (s *Server) VerifyOTP(ctx context.Context, req *authpb.OTPRequest) (*authpb.JWTResponse, error) {
+func (s *Server) Login(ctx context.Context, req *authpb.LoginRequest) (*authpb.LoginResponse, error) {
 	if !s.otpStorage.VerifyOTP(ctx, req.Email, req.Otp) {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
@@ -43,13 +43,13 @@ func (s *Server) VerifyOTP(ctx context.Context, req *authpb.OTPRequest) (*authpb
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	return &authpb.JWTResponse{
+	return &authpb.LoginResponse{
 		Access:  authResp.Name + string(authResp.Id),
 		Refresh: authResp.Name + string(authResp.Id),
 	}, nil
 }
 
-func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*authpb.EmailResponse, error) {
+func (s *Server) SendOTPEmail(ctx context.Context, req *authpb.OTPEmailRequest) (*authpb.OTPEmailResponse, error) {
 	var (
 		email = "" // real email
 		name  = "" // real name
@@ -96,7 +96,7 @@ func (s *Server) SendEmail(ctx context.Context, req *authpb.EmailRequest) (*auth
 	}
 
 	// respond with email
-	return &authpb.EmailResponse{
+	return &authpb.OTPEmailResponse{
 		Email: email,
 	}, nil
 }

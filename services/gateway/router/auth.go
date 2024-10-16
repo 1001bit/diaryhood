@@ -28,7 +28,7 @@ func LoginHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		resp, err := client.SendEmail(r.Context(), &authpb.EmailRequest{Login: req.Login})
+		resp, err := client.SendOTPEmail(r.Context(), &authpb.OTPEmailRequest{Login: req.Login})
 		if status.Code(err) == codes.NotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
@@ -50,7 +50,7 @@ func OTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		resp, err := client.VerifyOTP(r.Context(), &authpb.OTPRequest{
+		resp, err := client.Login(r.Context(), &authpb.LoginRequest{
 			Email: req.Email,
 			Otp:   req.Otp,
 		})

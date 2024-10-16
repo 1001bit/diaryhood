@@ -66,10 +66,7 @@ function requestOTP() {
     }).then((res) => {
         switch (res.status) {
             case 200:
-                res.json().then((data) => {
-                    localStorage.setItem("name", data.name);
-                    location.reload();
-                });
+                location.reload();
                 break;
             default:
                 setInputStyle("err");

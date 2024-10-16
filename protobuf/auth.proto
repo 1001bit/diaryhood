@@ -5,24 +5,33 @@ package authpb;
 option go_package = "./authpb";
 
 service AuthService {
-    rpc SendEmail(EmailRequest) returns (EmailResponse) {} 
-    rpc VerifyOTP(OTPRequest) returns (JWTResponse) {}
+    rpc SendOTPEmail(OTPEmailRequest) returns (OTPEmailResponse) {} 
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
 }
 
-message EmailRequest {
+message OTPEmailRequest {
     string login = 1;
 }
 
-message EmailResponse {
+message OTPEmailResponse {
     string email = 1;
 }
 
-message OTPRequest {
+message LoginRequest {
     string email = 1;
     string otp = 2;
 }
 
-message JWTResponse {
+message LoginResponse {
     string access = 1;
     string refresh = 2;
+}
+
+message RefreshRequest {
+    string refresh = 1;
+}
+
+message RefreshResponse {
+    string access = 1;
 }
