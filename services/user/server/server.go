@@ -55,10 +55,14 @@ func (s *Server) GetCredentials(ctx context.Context, req *userpb.CredentialsRequ
 	}, nil
 }
 
-func (s *Server) Authenticate(ctx context.Context, req *userpb.AuthRequest) (*userpb.AuthResponse, error) {
-	// TODO: Retreive data from db by email, or create a new user
-	return &userpb.AuthResponse{
-		Name: "bobie",
-		Id:   1,
+func (s *Server) Login(ctx context.Context, req *userpb.LoginRequest) (*userpb.LoginResponse, error) {
+	name, err := s.store.Login(ctx, req.Email)
+	if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+
+	return &userpb.LoginResponse{
+		Name: name,
 	}, nil
 }

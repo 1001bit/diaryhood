@@ -1,0 +1,21 @@
+package template
+
+templ Login() {
+	<html lang="en">
+		<head>
+			@baseHead("log in")
+			<link rel="stylesheet" href="/storage/login/style.css"/>
+		</head>
+		<body>
+			@nav("log in")
+			<main>
+				<div id="login-box">
+					<input class="big" type="text" placeholder="email or username" id="login-input"/>
+					<input class="big" type="button" value="enter" id="login-button"/>
+					<p id="login-info">enter your username or email</p>
+				</div>
+			</main>
+			<script src="/storage/login/script.js"></script>
+		</body>
+	</html>
+}

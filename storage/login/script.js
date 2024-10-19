@@ -3,17 +3,7 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-const loginOpen = document.getElementById("login-open");
 let email = "";
-loginOpen.addEventListener("click", () => {
-    loginBox.style.display = "flex";
-});
-document.addEventListener("click", function (event) {
-    const target = event.target;
-    if (!loginBox.contains(target) && !loginOpen.contains(target)) {
-        loginBox.style.display = "none";
-    }
-});
 loginInput.addEventListener("focus", () => {
     loginInput.removeAttribute("style");
 });
@@ -28,7 +18,7 @@ function showInfo(text) {
     loginInfo.innerHTML = text;
 }
 function requestEmail() {
-    fetch("/auth/login", {
+    fetch("/login/email", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -54,7 +44,7 @@ function requestEmail() {
     });
 }
 function requestOTP() {
-    fetch("/auth/otp", {
+    fetch("/login/otp", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -75,7 +65,7 @@ function requestOTP() {
         }
     });
 }
-loginButton.addEventListener("click", () => {
+function inputLoginData() {
     if (loginInput.value === "") {
         setInputStyle("err");
         return;
@@ -87,4 +77,12 @@ loginButton.addEventListener("click", () => {
     else {
         requestOTP();
     }
+}
+loginInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        inputLoginData();
+    }
+});
+loginButton.addEventListener("click", () => {
+    inputLoginData();
 });

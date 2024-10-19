@@ -1,9 +1,10 @@
-package router
+package handler
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/authpb"
 	"google.golang.org/grpc/codes"
@@ -19,7 +20,7 @@ type OTPRequest struct {
 	Otp   string `json:"otp"`
 }
 
-func LoginHandler(client authpb.AuthServiceClient) http.HandlerFunc {
+func LoginEmailHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &LoginRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
@@ -41,7 +42,7 @@ func LoginHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 	}
 }
 
-func OTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
+func LoginOTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &OTPRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
@@ -50,7 +51,7 @@ func OTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		resp, err := client.Login(r.Context(), &authpb.LoginRequest{
+		tokens, err := client.VerifyOTP(r.Context(), &authpb.VerifyRequest{
 			Email: req.Email,
 			Otp:   req.Otp,
 		})
@@ -62,10 +63,29 @@ func OTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		// TODO: Set JWTs from response
-		_ = resp.Access
-		_ = resp.Refresh
+		setAuthCookies(w, tokens.Access, tokens.Refresh)
 
 		w.WriteHeader(http.StatusOK)
 	}
+}
+
+func setAuthCookies(w http.ResponseWriter, access, refresh string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access",
+		Value:    access,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: true,
+		Path:     "/",
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refresh",
+		Value:    refresh,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: true,
+		Path:     "/auth/refresh",
+		Expires:  time.Now().Add(30 * 24 * time.Hour),
+	})
 }

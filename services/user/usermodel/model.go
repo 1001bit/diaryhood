@@ -51,3 +51,21 @@ func (us *UserStore) GetCredentials(ctx context.Context, login string) (*Credent
 
 	return creds, nil
 }
+
+func (us *UserStore) Login(ctx context.Context, email string) (string, error) {
+	name := ""
+
+	err := us.db.QueryRowContext(
+		ctx,
+		`
+		INSERT INTO users (email)
+		VALUES ($1)
+		ON CONFLICT (email)
+		DO UPDATE SET email = users.email
+		RETURNING name;
+		`,
+		email,
+	).Scan(&name)
+
+	return name, err
+}

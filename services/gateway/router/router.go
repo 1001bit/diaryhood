@@ -6,12 +6,13 @@ import (
 	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/authpb"
+	"github.com/1001bit/pathgoer/services/gateway/router/handler"
+	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
-	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimw "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 )
 
@@ -21,27 +22,37 @@ func New(userclient userpb.UserServiceClient, authclient authpb.AuthServiceClien
 
 	// Middleware
 	// Logging
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
+	r.Use(chimw.RealIP)
+	r.Use(chimw.Logger)
 	// Recovery
-	r.Use(middleware.Recoverer)
+	r.Use(chimw.Recoverer)
 	// Limits
-	r.Use(middleware.Timeout(time.Second * 10))
+	r.Use(chimw.Timeout(time.Second * 10))
 	r.Use(httprate.LimitByIP(100, time.Minute))
 	// Path cleaning
-	r.Use(middleware.RedirectSlashes)
-	r.Use(middleware.CleanPath)
+	r.Use(chimw.RedirectSlashes)
+	r.Use(chimw.CleanPath)
 
 	// Paths
-	// Home
-	r.Get("/", templ.Handler(template.Home()).ServeHTTP)
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.InjectJwtClaims)
+
+		// Home
+		r.Get("/", handler.HandleHome)
+		// Pseudo Profile
+		r.Get("/profile", handler.HandleIdlessProfile)
+		// Login page
+		r.Get("/login", handler.LoginPageHandler)
+	})
 
 	// Profile
-	r.Get("/profile/{name}", ProfileHandler(userclient))
+	r.Get("/profile/{name}", handler.ProfileHandler(userclient))
 
-	// Auth
-	r.Post("/auth/login", LoginHandler(authclient))
-	r.Post("/auth/otp", OTPHandler(authclient))
+	// Login API
+	r.Post("/login/email", handler.LoginEmailHandler(authclient))
+	r.Post("/login/otp", handler.LoginOTPHandler(authclient))
+	// Refresh
+	r.Get("/auth/refresh", handler.RefreshHandler(authclient))
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))

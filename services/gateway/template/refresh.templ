@@ -1,0 +1,21 @@
+package template
+
+templ RefreshOrLogin() {
+	<html lang="en">
+		<head>
+			@baseHead("Loading...")
+			<script>
+				fetch("/auth/refresh", {
+					method: "GET",
+				}).then((res) => {
+					if(res.status != 200) {
+						location.replace("/login");
+					} else {
+						location.reload();
+					}
+				});
+			</script>
+		</head>
+		<body></body>
+	</html>
+}

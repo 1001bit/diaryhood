@@ -23,9 +23,13 @@ func NewStorage(host, port string) *Storage {
 }
 
 func (r *Storage) VerifyOTP(ctx context.Context, email, otp string) bool {
-	resOtp, err := r.redisClient.Get(ctx, "otp:"+email).Result()
+	resOtp, err := r.redisClient.Get(ctx, "email:"+email).Result()
+	if err != nil || resOtp != otp {
+		return false
+	}
 
-	return err == nil && resOtp == otp
+	r.redisClient.Del(ctx, email).Err()
+	return true
 }
 
 func (r *Storage) GenerateOTP(ctx context.Context, email string) (string, error) {
@@ -34,5 +38,5 @@ func (r *Storage) GenerateOTP(ctx context.Context, email string) (string, error)
 		return "", err
 	}
 
-	return otp, r.redisClient.Set(ctx, "otp:"+email, otp, expiration).Err()
+	return otp, r.redisClient.Set(ctx, "email:"+email, otp, expiration).Err()
 }

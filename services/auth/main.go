@@ -10,6 +10,7 @@ import (
 	"github.com/1001bit/pathgoer/services/auth/emailpb"
 	"github.com/1001bit/pathgoer/services/auth/grpcclient"
 	"github.com/1001bit/pathgoer/services/auth/otp"
+	"github.com/1001bit/pathgoer/services/auth/refresh"
 	"github.com/1001bit/pathgoer/services/auth/server"
 	"github.com/1001bit/pathgoer/services/auth/userpb"
 	"google.golang.org/grpc"
@@ -33,8 +34,12 @@ func main() {
 	log.Println("emailclient connected on " + os.Getenv("EMAIL_HOST") + ":" + os.Getenv("PORT"))
 
 	// otpStorage
-	otpStorage := otp.NewStorage(os.Getenv("AUTH_REDIS_HOST"), os.Getenv("REDIS_PORT"))
-	log.Println("otpStorage connected on " + os.Getenv("AUTH_REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"))
+	otpStorage := otp.NewStorage(os.Getenv("OTP_REDIS_HOST"), os.Getenv("REDIS_PORT"))
+	log.Println("otpStorage connected on " + os.Getenv("OTP_REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"))
+
+	// refresh storage
+	refreshStorage := refresh.NewStorage(os.Getenv("REFRESH_REDIS_HOST"), os.Getenv("REDIS_PORT"))
+	log.Println("refreshStorage connected on " + os.Getenv("REFRESH_REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"))
 
 	// start tcp listener
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("PORT")))
@@ -44,7 +49,7 @@ func main() {
 
 	// create grpc server
 	grpcServer := grpc.NewServer()
-	authpb.RegisterAuthServiceServer(grpcServer, server.New(userclient, emailclient, otpStorage))
+	authpb.RegisterAuthServiceServer(grpcServer, server.New(userclient, emailclient, otpStorage, refreshStorage))
 
 	log.Println("gRPC server listening on", lis.Addr())
 	log.Fatal(grpcServer.Serve(lis))

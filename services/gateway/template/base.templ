@@ -4,23 +4,7 @@ templ nav(title string) {
 	<div id="navbar">
 		<a href="/"><h2 class="left">pathgoer</h2></a>
 		<h2 class="center">{ title }</h2>
-		if username, ok := ctx.Value("username").(string); ok {
-			<a href={ templ.SafeURL("/profile/" + username) }><h2 class="right">{ username }</h2></a>
-		} else {
-			<a href="#login"><h2 class="right" id="login-open">log in</h2></a>
-		}
-	</div>
-	if _, ok := ctx.Value("username").(string); !ok {
-		@loginBox()
-		<script src="/storage/global/auth.js"></script>
-	}
-}
-
-templ loginBox() {
-	<div id="login-box" style="display: none;">
-		<input class="big" type="text" placeholder="email or username" id="login-input"/>
-		<input class="big" type="button" value="enter" id="login-button"/>
-		<p id="login-info">enter your username or email</p>
+		<a href="/profile"><h2 class="right" id="login-open">you</h2></a>
 	</div>
 }
 

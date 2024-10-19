@@ -11,6 +11,7 @@
     [X] gRPC client
 [X] Compile typescript
 [ ] Readme
+[ ] Doc that describes authentication flows
 [ ] Authentication
     [X] Frontend
         [X] Auth box
@@ -21,6 +22,7 @@
         [X] Login request receive 
         [X] OTP generation and cachying
         [ ] OTP Email send
-        [ ] JWT Generation
-[ ] Authorization
-    [ ] JWT Verification
+        [X] JWT Generation
+        [X] JWT Verification
+        [X] Tokens Refresh
+        [ ] Logout

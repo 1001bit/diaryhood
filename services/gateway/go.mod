@@ -7,6 +7,7 @@ require github.com/go-chi/chi/v5 v5.1.0
 require (
 	github.com/a-h/templ v0.2.778
 	github.com/go-chi/httprate v0.14.1
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 )

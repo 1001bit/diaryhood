@@ -8,25 +8,9 @@ const loginButton = document.getElementById(
 ) as HTMLButtonElement;
 // additional info
 const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
-// button to open main loginBox
-const loginOpen = document.getElementById("login-open") as HTMLElement;
 
 // is on second stage of authentication
 let email = "";
-
-// Open login box
-loginOpen.addEventListener("click", () => {
-	loginBox.style.display = "flex";
-});
-
-// Close auth box
-document.addEventListener("click", function (event) {
-	const target = event.target as Node;
-
-	if (!loginBox.contains(target) && !loginOpen.contains(target)) {
-		loginBox.style.display = "none";
-	}
-});
 
 // remove loginInput style on focus
 loginInput.addEventListener("focus", () => {
@@ -50,7 +34,7 @@ function showInfo(text: string) {
 
 // Request an email with OTP
 function requestEmail() {
-	fetch("/auth/login", {
+	fetch("/login/email", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -70,6 +54,7 @@ function requestEmail() {
 				showInfo("check your email");
 				break;
 			default:
+				// HACK: Handle both 404 and 500 errors
 				// Error
 				setInputStyle("err");
 				showInfo("user not found");
@@ -80,7 +65,7 @@ function requestEmail() {
 
 // Send OTP to server to verify
 function requestOTP() {
-	fetch("/auth/otp", {
+	fetch("/login/otp", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -104,8 +89,8 @@ function requestOTP() {
 	});
 }
 
-// Enter login
-loginButton.addEventListener("click", () => {
+// Enter data
+function inputLoginData() {
 	if (loginInput.value === "") {
 		setInputStyle("err");
 		return;
@@ -118,4 +103,14 @@ loginButton.addEventListener("click", () => {
 	} else {
 		requestOTP();
 	}
+}
+
+loginInput.addEventListener("keydown", (event) => {
+	if (event.key === "Enter") {
+		inputLoginData();
+	}
+});
+
+loginButton.addEventListener("click", () => {
+	inputLoginData();
 });

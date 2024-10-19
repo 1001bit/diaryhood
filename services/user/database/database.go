@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -26,6 +27,7 @@ func NewFromEnv() (*sql.DB, error) {
 	}
 
 	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.Host, config.User, config.Pass, config.Name, config.Port)
+	log.Println(connStr)
 
 	return sql.Open("postgres", connStr)
 }

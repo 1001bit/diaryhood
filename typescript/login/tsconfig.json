@@ -1,7 +1,7 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"outFile": "../../storage/global/auth.js"
+		"outFile": "../../storage/login/script.js"
 	},
 	"include": ["*.ts"]
 }

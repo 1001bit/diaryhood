@@ -138,33 +138,3 @@ input[type="button"]:hover {
 input[type="button"]:active {
 	transform: scale(0.98);
 }
-
-/* Auth box */
-#login-box {
-	padding-inline: 40px;
-	padding-block: 28px;
-	gap: 24px;
-	display: flex;
-	flex-direction: column;
-
-	width: fit-content;
-	height: fit-content;
-
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-
-	background: var(--main2);
-	border-radius: 4px;
-	border: 2px solid var(--main1-dim);
-}
-
-#login-box:hover {
-	border: 2px solid var(--main1);
-}
-
-#login-info {
-	/* make it wrap to new line if overload */
-	white-space: pre-wrap;
-}

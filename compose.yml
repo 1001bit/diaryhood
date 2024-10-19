@@ -6,11 +6,11 @@ services:
             STORAGE_HOST: ${STORAGE_HOST}
             USER_HOST: ${USER_HOST}
             AUTH_HOST: ${AUTH_HOST}
+            JWT_SECRET: ${JWT_SECRET}
         ports:
             - 80:${SERVER_PORT}
         networks:
-            - storage
-            - user
+            - network
         restart: always
 
     storage:
@@ -20,7 +20,7 @@ services:
         volumes:
             - ./storage:/app/storage:ro
         networks:
-            - storage
+            - network
         restart: always
 
     email:
@@ -28,7 +28,7 @@ services:
         environment:
             PORT: ${SERVER_PORT}
         networks:
-            - email
+            - network
         restart: always
 
     user:
@@ -41,8 +41,7 @@ services:
             POSTGRES_PORT: ${POSTGRES_PORT}
             USER_POSTGRES_HOST: ${USER_POSTGRES_HOST}
         networks:
-            - user-postgres
-            - user
+            - network
         restart: always
         depends_on:
             - user-postgres
@@ -53,23 +52,31 @@ services:
             PORT: ${SERVER_PORT}
             USER_HOST: ${USER_HOST}
             EMAIL_HOST: ${EMAIL_HOST}
-            AUTH_REDIS_HOST: ${AUTH_REDIS_HOST}
+            OTP_REDIS_HOST: ${OTP_REDIS_HOST}
+            REFRESH_REDIS_HOST: ${REFRESH_REDIS_HOST}
             REDIS_PORT: ${REDIS_PORT}
+            JWT_SECRET: ${JWT_SECRET}
         networks:
-            - user
-            - auth-redis
-            - email
+            - network
         restart: always
         depends_on:
-            - auth-redis
+            - otp-redis
 
-    auth-redis:
+    otp-redis:
         image: redis:7.4-alpine
         restart: always
         volumes:
-            - auth-redis:/data
+            - otp-redis:/data
         networks:
-            - auth-redis
+            - network
+
+    refresh-redis:
+        image: redis:7.4-alpine
+        restart: always
+        volumes:
+            - refresh-redis:/data
+        networks:
+            - network
 
     user-postgres:
         image: postgres:17-alpine
@@ -78,7 +85,7 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
         networks:
-            - user-postgres
+            - network
         volumes:
             - user-postgres:/var/lib/postgresql/data
             - ./user-postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -95,20 +102,27 @@ services:
         ports:
             - 8080:8080
         networks:
-            - user-postgres
+            - network
+
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        container_name: redis-commander
+        environment:
+            - REDIS_HOSTS=local:${REFRESH_REDIS_HOST}:${REDIS_PORT},local:${OTP_REDIS_HOST}:${REDIS_PORT}
+        ports:
+            - "8081:8081"
+        networks:
+            - network
+        restart: always
+        depends_on:
+            - otp-redis
+            - refresh-redis
 
 networks:
-    storage:
-        driver: bridge
-    user-postgres:
-        driver: bridge
-    user:
-        driver: bridge
-    auth-redis:
-        driver: bridge
-    email:
+    network:
         driver: bridge
 
 volumes:
     user-postgres: null
-    auth-redis: null
+    otp-redis: null
+    refresh-redis: null
