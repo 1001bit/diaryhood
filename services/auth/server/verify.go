@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) VerifyOTP(ctx context.Context, req *authpb.VerifyRequest) (*authpb.TokensResponse, error) {
+func (s *Server) VerifyOTP(ctx context.Context, req *authpb.VerifyOTPRequest) (*authpb.TokensResponse, error) {
 	if !s.otpStorage.VerifyOTP(ctx, req.Email, req.Otp) {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

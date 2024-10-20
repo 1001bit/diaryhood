@@ -5,25 +5,25 @@ package userpb;
 option go_package = "./userpb";
 
 service UserService {
-    rpc GetProfile(ProfileRequest) returns (ProfileResponse) {}
-    rpc GetCredentials(CredentialsRequest) returns (CredentialsResponse) {}
+    rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {}
+    rpc GetEmailAndNameByLogin(GetCredentialsRequest) returns (GetCredentialsResponse) {}
     rpc Login(LoginRequest) returns (LoginResponse) {}
 }
 
-message ProfileRequest {
+message GetProfileRequest {
     string name = 1;
 }
 
-message ProfileResponse {
+message GetProfileResponse {
     string name = 1;
     string date = 2;
 }
 
-message CredentialsRequest {
+message GetCredentialsRequest {
     string login = 1;
 }
 
-message CredentialsResponse {
+message GetCredentialsResponse {
     string email = 1;
     string name = 2;
 }

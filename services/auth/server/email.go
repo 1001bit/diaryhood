@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) SendOTPEmail(ctx context.Context, req *authpb.OTPEmailRequest) (*authpb.OTPEmailResponse, error) {
+func (s *Server) SendOTPEmail(ctx context.Context, req *authpb.SendOTPEmailRequest) (*authpb.SendOTPEmailResponse, error) {
 	email, username, err := s.getEmailAndUsernameByLogin(ctx, req.Login)
 	if err != nil {
 		log.Println(err)
@@ -37,14 +37,14 @@ func (s *Server) SendOTPEmail(ctx context.Context, req *authpb.OTPEmailRequest) 
 	}
 
 	// respond with email
-	return &authpb.OTPEmailResponse{
+	return &authpb.SendOTPEmailResponse{
 		Email: email,
 	}, nil
 }
 
 func (s *Server) getEmailAndUsernameByLogin(ctx context.Context, login string) (string, string, error) {
 	// Ask userservice for email and username by login
-	credentials, err := s.userclient.GetCredentials(ctx, &userpb.CredentialsRequest{
+	credentials, err := s.userclient.GetCredentials(ctx, &userpb.GetCredentialsRequest{
 		Login: login,
 	})
 

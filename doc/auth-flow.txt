@@ -1,8 +1,9 @@
 1. Requesting For Email:
-    User POST Requests /login/email with Login field in body
+    User POST Requests /login/email with Login(either username or email) field in body
         Gateway handles it with LoginEmailHandler handler
         Gateway sends gRPC SendOTPEmail request with Login field to Auth service
-            Auth service gets Email and Username by Login (via User service) for request
+            Auth service sends gRPC GetEmailAndUsernameByLogin request to User service Email
+                User service gets Email and Username from database and responds with it
             Auth service generates OTP and stores it in Otp-redis
             Auth service sends OTP and Username via Email service
             Auth service responds with Email to Gateway service
@@ -15,7 +16,7 @@
         Gateway sends gRPC VerifyOTP request with Login and OTP fields to Auth service
             Auth service verifies if Email and OTP pair are in Otp-redis
             Auth service sends Login request with Email field to User service
-                User service either creates new user or or does nothing, then returns Username
+                User service either creates new user or does nothing (returns username in both cases)
             Auth service generates Access JWT with Username
             Auth service generates Refresh UUID and stores it in Refresh-redis
             Auth service responds with AT and returns

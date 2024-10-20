@@ -23,7 +23,7 @@ func New(store *usermodel.UserStore) *Server {
 	}
 }
 
-func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*userpb.ProfileResponse, error) {
+func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) (*userpb.GetProfileResponse, error) {
 	profile, err := s.store.GetProfile(ctx, req.Name)
 
 	if err == sql.ErrNoRows {
@@ -33,13 +33,13 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.ProfileRequest) (*u
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &userpb.ProfileResponse{
+	return &userpb.GetProfileResponse{
 		Name: profile.Name,
 		Date: profile.Date,
 	}, nil
 }
 
-func (s *Server) GetCredentials(ctx context.Context, req *userpb.CredentialsRequest) (*userpb.CredentialsResponse, error) {
+func (s *Server) GetCredentials(ctx context.Context, req *userpb.GetCredentialsRequest) (*userpb.GetCredentialsResponse, error) {
 	creds, err := s.store.GetCredentials(ctx, req.Login)
 
 	if err == sql.ErrNoRows {
@@ -49,7 +49,7 @@ func (s *Server) GetCredentials(ctx context.Context, req *userpb.CredentialsRequ
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &userpb.CredentialsResponse{
+	return &userpb.GetCredentialsResponse{
 		Name:  creds.Name,
 		Email: creds.Email,
 	}, nil

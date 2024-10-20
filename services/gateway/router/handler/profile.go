@@ -21,7 +21,7 @@ func ProfileHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		name := r.PathValue("name")
 
-		response, err := userclient.GetProfile(r.Context(), &userpb.ProfileRequest{Name: name})
+		response, err := userclient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
 		if err != nil {
 			// HACK: Handle both 404 and 500 errors
 			template.ErrorNotFound().Render(r.Context(), w)

@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	SendOTPEmail(ctx context.Context, in *OTPEmailRequest, opts ...grpc.CallOption) (*OTPEmailResponse, error)
-	VerifyOTP(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*TokensResponse, error)
+	SendOTPEmail(ctx context.Context, in *SendOTPEmailRequest, opts ...grpc.CallOption) (*SendOTPEmailResponse, error)
+	VerifyOTP(ctx context.Context, in *VerifyOTPRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 }
 
@@ -35,8 +35,8 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }
 
-func (c *authServiceClient) SendOTPEmail(ctx context.Context, in *OTPEmailRequest, opts ...grpc.CallOption) (*OTPEmailResponse, error) {
-	out := new(OTPEmailResponse)
+func (c *authServiceClient) SendOTPEmail(ctx context.Context, in *SendOTPEmailRequest, opts ...grpc.CallOption) (*SendOTPEmailResponse, error) {
+	out := new(SendOTPEmailResponse)
 	err := c.cc.Invoke(ctx, "/authpb.AuthService/SendOTPEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (c *authServiceClient) SendOTPEmail(ctx context.Context, in *OTPEmailReques
 	return out, nil
 }
 
-func (c *authServiceClient) VerifyOTP(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
+func (c *authServiceClient) VerifyOTP(ctx context.Context, in *VerifyOTPRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
 	out := new(TokensResponse)
 	err := c.cc.Invoke(ctx, "/authpb.AuthService/VerifyOTP", in, out, opts...)
 	if err != nil {
@@ -66,8 +66,8 @@ func (c *authServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opt
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
-	SendOTPEmail(context.Context, *OTPEmailRequest) (*OTPEmailResponse, error)
-	VerifyOTP(context.Context, *VerifyRequest) (*TokensResponse, error)
+	SendOTPEmail(context.Context, *SendOTPEmailRequest) (*SendOTPEmailResponse, error)
+	VerifyOTP(context.Context, *VerifyOTPRequest) (*TokensResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*TokensResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
@@ -76,10 +76,10 @@ type AuthServiceServer interface {
 type UnimplementedAuthServiceServer struct {
 }
 
-func (UnimplementedAuthServiceServer) SendOTPEmail(context.Context, *OTPEmailRequest) (*OTPEmailResponse, error) {
+func (UnimplementedAuthServiceServer) SendOTPEmail(context.Context, *SendOTPEmailRequest) (*SendOTPEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendOTPEmail not implemented")
 }
-func (UnimplementedAuthServiceServer) VerifyOTP(context.Context, *VerifyRequest) (*TokensResponse, error) {
+func (UnimplementedAuthServiceServer) VerifyOTP(context.Context, *VerifyOTPRequest) (*TokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyOTP not implemented")
 }
 func (UnimplementedAuthServiceServer) Refresh(context.Context, *RefreshRequest) (*TokensResponse, error) {
@@ -99,7 +99,7 @@ func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
 }
 
 func _AuthService_SendOTPEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OTPEmailRequest)
+	in := new(SendOTPEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,13 +111,13 @@ func _AuthService_SendOTPEmail_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/authpb.AuthService/SendOTPEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).SendOTPEmail(ctx, req.(*OTPEmailRequest))
+		return srv.(AuthServiceServer).SendOTPEmail(ctx, req.(*SendOTPEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AuthService_VerifyOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyRequest)
+	in := new(VerifyOTPRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func _AuthService_VerifyOTP_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/authpb.AuthService/VerifyOTP",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).VerifyOTP(ctx, req.(*VerifyRequest))
+		return srv.(AuthServiceServer).VerifyOTP(ctx, req.(*VerifyOTPRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
