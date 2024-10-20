@@ -11,7 +11,7 @@
     [X] gRPC client
 [X] Compile typescript
 [ ] Readme
-[ ] Doc that describes authentication flows
+[X] Doc that describes authentication flows
 [ ] Authentication
     [X] Frontend
         [X] Auth box

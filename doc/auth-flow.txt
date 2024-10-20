@@ -1,0 +1,31 @@
+1. Requesting For Email:
+    User POST Requests /login/email with Login field in body
+        Gateway handles it with LoginEmailHandler handler
+        Gateway sends gRPC SendOTPEmail request with Login field to Auth service
+            Auth service gets Email and Username by Login (via User service) for request
+            Auth service generates OTP and stores it in Otp-redis
+            Auth service sends OTP and Username via Email service
+            Auth service responds with Email to Gateway service
+        Gateway service responds with Email to User
+    User stores the Email in local variable
+
+2. Entering the OTP From email:
+    User POST Requests /login/otp with Email and OTP fields in body
+        Gateway handles it with LoginOTPHandler handler 
+        Gateway sends gRPC VerifyOTP request with Login and OTP fields to Auth service
+            Auth service verifies if Email and OTP pair are in Otp-redis
+            Auth service sends Login request with Email field to User service
+                User service either creates new user or or does nothing, then returns Username
+            Auth service generates Access JWT with Username
+            Auth service generates Refresh UUID and stores it in Refresh-redis
+            Auth service responds with AT and returns
+        Gateway service sets cookies with RT and AT
+
+3. Refreshing tokens:
+    User GET Requests /auth/refresh with Refresh token
+        Gateway handles it with RefreshHandler
+        Gateway sends gRPC Refresh request with Refresh field to Auth service
+            Auth service verifies Refresh UUID, generates new one and now has Username and new UUID
+            Auth service generates new Access JWT with username
+            Auth service responds with both new tokens
+        Gateway sets new tokens in cookies
