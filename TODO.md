@@ -11,7 +11,7 @@
     [X] gRPC client
 [X] Compile typescript
 [ ] Readme
-[X] Doc that describes authentication flows
+[ ] Doc that describes authentication flows
 [ ] Authentication
     [X] Frontend
         [X] Auth box
@@ -26,3 +26,4 @@
         [X] JWT Verification
         [X] Tokens Refresh
         [ ] Logout
+        [ ] Username change

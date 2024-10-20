@@ -12,11 +12,17 @@ import (
 )
 
 func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokensRequest) (*userpb.TokensResponse, error) {
-	// TODO: Update username by looking in user's postgres. Store userID instead of username in redis
-	username, uuid, err := s.refreshStorage.GetUsernameAndRefresh(ctx, req.RefreshUUID)
+	userID, uuid, err := s.refreshStorage.GetUserIDAndRefresh(ctx, req.RefreshUUID)
 	if err == redis.Nil {
 		return nil, status.Error(codes.Unauthenticated, "could not refresh")
 	} else if err != nil {
+		log.Println(err)
+		return nil, status.Error(codes.Internal, "an error occurred")
+	}
+
+	// Get username by userID
+	username, err := s.userStore.GetNameByID(ctx, userID)
+	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}

@@ -52,8 +52,9 @@ func (us *UserStore) GetCredentials(ctx context.Context, login string) (*Credent
 	return creds, nil
 }
 
-func (us *UserStore) Login(ctx context.Context, email string) (string, error) {
+func (us *UserStore) GetNameAndIdByEmail(ctx context.Context, email string) (string, string, error) {
 	name := ""
+	id := ""
 
 	err := us.db.QueryRowContext(
 		ctx,
@@ -62,9 +63,21 @@ func (us *UserStore) Login(ctx context.Context, email string) (string, error) {
 		VALUES ($1)
 		ON CONFLICT (email)
 		DO UPDATE SET email = users.email
-		RETURNING name;
+		RETURNING name, id;
 		`,
 		email,
+	).Scan(&name, &id)
+
+	return name, id, err
+}
+
+func (us *UserStore) GetNameByID(ctx context.Context, id string) (string, error) {
+	name := ""
+
+	err := us.db.QueryRowContext(
+		ctx,
+		"SELECT name FROM users WHERE id = $1",
+		id,
 	).Scan(&name)
 
 	return name, err

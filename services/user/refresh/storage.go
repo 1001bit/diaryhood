@@ -23,8 +23,8 @@ func NewStorage(host, port string) *Storage {
 	}
 }
 
-func (r *Storage) GetUsernameAndRefresh(ctx context.Context, uuid string) (string, string, error) {
-	username, err := r.redisClient.Get(ctx, "uuid:"+uuid).Result()
+func (r *Storage) GetUserIDAndRefresh(ctx context.Context, uuid string) (string, string, error) {
+	userID, err := r.redisClient.Get(ctx, "uuid:"+uuid).Result()
 	if err != nil {
 		return "", "", err
 	}
@@ -34,12 +34,12 @@ func (r *Storage) GetUsernameAndRefresh(ctx context.Context, uuid string) (strin
 		return "", "", err
 	}
 
-	newUUID, err := r.GenerateUUID(ctx, username)
-	return username, newUUID, err
+	newUUID, err := r.GenerateUUID(ctx, userID)
+	return userID, newUUID, err
 }
 
-func (r *Storage) GenerateUUID(ctx context.Context, username string) (string, error) {
+func (r *Storage) GenerateUUID(ctx context.Context, userID string) (string, error) {
 	uuid := uuid.NewString()
 
-	return uuid, r.redisClient.Set(ctx, "uuid:"+uuid, username, expiration).Err()
+	return uuid, r.redisClient.Set(ctx, "uuid:"+uuid, userID, expiration).Err()
 }

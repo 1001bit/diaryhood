@@ -15,8 +15,8 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	// Ask userservice for name by email
-	username, err := s.userStore.Login(ctx, req.Email)
+	// Ask userservice for name and id by email
+	username, id, err := s.userStore.GetNameAndIdByEmail(ctx, req.Email)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
@@ -28,8 +28,7 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	// TODO: Generate with userID instead
-	refresh, err := s.refreshStorage.GenerateUUID(ctx, username)
+	refresh, err := s.refreshStorage.GenerateUUID(ctx, id)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
