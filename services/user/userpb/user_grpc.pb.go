@@ -22,9 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
+	// Profile
 	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error)
-	GetCredentials(ctx context.Context, in *GetCredentialsRequest, opts ...grpc.CallOption) (*GetCredentialsResponse, error)
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	// Auth
+	SendOtpEmail(ctx context.Context, in *SendOtpEmailRequest, opts ...grpc.CallOption) (*SendOtpEmailResponse, error)
+	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*TokensResponse, error)
+	RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 }
 
 type userServiceClient struct {
@@ -44,18 +47,27 @@ func (c *userServiceClient) GetProfile(ctx context.Context, in *GetProfileReques
 	return out, nil
 }
 
-func (c *userServiceClient) GetCredentials(ctx context.Context, in *GetCredentialsRequest, opts ...grpc.CallOption) (*GetCredentialsResponse, error) {
-	out := new(GetCredentialsResponse)
-	err := c.cc.Invoke(ctx, "/userpb.UserService/GetCredentials", in, out, opts...)
+func (c *userServiceClient) SendOtpEmail(ctx context.Context, in *SendOtpEmailRequest, opts ...grpc.CallOption) (*SendOtpEmailResponse, error) {
+	out := new(SendOtpEmailResponse)
+	err := c.cc.Invoke(ctx, "/userpb.UserService/SendOtpEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/userpb.UserService/Login", in, out, opts...)
+func (c *userServiceClient) VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
+	out := new(TokensResponse)
+	err := c.cc.Invoke(ctx, "/userpb.UserService/VerifyOtp", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
+	out := new(TokensResponse)
+	err := c.cc.Invoke(ctx, "/userpb.UserService/RefreshTokens", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +78,12 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginRequest, opts ..
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
+	// Profile
 	GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error)
-	GetCredentials(context.Context, *GetCredentialsRequest) (*GetCredentialsResponse, error)
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	// Auth
+	SendOtpEmail(context.Context, *SendOtpEmailRequest) (*SendOtpEmailResponse, error)
+	VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error)
+	RefreshTokens(context.Context, *RefreshTokensRequest) (*TokensResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -79,11 +94,14 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
 }
-func (UnimplementedUserServiceServer) GetCredentials(context.Context, *GetCredentialsRequest) (*GetCredentialsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentials not implemented")
+func (UnimplementedUserServiceServer) SendOtpEmail(context.Context, *SendOtpEmailRequest) (*SendOtpEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendOtpEmail not implemented")
 }
-func (UnimplementedUserServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedUserServiceServer) VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyOtp not implemented")
+}
+func (UnimplementedUserServiceServer) RefreshTokens(context.Context, *RefreshTokensRequest) (*TokensResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokens not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -116,38 +134,56 @@ func _UserService_GetProfile_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetCredentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialsRequest)
+func _UserService_SendOtpEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendOtpEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetCredentials(ctx, in)
+		return srv.(UserServiceServer).SendOtpEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userpb.UserService/GetCredentials",
+		FullMethod: "/userpb.UserService/SendOtpEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetCredentials(ctx, req.(*GetCredentialsRequest))
+		return srv.(UserServiceServer).SendOtpEmail(ctx, req.(*SendOtpEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+func _UserService_VerifyOtp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyOtpRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).Login(ctx, in)
+		return srv.(UserServiceServer).VerifyOtp(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userpb.UserService/Login",
+		FullMethod: "/userpb.UserService/VerifyOtp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Login(ctx, req.(*LoginRequest))
+		return srv.(UserServiceServer).VerifyOtp(ctx, req.(*VerifyOtpRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_RefreshTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokensRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).RefreshTokens(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userpb.UserService/RefreshTokens",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).RefreshTokens(ctx, req.(*RefreshTokensRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -164,12 +200,16 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_GetProfile_Handler,
 		},
 		{
-			MethodName: "GetCredentials",
-			Handler:    _UserService_GetCredentials_Handler,
+			MethodName: "SendOtpEmail",
+			Handler:    _UserService_SendOtpEmail_Handler,
 		},
 		{
-			MethodName: "Login",
-			Handler:    _UserService_Login_Handler,
+			MethodName: "VerifyOtp",
+			Handler:    _UserService_VerifyOtp_Handler,
+		},
+		{
+			MethodName: "RefreshTokens",
+			Handler:    _UserService_RefreshTokens_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

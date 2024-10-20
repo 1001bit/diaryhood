@@ -35,22 +35,13 @@ services:
         build: ./services/user
         environment:
             PORT: ${SERVER_PORT}
+
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_PORT: ${POSTGRES_PORT}
             USER_POSTGRES_HOST: ${USER_POSTGRES_HOST}
-        networks:
-            - network
-        restart: always
-        depends_on:
-            - user-postgres
 
-    auth:
-        build: ./services/auth
-        environment:
-            PORT: ${SERVER_PORT}
-            USER_HOST: ${USER_HOST}
             EMAIL_HOST: ${EMAIL_HOST}
             OTP_REDIS_HOST: ${OTP_REDIS_HOST}
             REFRESH_REDIS_HOST: ${REFRESH_REDIS_HOST}
@@ -60,7 +51,9 @@ services:
             - network
         restart: always
         depends_on:
+            - user-postgres
             - otp-redis
+            - refresh-redis
 
     otp-redis:
         image: redis:7.4-alpine

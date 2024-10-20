@@ -4,41 +4,39 @@ import (
 	"context"
 	"log"
 
-	"github.com/1001bit/pathgoer/services/auth/accesstoken"
-	"github.com/1001bit/pathgoer/services/auth/authpb"
-	"github.com/1001bit/pathgoer/services/auth/userpb"
+	"github.com/1001bit/pathgoer/services/user/accesstoken"
+	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) VerifyOTP(ctx context.Context, req *authpb.VerifyOTPRequest) (*authpb.TokensResponse, error) {
+func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*userpb.TokensResponse, error) {
 	if !s.otpStorage.VerifyOTP(ctx, req.Email, req.Otp) {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
 	// Ask userservice for name by email
-	authResp, err := s.userclient.Login(ctx, &userpb.LoginRequest{
-		Email: req.Email,
-	})
+	username, err := s.userStore.Login(ctx, req.Email)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	access, err := accesstoken.Generate(authResp.Name)
+	access, err := accesstoken.Generate(username)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	refresh, err := s.uuidStorage.GenerateUUID(ctx, authResp.Name)
+	// TODO: Generate with userID instead
+	refresh, err := s.refreshStorage.GenerateUUID(ctx, username)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	return &authpb.TokensResponse{
-		Access:  access,
-		Refresh: refresh,
+	return &userpb.TokensResponse{
+		AccessJWT:   access,
+		RefreshUUID: refresh,
 	}, nil
 }

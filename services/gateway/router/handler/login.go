@@ -3,10 +3,11 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/authpb"
+	"github.com/1001bit/pathgoer/services/gateway/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,7 +21,7 @@ type OTPRequest struct {
 	Otp   string `json:"otp"`
 }
 
-func LoginEmailHandler(client authpb.AuthServiceClient) http.HandlerFunc {
+func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &LoginRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
@@ -29,11 +30,12 @@ func LoginEmailHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		resp, err := client.SendOTPEmail(r.Context(), &authpb.SendOTPEmailRequest{Login: req.Login})
+		resp, err := userclient.SendOtpEmail(r.Context(), &userpb.SendOtpEmailRequest{Login: req.Login})
 		if status.Code(err) == codes.NotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -42,7 +44,7 @@ func LoginEmailHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 	}
 }
 
-func LoginOTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
+func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &OTPRequest{}
 		err := json.NewDecoder(r.Body).Decode(req)
@@ -51,7 +53,7 @@ func LoginOTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		tokens, err := client.VerifyOTP(r.Context(), &authpb.VerifyOTPRequest{
+		tokens, err := userclient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
 			Email: req.Email,
 			Otp:   req.Otp,
 		})
@@ -63,7 +65,7 @@ func LoginOTPHandler(client authpb.AuthServiceClient) http.HandlerFunc {
 			return
 		}
 
-		setAuthCookies(w, tokens.Access, tokens.Refresh)
+		setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
 
 		w.WriteHeader(http.StatusOK)
 	}

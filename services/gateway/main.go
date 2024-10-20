@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/gateway/authpb"
 	"github.com/1001bit/pathgoer/services/gateway/grpcclient"
 	"github.com/1001bit/pathgoer/services/gateway/router"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
@@ -20,16 +19,8 @@ func main() {
 	}
 	userclient := userpb.NewUserServiceClient(conn)
 
-	// authclient
-	conn, err = grpcclient.New(os.Getenv("AUTH_HOST"), os.Getenv("PORT"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	authclient := authpb.NewAuthServiceClient(conn)
-	log.Println("authclient connected on " + os.Getenv("AUTH_HOST") + ":" + os.Getenv("PORT"))
-
 	// http server
-	r := router.New(userclient, authclient)
+	r := router.New(userclient)
 
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	log.Println("Listening on", addr)

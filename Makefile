@@ -32,19 +32,12 @@ protoc:
 	$(PROTOC) \
 	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
     --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
-	--go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
     protobuf/user.proto
-
-	@echo "\nGenerating auth protoc..."
-	$(PROTOC) \
-	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
-    --go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
-    protobuf/auth.proto
 
 	@echo "\nGenerating email protoc..."
 	$(PROTOC) \
 	--go_out=$(EMAIL_PATH) --go-grpc_out=$(EMAIL_PATH) \
-    --go_out=$(AUTH_PATH) --go-grpc_out=$(AUTH_PATH) \
+    --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
     protobuf/email.proto
 
 # Compile typescript files

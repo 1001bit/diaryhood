@@ -10,9 +10,6 @@ Microservices
     Storage 
         Rest server
 
-    Auth
-        gPRC server
-
     User
         gRPC server
 

@@ -3,10 +3,10 @@ package handler
 import (
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/gateway/authpb"
+	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
-func RefreshHandler(authclient authpb.AuthServiceClient) func(w http.ResponseWriter, r *http.Request) {
+func RefreshHandler(userclient userpb.UserServiceClient) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("refresh")
 		if err != nil {
@@ -14,13 +14,13 @@ func RefreshHandler(authclient authpb.AuthServiceClient) func(w http.ResponseWri
 			return
 		}
 
-		tokens, err := authclient.Refresh(r.Context(), &authpb.RefreshRequest{Refresh: cookie.Value})
+		tokens, err := userclient.RefreshTokens(r.Context(), &userpb.RefreshTokensRequest{RefreshUUID: cookie.Value})
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		setAuthCookies(w, tokens.Access, tokens.Refresh)
+		setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
 		w.WriteHeader(http.StatusOK)
 	}
 }

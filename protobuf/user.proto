@@ -5,11 +5,16 @@ package userpb;
 option go_package = "./userpb";
 
 service UserService {
+    // Profile
     rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {}
-    rpc GetEmailAndNameByLogin(GetCredentialsRequest) returns (GetCredentialsResponse) {}
-    rpc Login(LoginRequest) returns (LoginResponse) {}
+
+    // Auth
+    rpc SendOtpEmail(SendOtpEmailRequest) returns (SendOtpEmailResponse) {}
+    rpc VerifyOtp(VerifyOtpRequest) returns (TokensResponse) {}
+    rpc RefreshTokens(RefreshTokensRequest) returns (TokensResponse) {}
 }
 
+// GetProfile
 message GetProfileRequest {
     string name = 1;
 }
@@ -19,19 +24,28 @@ message GetProfileResponse {
     string date = 2;
 }
 
-message GetCredentialsRequest {
+// SendOTPEmail
+message SendOtpEmailRequest {
     string login = 1;
 }
 
-message GetCredentialsResponse {
-    string email = 1;
-    string name = 2;
-}
-
-message LoginRequest {
+message SendOtpEmailResponse {
     string email = 1;
 }
 
-message LoginResponse {
-    string name = 1;
+// VerifyOtp
+message VerifyOtpRequest {
+    string email = 1;
+    string otp = 2;
+}
+
+// RefreshTokens
+message RefreshTokensRequest {
+    string refreshUUID = 1;
+}
+
+// Tokens
+message TokensResponse {
+    string refreshUUID = 1;
+    string accessJWT = 2;
 }

@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/authpb"
 	"github.com/1001bit/pathgoer/services/gateway/router/handler"
 	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
@@ -16,7 +15,7 @@ import (
 	"github.com/go-chi/httprate"
 )
 
-func New(userclient userpb.UserServiceClient, authclient authpb.AuthServiceClient) *chi.Mux {
+func New(userclient userpb.UserServiceClient) *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 
@@ -49,10 +48,10 @@ func New(userclient userpb.UserServiceClient, authclient authpb.AuthServiceClien
 	r.Get("/profile/{name}", handler.ProfileHandler(userclient))
 
 	// Login API
-	r.Post("/login/email", handler.LoginEmailHandler(authclient))
-	r.Post("/login/otp", handler.LoginOTPHandler(authclient))
+	r.Post("/login/email", handler.LoginEmailHandler(userclient))
+	r.Post("/login/otp", handler.LoginOTPHandler(userclient))
 	// Refresh
-	r.Get("/auth/refresh", handler.RefreshHandler(authclient))
+	r.Get("/auth/refresh", handler.RefreshHandler(userclient))
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))
