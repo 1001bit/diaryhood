@@ -13,3 +13,17 @@ templ ErrorNotFound() {
 		</body>
 	</html>
 }
+
+templ ErrorInternal() {
+	<html lang="en">
+		<head>
+			@baseHead("500")
+		</head>
+		<body>
+			@nav("500")
+			<main>
+				<p>Something went wrong!</p>
+			</main>
+		</body>
+	</html>
+}

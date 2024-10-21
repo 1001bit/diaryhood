@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func HandleIdlessProfile(w http.ResponseWriter, r *http.Request) {
@@ -22,10 +25,14 @@ func ProfileHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 		name := r.PathValue("name")
 
 		response, err := userclient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
-		if err != nil {
-			// HACK: Handle both 404 and 500 errors
+		if status.Code(err) == codes.NotFound {
 			template.ErrorNotFound().Render(r.Context(), w)
 			w.WriteHeader(http.StatusNotFound)
+			return
+		} else if err != nil {
+			log.Println(err)
+			template.ErrorInternal().Render(r.Context(), w)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 

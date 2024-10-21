@@ -53,11 +53,13 @@ function requestEmail() {
 				setInputPlaceholder("one-time password");
 				showInfo("check your email");
 				break;
-			default:
-				// HACK: Handle both 404 and 500 errors
-				// Error
+			case 404:
 				setInputStyle("err");
 				showInfo("user not found");
+				break;
+			default:
+				setInputStyle("err");
+				showInfo("something went wrong");
 				break;
 		}
 	});
