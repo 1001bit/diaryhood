@@ -13,6 +13,7 @@
 [ ] Readme
 [ ] Doc that describes authentication flows
 [ ] User message broker instead of gRPC for emails
+[ ] Tests
 [ ] Authentication
     [X] Frontend
         [X] Auth box

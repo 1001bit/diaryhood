@@ -3,7 +3,7 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-let email = "";
+let sentEmail = false;
 loginInput.addEventListener("focus", () => {
     loginInput.removeAttribute("style");
 });
@@ -29,16 +29,18 @@ function requestEmail() {
     }).then((res) => {
         switch (res.status) {
             case 200:
-                res.json().then((data) => {
-                    email = data.email;
-                });
+                sentEmail = true;
                 setInputStyle("acc1");
                 setInputPlaceholder("one-time password");
                 showInfo("check your email");
                 break;
-            default:
+            case 404:
                 setInputStyle("err");
                 showInfo("user not found");
+                break;
+            default:
+                setInputStyle("err");
+                showInfo("something went wrong");
                 break;
         }
     });
@@ -50,7 +52,6 @@ function requestOTP() {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            email: email,
             otp: loginInput.value,
         }),
     }).then((res) => {
@@ -71,7 +72,7 @@ function inputLoginData() {
         return;
     }
     showInfo("...");
-    if (email === "") {
+    if (!sentEmail) {
         requestEmail();
     }
     else {

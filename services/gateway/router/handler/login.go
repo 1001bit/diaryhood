@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -17,8 +16,7 @@ type LoginRequest struct {
 }
 
 type OTPRequest struct {
-	Email string `json:"email"`
-	Otp   string `json:"otp"`
+	Otp string `json:"otp"`
 }
 
 func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
@@ -40,7 +38,7 @@ func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			return
 		}
 
-		fmt.Fprintf(w, `{"email":"%s"}`, resp.Email)
+		setTemporaryLoginCookies(w, resp.Email)
 	}
 }
 
@@ -53,8 +51,16 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			return
 		}
 
+		// Extract email from cookie
+		emailCookie, err := r.Cookie("email")
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		log.Println(emailCookie.Value)
+
 		tokens, err := userclient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
-			Email: req.Email,
+			Email: emailCookie.Value,
 			Otp:   req.Otp,
 		})
 		if status.Code(err) == codes.NotFound {
@@ -89,5 +95,16 @@ func setAuthCookies(w http.ResponseWriter, access, refresh string) {
 		HttpOnly: true,
 		Path:     "/auth/refresh",
 		Expires:  time.Now().Add(30 * 24 * time.Hour),
+	})
+}
+
+func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "email",
+		Value:    email,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: true,
+		Path:     "/login/otp",
 	})
 }

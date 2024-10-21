@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"log"
 
 	"github.com/1001bit/pathgoer/services/user/emailpb"
@@ -12,7 +13,9 @@ import (
 
 func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailRequest) (*userpb.SendOtpEmailResponse, error) {
 	creds, err := s.userStore.GetCredentials(ctx, req.Login)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		return nil, status.Error(codes.NotFound, "not found")
+	} else if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
