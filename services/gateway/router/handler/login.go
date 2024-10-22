@@ -57,7 +57,6 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-		log.Println(emailCookie.Value)
 
 		tokens, err := userclient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
 			Email: emailCookie.Value,
@@ -71,6 +70,7 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			return
 		}
 
+		removeTemporaryLoginCookies(w)
 		setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
 
 		w.WriteHeader(http.StatusOK)
@@ -99,6 +99,7 @@ func setAuthCookies(w http.ResponseWriter, access, refresh string) {
 }
 
 func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
+	// HACK: Also set temporaryId for better security
 	http.SetCookie(w, &http.Cookie{
 		Name:     "email",
 		Value:    email,
@@ -106,5 +107,17 @@ func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
 		Path:     "/login/otp",
+	})
+}
+
+func removeTemporaryLoginCookies(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "email",
+		Value:    "",
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: true,
+		Path:     "/",
+		MaxAge:   -1,
 	})
 }
