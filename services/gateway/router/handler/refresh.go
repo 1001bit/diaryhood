@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func RefreshHandler(userclient userpb.UserServiceClient) func(w http.ResponseWriter, r *http.Request) {
@@ -15,8 +17,12 @@ func RefreshHandler(userclient userpb.UserServiceClient) func(w http.ResponseWri
 		}
 
 		tokens, err := userclient.RefreshTokens(r.Context(), &userpb.RefreshTokensRequest{RefreshUUID: cookie.Value})
-		if err != nil {
+		if status.Code(err) == codes.Unauthenticated {
+			removeAuthCookies(w)
 			w.WriteHeader(http.StatusUnauthorized)
+			return
+		} else if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 

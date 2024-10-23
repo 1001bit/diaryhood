@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
 	"google.golang.org/grpc/codes"
@@ -77,27 +76,6 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	}
 }
 
-func setAuthCookies(w http.ResponseWriter, access, refresh string) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "access",
-		Value:    access,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
-		Path:     "/",
-	})
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh",
-		Value:    refresh,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
-		Path:     "/auth/refresh",
-		Expires:  time.Now().Add(30 * 24 * time.Hour),
-	})
-}
-
 func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
 	// HACK: Also set temporaryId for better security
 	http.SetCookie(w, &http.Cookie{
@@ -114,10 +92,8 @@ func removeTemporaryLoginCookies(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "email",
 		Value:    "",
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
 		Path:     "/",
 		MaxAge:   -1,
+		HttpOnly: true,
 	})
 }

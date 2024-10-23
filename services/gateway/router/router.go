@@ -32,7 +32,8 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	r.Use(chimw.RedirectSlashes)
 	r.Use(chimw.CleanPath)
 
-	// Paths
+	// Routes
+	// With JWT claims in context
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.InjectJwtClaims)
 
@@ -52,6 +53,8 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	r.Post("/login/otp", handler.LoginOTPHandler(userclient))
 	// Refresh
 	r.Get("/auth/refresh", handler.RefreshHandler(userclient))
+	// Logout
+	r.Get("/auth/logout", handler.LogoutHandler)
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))
