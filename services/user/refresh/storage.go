@@ -43,3 +43,7 @@ func (r *Storage) GenerateUUID(ctx context.Context, userID string) (string, erro
 
 	return uuid, r.redisClient.Set(ctx, "uuid:"+uuid, userID, expiration).Err()
 }
+
+func (r *Storage) DeleteUUID(ctx context.Context, uuid string) error {
+	return r.redisClient.Del(ctx, "uuid:"+uuid).Err()
+}

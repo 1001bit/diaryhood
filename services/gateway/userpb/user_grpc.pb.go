@@ -27,7 +27,8 @@ type UserServiceClient interface {
 	// Auth
 	SendOtpEmail(ctx context.Context, in *SendOtpEmailRequest, opts ...grpc.CallOption) (*SendOtpEmailResponse, error)
 	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*TokensResponse, error)
-	RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*TokensResponse, error)
+	RefreshTokens(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*TokensResponse, error)
+	Logout(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type userServiceClient struct {
@@ -65,9 +66,18 @@ func (c *userServiceClient) VerifyOtp(ctx context.Context, in *VerifyOtpRequest,
 	return out, nil
 }
 
-func (c *userServiceClient) RefreshTokens(ctx context.Context, in *RefreshTokensRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
+func (c *userServiceClient) RefreshTokens(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*TokensResponse, error) {
 	out := new(TokensResponse)
 	err := c.cc.Invoke(ctx, "/userpb.UserService/RefreshTokens", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) Logout(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/userpb.UserService/Logout", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +93,8 @@ type UserServiceServer interface {
 	// Auth
 	SendOtpEmail(context.Context, *SendOtpEmailRequest) (*SendOtpEmailResponse, error)
 	VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error)
-	RefreshTokens(context.Context, *RefreshTokensRequest) (*TokensResponse, error)
+	RefreshTokens(context.Context, *RefreshTokenRequest) (*TokensResponse, error)
+	Logout(context.Context, *RefreshTokenRequest) (*Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -100,8 +111,11 @@ func (UnimplementedUserServiceServer) SendOtpEmail(context.Context, *SendOtpEmai
 func (UnimplementedUserServiceServer) VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyOtp not implemented")
 }
-func (UnimplementedUserServiceServer) RefreshTokens(context.Context, *RefreshTokensRequest) (*TokensResponse, error) {
+func (UnimplementedUserServiceServer) RefreshTokens(context.Context, *RefreshTokenRequest) (*TokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshTokens not implemented")
+}
+func (UnimplementedUserServiceServer) Logout(context.Context, *RefreshTokenRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -171,7 +185,7 @@ func _UserService_VerifyOtp_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _UserService_RefreshTokens_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RefreshTokensRequest)
+	in := new(RefreshTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -183,7 +197,25 @@ func _UserService_RefreshTokens_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/userpb.UserService/RefreshTokens",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).RefreshTokens(ctx, req.(*RefreshTokensRequest))
+		return srv.(UserServiceServer).RefreshTokens(ctx, req.(*RefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userpb.UserService/Logout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Logout(ctx, req.(*RefreshTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -210,6 +242,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RefreshTokens",
 			Handler:    _UserService_RefreshTokens_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _UserService_Logout_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

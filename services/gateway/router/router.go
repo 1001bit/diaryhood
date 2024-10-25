@@ -54,7 +54,7 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	// Refresh
 	r.Get("/auth/refresh", handler.RefreshHandler(userclient))
 	// Logout
-	r.Get("/auth/logout", handler.LogoutHandler)
+	r.Get("/auth/logout", handler.LogoutHandler(userclient))
 
 	// Storage
 	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))

@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokensRequest) (*userpb.TokensResponse, error) {
+func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokenRequest) (*userpb.TokensResponse, error) {
 	userID, uuid, err := s.refreshStorage.GetUserIDAndRefresh(ctx, req.RefreshUUID)
 	if err == redis.Nil {
 		return nil, status.Error(codes.Unauthenticated, "could not refresh")

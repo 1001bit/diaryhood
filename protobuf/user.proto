@@ -11,7 +11,8 @@ service UserService {
     // Auth
     rpc SendOtpEmail(SendOtpEmailRequest) returns (SendOtpEmailResponse) {}
     rpc VerifyOtp(VerifyOtpRequest) returns (TokensResponse) {}
-    rpc RefreshTokens(RefreshTokensRequest) returns (TokensResponse) {}
+    rpc RefreshTokens(RefreshTokenRequest) returns (TokensResponse) {}
+    rpc Logout(RefreshTokenRequest) returns (Empty) {}
 }
 
 // GetProfile
@@ -40,7 +41,7 @@ message VerifyOtpRequest {
 }
 
 // RefreshTokens
-message RefreshTokensRequest {
+message RefreshTokenRequest {
     string refreshUUID = 1;
 }
 
@@ -49,3 +50,6 @@ message TokensResponse {
     string refreshUUID = 1;
     string accessJWT = 2;
 }
+
+// Empty
+message Empty {}

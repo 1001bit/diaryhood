@@ -25,7 +25,7 @@
         [X] Tokens Refresh
         [X] Email send
     Additional:
-        [ ] Logout
+        [X] Logout
         [ ] Username change
 
 [X] Doc that describes authentication flows
