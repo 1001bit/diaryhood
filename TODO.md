@@ -29,7 +29,7 @@
         [ ] Username change
 
 [X] Doc that describes authentication flows
-[ ] Readme
+[X] Readme
 [ ] Tests
 
 [ ] Email service:

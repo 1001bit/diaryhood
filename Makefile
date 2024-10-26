@@ -8,13 +8,12 @@ TSCOMPILER = ./tscompiler
 
 TS_PATH = typescript
 
-AUTH_PATH = services/auth
 GATEWAY_PATH = services/gateway
 USER_PATH = services/user
 EMAIL_PATH = services/email
 
-# Do all
-all: templ tscompile build up
+# Build and start
+all: build up
 
 # Build the Docker containers
 build:
