@@ -28,8 +28,10 @@
         [X] Logout
         [ ] Username change
 
-[X] Doc that describes authentication flows
-[X] Readme
+[X] Docs
+    [X] Authentication flows
+    [X] Readme
+
 [ ] Tests
 
 [ ] Email service:
