@@ -1,15 +1,19 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 )
 
-func removeCookie(w http.ResponseWriter, r *http.Request, name string) {
-	// FIXME: Make It WORK
-	c, err := r.Cookie(name)
+func removeCookie(w http.ResponseWriter, r *http.Request, name string, path string) {
+	cookie, err := r.Cookie(name)
 	if err == nil {
-		c.Value = ""
-		c.MaxAge = 0
-		http.SetCookie(w, c)
+		log.Println(name, cookie.Value, cookie.Path)
+		http.SetCookie(w, &http.Cookie{
+			Name:   name,
+			Value:  "",
+			Path:   path,
+			MaxAge: -1,
+		})
 	}
 }

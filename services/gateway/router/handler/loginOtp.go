@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -10,37 +9,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-type LoginRequest struct {
-	Login string `json:"login"`
-}
-
-type OTPRequest struct {
-	Otp string `json:"otp"`
-}
-
-func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		req := &LoginRequest{}
-		err := json.NewDecoder(r.Body).Decode(req)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		resp, err := userclient.SendOtpEmail(r.Context(), &userpb.SendOtpEmailRequest{Login: req.Login})
-		if status.Code(err) == codes.NotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		} else if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		setTemporaryLoginCookies(w, resp.Email)
-	}
-}
 
 func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +38,7 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			return
 		}
 
-		removeCookie(w, r, "email")
+		removeCookie(w, r, "email", "/login/otp")
 		setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
 
 		w.WriteHeader(http.StatusOK)
@@ -93,19 +61,7 @@ func setAuthCookies(w http.ResponseWriter, access, refresh string) {
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
-		Path:     "/auth/",
+		Path:     "/auth",
 		Expires:  time.Now().Add(30 * 24 * time.Hour),
-	})
-}
-
-func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
-	// HACK: Also set temporaryId for better security
-	http.SetCookie(w, &http.Cookie{
-		Name:     "email",
-		Value:    email,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
-		Path:     "/login/otp",
 	})
 }

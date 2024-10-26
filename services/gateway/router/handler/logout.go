@@ -12,8 +12,9 @@ func LogoutHandler(userclient userpb.UserServiceClient) func(w http.ResponseWrit
 		if err == nil {
 			userclient.Logout(r.Context(), &userpb.RefreshTokenRequest{RefreshUUID: cookie.Value})
 		}
-		removeCookie(w, r, "access")
-		removeCookie(w, r, "refresh")
-		// http.Redirect(w, r, "/", http.StatusSeeOther)
+
+		removeCookie(w, r, "refresh", "/auth")
+		removeCookie(w, r, "access", "/")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

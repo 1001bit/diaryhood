@@ -18,8 +18,8 @@ func RefreshHandler(userclient userpb.UserServiceClient) func(w http.ResponseWri
 
 		tokens, err := userclient.RefreshTokens(r.Context(), &userpb.RefreshTokenRequest{RefreshUUID: cookie.Value})
 		if status.Code(err) == codes.Unauthenticated {
-			removeCookie(w, r, "access")
-			removeCookie(w, r, "refresh")
+			removeCookie(w, r, "refresh", "/auth")
+			removeCookie(w, r, "access", "/")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		} else if err != nil {

@@ -35,3 +35,4 @@
 [ ] Email service:
     [X] Dummy email service with gRPC
     [ ] Dummy email service with message broker
+    [ ] Email service that sends real emails
