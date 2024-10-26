@@ -17,24 +17,21 @@
         [X] Request send
         [X] Responses handle
         [X] OTP Request send
-    [X] Backend
+    [ ] Backend
         [X] Login request receive 
         [X] OTP generation and cachying
+        [ ] OTP send to client via ext. service
         [X] JWT Generation
         [X] JWT Verification
         [X] Tokens Refresh
-        [X] Email send
-    Additional:
         [X] Logout
         [ ] Username change
+
+[ ] User notification system via external services (email, telegram, etc.)
 
 [X] Docs
     [X] Authentication flows
     [X] Readme
 
 [ ] Tests
-
-[ ] Email service:
-    [X] Dummy email service with gRPC
-    [ ] Dummy email service with message broker
-    [ ] Email service that sends real emails
+[ ] Logs

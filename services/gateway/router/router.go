@@ -57,7 +57,7 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	r.Get("/auth/logout", handler.LogoutHandler(userclient))
 
 	// Storage
-	storageClient := storageclient.MustNew(os.Getenv("STORAGE_HOST"), os.Getenv("PORT"))
+	storageClient := storageclient.MustNew("storage", os.Getenv("PORT"))
 	r.Get("/storage/*", http.StripPrefix("/storage", storageClient.ReverseProxy()).ServeHTTP)
 	r.Get("/favicon.ico", storageClient.ReverseProxy())
 

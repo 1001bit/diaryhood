@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// userclient
-	conn, err := grpcclient.New(os.Getenv("USER_HOST"), os.Getenv("PORT"))
+	conn, err := grpcclient.New("user", os.Getenv("PORT"))
 	if err != nil {
 		log.Fatal(err)
 	}

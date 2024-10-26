@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/1001bit/pathgoer/services/user/emailpb"
+	"github.com/1001bit/pathgoer/services/user/usermodel"
 	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -14,7 +14,10 @@ import (
 func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailRequest) (*userpb.SendOtpEmailResponse, error) {
 	creds, err := s.userStore.GetCredentials(ctx, req.Login)
 	if err == sql.ErrNoRows {
-		return nil, status.Error(codes.NotFound, "not found")
+		creds = &usermodel.Credentials{
+			Email: req.Login,
+			Name:  "guest",
+		}
 	} else if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
@@ -27,15 +30,8 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	// send otp by email
-	_, err = s.emailClient.SendOTP(ctx, &emailpb.OTPRequest{
-		Email: creds.Email,
-		Otp:   otp,
-		Name:  creds.Name,
-	})
-	if err != nil {
-		return nil, err
-	}
+	// TODO: send otp to client
+	log.Println(creds.Email, creds.Name, otp)
 
 	// respond with email
 	return &userpb.SendOtpEmailResponse{

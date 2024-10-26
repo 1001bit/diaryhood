@@ -10,7 +10,6 @@ TS_PATH = typescript
 
 GATEWAY_PATH = services/gateway
 USER_PATH = services/user
-EMAIL_PATH = services/email
 
 # Build and start
 all: build up
@@ -32,12 +31,6 @@ protoc:
 	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
     --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
     protobuf/user.proto
-
-	@echo "\nGenerating email protoc..."
-	$(PROTOC) \
-	--go_out=$(EMAIL_PATH) --go-grpc_out=$(EMAIL_PATH) \
-    --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
-    protobuf/email.proto
 
 # Compile typescript files
 tscompile:

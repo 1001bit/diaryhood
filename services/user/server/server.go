@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/1001bit/pathgoer/services/user/emailpb"
 	"github.com/1001bit/pathgoer/services/user/otp"
 	"github.com/1001bit/pathgoer/services/user/refresh"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
@@ -14,14 +13,12 @@ type Server struct {
 	userStore      *usermodel.UserStore
 	otpStorage     *otp.Storage
 	refreshStorage *refresh.Storage
-	emailClient    emailpb.EmailServiceClient
 }
 
-func New(userStore *usermodel.UserStore, otpStorage *otp.Storage, refreshStorage *refresh.Storage, emailClient emailpb.EmailServiceClient) *Server {
+func New(userStore *usermodel.UserStore, otpStorage *otp.Storage, refreshStorage *refresh.Storage) *Server {
 	return &Server{
 		userStore:      userStore,
 		otpStorage:     otpStorage,
 		refreshStorage: refreshStorage,
-		emailClient:    emailClient,
 	}
 }

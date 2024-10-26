@@ -3,9 +3,6 @@ services:
         build: ./services/gateway
         environment:
             PORT: ${SERVER_PORT}
-            STORAGE_HOST: ${STORAGE_HOST}
-            USER_HOST: ${USER_HOST}
-            AUTH_HOST: ${AUTH_HOST}
             JWT_SECRET: ${JWT_SECRET}
         ports:
             - 80:${SERVER_PORT}
@@ -23,14 +20,6 @@ services:
             - network
         restart: always
 
-    email:
-        build: ./services/email
-        environment:
-            PORT: ${SERVER_PORT}
-        networks:
-            - network
-        restart: always
-
     user:
         build: ./services/user
         environment:
@@ -40,11 +29,7 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_PORT: ${POSTGRES_PORT}
-            USER_POSTGRES_HOST: ${USER_POSTGRES_HOST}
 
-            EMAIL_HOST: ${EMAIL_HOST}
-            OTP_REDIS_HOST: ${OTP_REDIS_HOST}
-            REFRESH_REDIS_HOST: ${REFRESH_REDIS_HOST}
             REDIS_PORT: ${REDIS_PORT}
             JWT_SECRET: ${JWT_SECRET}
         networks:
@@ -74,16 +59,16 @@ services:
     user-postgres:
         image: postgres:17-alpine
         environment:
-            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_USER: user
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_DB: database
         networks:
             - network
         volumes:
             - user-postgres:/var/lib/postgresql/data
             - ./user-postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
         healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+            test: [ "CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -101,7 +86,7 @@ services:
         image: rediscommander/redis-commander:latest
         container_name: redis-commander
         environment:
-            - REDIS_HOSTS=local:${REFRESH_REDIS_HOST}:${REDIS_PORT},local:${OTP_REDIS_HOST}:${REDIS_PORT}
+            - REDIS_HOSTS=local:refresh-redis:${REDIS_PORT},local:otp-redis:${REDIS_PORT}
         ports:
             - "8081:8081"
         networks:

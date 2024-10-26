@@ -22,7 +22,7 @@ func NewFromEnv() (*sql.DB, error) {
 		User: os.Getenv("POSTGRES_USER"),
 		Name: os.Getenv("POSTGRES_DB"),
 		Pass: os.Getenv("POSTGRES_PASSWORD"),
-		Host: os.Getenv("USER_POSTGRES_HOST"),
+		Host: "user-postgres",
 		Port: os.Getenv("POSTGRES_PORT"),
 	}
 
