@@ -46,6 +46,7 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 }
 
 func setAuthCookies(w http.ResponseWriter, access, refresh string) {
+	// INSECURE
 	http.SetCookie(w, &http.Cookie{
 		Name:     "access",
 		Value:    access,
@@ -55,6 +56,7 @@ func setAuthCookies(w http.ResponseWriter, access, refresh string) {
 		Path:     "/",
 	})
 
+	// INSECURE
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh",
 		Value:    refresh,

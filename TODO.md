@@ -11,7 +11,11 @@
     [X] gRPC client
 [X] Compile typescript
 
-[X] Authentication
+[X] Docs
+    [X] Authentication flows
+    [X] Readme
+
+[ ] SignIn/SignUp
     [X] Frontend
         [X] Auth box
         [X] Request send
@@ -20,18 +24,24 @@
     [ ] Backend
         [X] Login request receive 
         [X] OTP generation and cachying
-        [ ] OTP send to client via ext. service
-        [X] JWT Generation
-        [X] JWT Verification
+        [ ] OTP send to client
+            [X] Dummy log print
+            [ ] Email
+        [X] Tokens set
+
+[ ] Authentication
+        [X] AccessJWT Gen
+        [X] AccessJWT verify
+        [X] RefreshUUID Gen
         [X] Tokens Refresh
         [X] Logout
         [ ] Username change
 
-[ ] User notification system via external services (email, telegram, etc.)
-
-[X] Docs
-    [X] Authentication flows
-    [X] Readme
+[ ] User notification system via external services
+    [ ] Email 
+        [X] Microservice
+        [ ] RabbitMQ
+    [ ] Telegram
 
 [ ] Tests
 [ ] Logs

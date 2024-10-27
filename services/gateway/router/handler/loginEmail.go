@@ -43,6 +43,7 @@ func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 
 func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
 	// HACK: Also set temporaryId for better security
+	// INSECURE
 	http.SetCookie(w, &http.Cookie{
 		Name:     "email",
 		Value:    email,

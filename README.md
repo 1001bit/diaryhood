@@ -38,7 +38,7 @@ You can see other commands in the Makefile
 
 **Client:** HTML, CSS, Javascript <- Typescript
 
-**Server:** Docker, Golang, PostgreSQL, Redis, gRPC, etc.
+**Server:** Docker, Golang, PostgreSQL, Redis, gRPC, RabbitMQ etc.
 
 
 ## Documentation

@@ -10,5 +10,6 @@ import (
 func New(host, port string) (*grpc.ClientConn, error) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 
+	// INSECURE
 	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
