@@ -43,10 +43,8 @@ services:
             - network
         restart: always
         depends_on:
-            - user-postgres
-            - otp-redis
-            - refresh-redis
-            - email-rabbitmq
+            user-postgres:
+                condition: service_healthy
 
     otp-redis:
         image: redis:7.4-alpine
@@ -100,9 +98,6 @@ services:
         networks:
             - network
         restart: always
-        depends_on:
-            - otp-redis
-            - refresh-redis
 
     # EMAIL
     email:
@@ -110,6 +105,9 @@ services:
         environment:
             MG_DOMAIN: ${MG_DOMAIN}
             MG_API_KEY: ${MG_API_KEY}
+
+            RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_PASS: ${RABBITMQ_DEFAULT_PASS}
         networks:
             - network
         restart: always

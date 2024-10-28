@@ -2,7 +2,10 @@ module github.com/1001bit/pathgoer/services/email
 
 go 1.23.2
 
-require github.com/mailgun/mailgun-go/v4 v4.16.0
+require (
+	github.com/mailgun/mailgun-go/v4 v4.16.0
+	github.com/rabbitmq/amqp091-go v1.10.0
+)
 
 require (
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect

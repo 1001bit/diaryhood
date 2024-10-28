@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"net/http"
-	"os"
 
 	"github.com/mailgun/mailgun-go/v4"
 )
@@ -13,8 +12,8 @@ type Sender struct {
 	mg mailgun.Mailgun
 }
 
-func NewSender() *Sender {
-	mg := mailgun.NewMailgun(os.Getenv("MG_DOMAIN"), os.Getenv("MG_API_KEY"))
+func New(domain, apiKey string) *Sender {
+	mg := mailgun.NewMailgun(domain, apiKey)
 	// INSECURE
 	mg.Client().Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // Disable verification

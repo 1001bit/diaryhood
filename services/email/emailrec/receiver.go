@@ -1,4 +1,4 @@
-package emailpub
+package emailrec
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
-type Publisher struct {
+type Receiver struct {
 	conn *amqp091.Connection
 	ch   *amqp091.Channel
 	q    amqp091.Queue
 }
 
-func NewPublisher(user, pass, host, port string) (*Publisher, error) {
+func NewReceiver(user, pass, host, port string) (*Receiver, error) {
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 	log.Println("connecting to rabbitmq on", connStr)
 
@@ -32,16 +32,28 @@ func NewPublisher(user, pass, host, port string) (*Publisher, error) {
 		return nil, err
 	}
 
-	return &Publisher{
+	return &Receiver{
 		conn: conn,
 		ch:   ch,
 		q:    q,
 	}, nil
 }
 
-func (p *Publisher) Close() {
-	p.ch.Close()
-	p.conn.Close()
+func (r *Receiver) Close() {
+	r.ch.Close()
+	r.conn.Close()
+}
+
+func (r *Receiver) Consume() (<-chan amqp091.Delivery, error) {
+	return r.ch.Consume(
+		r.q.Name, // queue
+		"",       // consumer
+		false,    // auto-ack
+		false,    // exclusive
+		false,    // no-local
+		false,    // no-wait
+		nil,      // args
+	)
 }
 
 func declareQueue(ch *amqp091.Channel) (amqp091.Queue, error) {

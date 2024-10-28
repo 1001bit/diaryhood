@@ -15,18 +15,21 @@
     [X] Authentication flows
     [X] Readme
 
-[ ] SignIn/SignUp
+[X] Email Service
+    [X] Microservice
+    [X] RabbitMQ
+
+[X] SignIn/SignUp
     [X] Frontend
         [X] Auth box
         [X] Request send
         [X] Responses handle
         [X] OTP Request send
-    [ ] Backend
+    [X] Backend
         [X] Login request receive 
         [X] OTP generation and cachying
-        [ ] OTP send to client
-            [X] Dummy log print
-            [ ] Email
+        [X] OTP send to client
+            [X] Email
         [X] Tokens set
 
 [ ] Authentication
@@ -37,11 +40,6 @@
         [X] Logout
         [ ] Username change
 
-[ ] User notification system via external services
-    [ ] Email 
-        [X] Microservice
-        [ ] RabbitMQ
-    [ ] Telegram
-
+[ ] Handle inter-service connection errors
 [ ] Tests
 [ ] Logs
