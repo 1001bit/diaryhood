@@ -5,9 +5,10 @@ DOCKER_COMPOSE = docker compose
 TEMPL = templ
 PROTOC = protoc
 TSCOMPILER = python3 ./typescript/tscompiler.py
+SHARED = python3 ./shared/shared.py
 
 TS_PATH = typescript
-
+SHARED_PATH = shared
 GATEWAY_PATH = services/gateway
 USER_PATH = services/user
 
@@ -36,6 +37,11 @@ protoc:
 tscompile:
 	@echo "\nCompiling typescript files..."
 	$(TSCOMPILER) $(TS_PATH)
+
+# Copy shared files to their destinations
+shared:
+	@echo "\nCopying shared go files..."
+	$(SHARED) $(SHARED_PATH)
 
 # Start the Docker containers
 up:

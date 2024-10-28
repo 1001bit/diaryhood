@@ -38,9 +38,9 @@
         [X] RefreshUUID Gen
         [X] Tokens Refresh
         [X] Logout
-        [] Username change
+        [ ] Username change
 
-[ ] Shared code
+[X] Shared code
 [ ] Handle inter-service connection errors
 [ ] Tests
 [ ] Logs

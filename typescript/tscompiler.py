@@ -33,13 +33,14 @@ def recursive_compile_in(root_path):
 
 def main():
     import sys
-    # Get the list of paths from command line arguments
-    paths = sys.argv[1:]
-    # Create a ThreadPoolExecutor to handle concurrent execution of compilation for each path
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [executor.submit(recursive_compile_in, path) for path in paths]
-        # Wait for all tasks to complete
-        concurrent.futures.wait(futures)
+    # Get the root path from command line arguments
+    if len(sys.argv) != 2:
+        print("Please provide exactly one directory path as an argument.")
+        sys.exit(1)
+    
+    root_path = sys.argv[1]
+    # Recursively compile TypeScript configurations inside the provided directory
+    recursive_compile_in(root_path)
 
 if __name__ == "__main__":
     main()
