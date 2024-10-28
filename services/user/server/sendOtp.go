@@ -31,7 +31,7 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 	}
 
 	// send otp to rabbitmq queue
-	err = s.emailpub.SendOTP(ctx, creds.Email, creds.Name, otp)
+	err = s.emailrmq.SendOTP(ctx, creds.Email, creds.Name, otp)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")

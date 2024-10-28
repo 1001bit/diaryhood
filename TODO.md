@@ -32,13 +32,13 @@
             [X] Email
         [X] Tokens set
 
-[ ] Authentication
+[X] Authentication
         [X] AccessJWT Gen
         [X] AccessJWT verify
         [X] RefreshUUID Gen
         [X] Tokens Refresh
         [X] Logout
-        [ ] Username change
+        [] Username change
 
 [ ] Handle inter-service connection errors
 [ ] Tests

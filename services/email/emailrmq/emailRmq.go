@@ -1,4 +1,4 @@
-package emailrec
+package emailrmq
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
-type Receiver struct {
+type EmailRmq struct {
 	conn *amqp091.Connection
 	ch   *amqp091.Channel
 	q    amqp091.Queue
 }
 
-func NewReceiver(user, pass, host, port string) (*Receiver, error) {
+func New(user, pass, host, port string) (*EmailRmq, error) {
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 	log.Println("connecting to rabbitmq on", connStr)
 
@@ -27,36 +27,24 @@ func NewReceiver(user, pass, host, port string) (*Receiver, error) {
 		return nil, err
 	}
 
-	q, err := declareQueue(ch)
+	q, err := declareEmailQueue(ch)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Receiver{
+	return &EmailRmq{
 		conn: conn,
 		ch:   ch,
 		q:    q,
 	}, nil
 }
 
-func (r *Receiver) Close() {
-	r.ch.Close()
-	r.conn.Close()
+func (rmq *EmailRmq) Close() {
+	rmq.ch.Close()
+	rmq.conn.Close()
 }
 
-func (r *Receiver) Consume() (<-chan amqp091.Delivery, error) {
-	return r.ch.Consume(
-		r.q.Name, // queue
-		"",       // consumer
-		false,    // auto-ack
-		false,    // exclusive
-		false,    // no-local
-		false,    // no-wait
-		nil,      // args
-	)
-}
-
-func declareQueue(ch *amqp091.Channel) (amqp091.Queue, error) {
+func declareEmailQueue(ch *amqp091.Channel) (amqp091.Queue, error) {
 	return ch.QueueDeclare(
 		"email", // name
 		false,   // durable

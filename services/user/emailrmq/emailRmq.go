@@ -1,4 +1,4 @@
-package emailpub
+package emailrmq
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
-type Publisher struct {
+type EmailRmq struct {
 	conn *amqp091.Connection
 	ch   *amqp091.Channel
 	q    amqp091.Queue
 }
 
-func NewPublisher(user, pass, host, port string) (*Publisher, error) {
+func New(user, pass, host, port string) (*EmailRmq, error) {
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, pass, host, port)
 	log.Println("connecting to rabbitmq on", connStr)
 
@@ -27,24 +27,24 @@ func NewPublisher(user, pass, host, port string) (*Publisher, error) {
 		return nil, err
 	}
 
-	q, err := declareQueue(ch)
+	q, err := declareEmailQueue(ch)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Publisher{
+	return &EmailRmq{
 		conn: conn,
 		ch:   ch,
 		q:    q,
 	}, nil
 }
 
-func (p *Publisher) Close() {
-	p.ch.Close()
-	p.conn.Close()
+func (rmq *EmailRmq) Close() {
+	rmq.ch.Close()
+	rmq.conn.Close()
 }
 
-func declareQueue(ch *amqp091.Channel) (amqp091.Queue, error) {
+func declareEmailQueue(ch *amqp091.Channel) (amqp091.Queue, error) {
 	return ch.QueueDeclare(
 		"email", // name
 		false,   // durable
