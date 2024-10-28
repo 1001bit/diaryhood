@@ -14,7 +14,7 @@ type Sender struct {
 }
 
 func NewSender() *Sender {
-	mg := mailgun.NewMailgun(os.Getenv("MG_DOMAIN"), os.Getenv("MG_API"))
+	mg := mailgun.NewMailgun(os.Getenv("MG_DOMAIN"), os.Getenv("MG_API_KEY"))
 	// INSECURE
 	mg.Client().Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // Disable verification

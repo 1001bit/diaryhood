@@ -35,6 +35,10 @@ services:
 
             REDIS_PORT: ${REDIS_PORT}
             JWT_SECRET: ${JWT_SECRET}
+
+            RABBITMQ_USER: ${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_PASS: ${RABBITMQ_DEFAULT_PASS}
+            RABBITMQ_PORT: ${RABBITMQ_PORT}
         networks:
             - network
         restart: always
@@ -42,6 +46,7 @@ services:
             - user-postgres
             - otp-redis
             - refresh-redis
+            - email-rabbitmq
 
     otp-redis:
         image: redis:7.4-alpine
@@ -89,7 +94,7 @@ services:
         image: rediscommander/redis-commander:latest
         container_name: redis-commander
         environment:
-            - REDIS_HOSTS=local:refresh-redis:${REDIS_PORT},local:otp-redis:${REDIS_PORT}
+            REDIS_HOSTS: local:refresh-redis:${REDIS_PORT},local:otp-redis:${REDIS_PORT}
         ports:
             - "8081:8081"
         networks:
@@ -104,7 +109,7 @@ services:
         build: ./services/email
         environment:
             MG_DOMAIN: ${MG_DOMAIN}
-            MG_API: ${MG_API}
+            MG_API_KEY: ${MG_API_KEY}
         networks:
             - network
         restart: always
@@ -116,8 +121,8 @@ services:
         networks:
             - network
         environment:
-            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-            - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
         restart: always
 
 networks:

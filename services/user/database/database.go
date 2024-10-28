@@ -27,7 +27,7 @@ func NewFromEnv() (*sql.DB, error) {
 	}
 
 	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.Host, config.User, config.Pass, config.Name, config.Port)
-	log.Println(connStr)
+	log.Println("connecting to postgreSQL on", connStr)
 
 	return sql.Open("postgres", connStr)
 }
