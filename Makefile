@@ -4,7 +4,7 @@
 DOCKER_COMPOSE = docker compose
 TEMPL = templ
 PROTOC = protoc
-TSCOMPILER = ./typescript/tscompiler
+TSCOMPILER = python3 ./typescript/tscompiler.py
 
 TS_PATH = typescript
 

@@ -40,6 +40,7 @@
         [X] Logout
         [] Username change
 
+[ ] Shared code
 [ ] Handle inter-service connection errors
 [ ] Tests
 [ ] Logs

@@ -9,6 +9,7 @@ a productivity app made to gamify process of doing something for a long period o
 ## Environment Variables
 
 To run this project, you will need to create your own .env file based on .env.example file
+
 ## Run Locally
 
 To run you need docker
