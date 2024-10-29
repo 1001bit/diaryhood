@@ -1,4 +1,6 @@
 
+[![wakatime](https://wakatime.com/badge/user/c9cde2e7-6a73-45c1-ae59-56a7fc0f5679/project/9367de2a-f41b-4fa0-be3e-ac72ea56ceae.svg)](https://wakatime.com/badge/user/c9cde2e7-6a73-45c1-ae59-56a7fc0f5679/project/9367de2a-f41b-4fa0-be3e-ac72ea56ceae)
+
 # PATHGOER
 
 a productivity app made to gamify process of doing something for a long period of time
