@@ -42,9 +42,6 @@ services:
         networks:
             - network
         restart: always
-        depends_on:
-            user-postgres:
-                condition: service_healthy
 
     otp-redis:
         image: redis:7.4-alpine
@@ -80,25 +77,6 @@ services:
             retries: 5
             start_period: 30s
 
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
-        networks:
-            - network
-
-    redis-commander:
-        image: rediscommander/redis-commander:latest
-        container_name: redis-commander
-        environment:
-            REDIS_HOSTS: local:refresh-redis:${REDIS_PORT},local:otp-redis:${REDIS_PORT}
-        ports:
-            - "8081:8081"
-        networks:
-            - network
-        restart: always
-
     # EMAIL
     email:
         build: ./services/email
@@ -121,6 +99,26 @@ services:
         environment:
             RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
             RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+        restart: always
+
+    # ADMIN
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+        networks:
+            - network
+
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        container_name: redis-commander
+        environment:
+            REDIS_HOSTS: local:refresh-redis:${REDIS_PORT},local:otp-redis:${REDIS_PORT}
+        ports:
+            - "8081:8081"
+        networks:
+            - network
         restart: always
 
 networks:

@@ -41,6 +41,6 @@
         [ ] Username change
 
 [X] Shared code
-[ ] Handle inter-service connection errors
+[X] Handle RabbitMQ reconnection
 [ ] Tests
 [ ] Logs

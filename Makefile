@@ -39,7 +39,7 @@ tscompile:
 	$(TSCOMPILER) $(TS_PATH)
 
 # Copy shared files to their destinations
-shared:
+copyshared:
 	@echo "\nCopying shared go files..."
 	$(SHARED) $(SHARED_PATH)
 

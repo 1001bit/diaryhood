@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/1001bit/pathgoer/services/user/usermodel"
@@ -31,7 +32,7 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 	}
 
 	// send otp to rabbitmq queue
-	err = s.emailrmq.SendOTP(ctx, creds.Email, creds.Name, otp)
+	err = s.amqpConn.Publish("email", fmt.Sprintf("%s %s %s", creds.Email, creds.Name, otp))
 	if err != nil {
 		log.Println(err)
 		return nil, status.Error(codes.Internal, "an error occurred")
