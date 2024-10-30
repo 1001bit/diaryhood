@@ -101,6 +101,37 @@ services:
             RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
         restart: always
 
+    # LOGGING
+    grafana:
+        image: grafana/grafana
+        ports:
+            - 3000:3000
+        volumes:
+            - ./config/grafana-sources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
+        networks:
+            - network
+
+    loki:
+        image: grafana/loki
+        command: -config.file=/etc/loki/local-config.yaml
+        volumes:
+            - loki:/loki
+        ports:
+            - 3100:3100
+        networks:
+            - network
+
+    promtail:
+        image: grafana/promtail
+        volumes:
+            - ./config/promtail.yml:/etc/promtail/config.yaml:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+        command: -config.file=/etc/promtail/config.yaml
+        networks:
+            - network
+        depends_on:
+            - loki
+
     # ADMIN
     adminer:
         image: adminer
@@ -129,3 +160,4 @@ volumes:
     user-postgres: null
     otp-redis: null
     refresh-redis: null
+    loki: null
