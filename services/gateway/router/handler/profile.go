@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/template"
@@ -30,7 +29,6 @@ func ProfileHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else if err != nil {
-			log.Println(err)
 			template.ErrorInternal().Render(r.Context(), w)
 			w.WriteHeader(http.StatusInternalServerError)
 			return

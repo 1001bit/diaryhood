@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
@@ -32,7 +31,6 @@ func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else if err != nil {
-			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

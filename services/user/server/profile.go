@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"database/sql"
-	"log"
+	"log/slog"
 
 	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc/codes"
@@ -16,7 +16,7 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) 
 	if err == sql.ErrNoRows {
 		return nil, status.Error(codes.NotFound, "not found")
 	} else if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to get profile")
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 

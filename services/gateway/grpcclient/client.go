@@ -2,7 +2,7 @@ package grpcclient
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -10,7 +10,8 @@ import (
 
 func New(host, port string) (*grpc.ClientConn, error) {
 	addr := fmt.Sprintf("%s:%s", host, port)
-	log.Println("Connecting to grpc server on", addr)
+
+	slog.With("addr", addr).Info("Connecting to gRPC server")
 
 	// INSECURE
 	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))

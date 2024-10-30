@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net"
 	"os"
 
@@ -16,6 +16,10 @@ import (
 	"google.golang.org/grpc"
 )
 
+func init() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+}
+
 func main() {
 	// start database
 	db, err := database.NewFromEnv(database.Config{
@@ -26,7 +30,8 @@ func main() {
 		Port: os.Getenv("POSTGRES_PORT"),
 	})
 	if err != nil {
-		log.Fatal("err starting database:", err)
+		slog.With("err", err).Error("Failed to connect to database")
+		return
 	}
 	defer db.Close()
 
@@ -46,13 +51,18 @@ func main() {
 	// start tcp listener
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("PORT")))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		slog.With("err", err).With("port", os.Getenv("PORT")).Error("Failed to listen to TCP")
+		return
 	}
 
 	// create grpc server
 	grpcServer := grpc.NewServer()
 	userpb.RegisterUserServiceServer(grpcServer, server.New(userstore, otpStorage, refreshStorage, amqpConn))
 
-	log.Println("gRPC server listening on", lis.Addr())
-	log.Fatal(grpcServer.Serve(lis))
+	// start grpc server
+	slog.With("addr", lis.Addr()).Info("Starting gRPC server")
+	if err := grpcServer.Serve(lis); err != nil {
+		slog.With("err", err).Error("Failed to start gRPC server")
+	}
+	slog.Info("Shutting down")
 }

@@ -3,7 +3,7 @@ package refresh
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,7 +18,7 @@ type Storage struct {
 
 func NewStorage(host, port string) *Storage {
 	connStr := fmt.Sprintf("%s:%s", host, port)
-	log.Println("connecting to redis on", connStr)
+	slog.With("addr", connStr).Info("Connecting to redis")
 
 	return &Storage{
 		redisClient: redis.NewClient(&redis.Options{

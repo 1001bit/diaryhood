@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/1001bit/pathgoer/services/user/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/userpb"
@@ -16,20 +16,20 @@ func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokenRequ
 	if err == redis.Nil {
 		return nil, status.Error(codes.Unauthenticated, "could not refresh")
 	} else if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to get refresh token")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
 	// Get username by userID
 	username, err := s.userStore.GetNameByID(ctx, userID)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to get username by id")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
 	access, err := accesstoken.Generate(username)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"os"
 	"strings"
 	"time"
@@ -11,6 +11,10 @@ import (
 	"github.com/1001bit/pathgoer/services/email/sender"
 	"github.com/rabbitmq/amqp091-go"
 )
+
+func init() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+}
 
 func main() {
 	// email sender
@@ -24,11 +28,13 @@ func main() {
 		handleQueueMessage(delivery.Body, sender)
 	})
 
-	log.Println("Listening for messages")
 	<-make(chan struct{})
+	slog.Info("Shutting down")
 }
 
 func handleQueueMessage(body []byte, sender *sender.Sender) {
+	slog.Info("Received email message")
+
 	var email, name, otp string
 	bodySplit := strings.Split(string(body), " ")
 	if len(bodySplit) != 3 {
@@ -41,6 +47,6 @@ func handleQueueMessage(body []byte, sender *sender.Sender) {
 
 	err := sender.SendOtp(ctx, email, name, otp)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to send OTP email")
 	}
 }

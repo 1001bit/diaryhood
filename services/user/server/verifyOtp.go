@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/1001bit/pathgoer/services/user/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/userpb"
@@ -18,19 +18,19 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 	// Ask userservice for name and id by email
 	username, id, err := s.userStore.GetNameAndIdByEmail(ctx, req.Email)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to get name and id by email")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
 	access, err := accesstoken.Generate(username)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
 	refresh, err := s.refreshStorage.GenerateUUID(ctx, id)
 	if err != nil {
-		log.Println(err)
+		slog.With("err", err).Error("Failed to generate refresh token")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 

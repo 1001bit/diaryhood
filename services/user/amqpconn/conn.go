@@ -2,7 +2,7 @@ package amqpconn
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/rabbitmq/amqp091-go"
@@ -33,16 +33,20 @@ func New(user, pass, host, port string) *AmqpConn {
 
 func (ac *AmqpConn) Connect() {
 	for {
+		slog.Info("Connecting to RabbitMQ")
+
+		// Connect
 		conn, err := amqp091.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", ac.user, ac.pass, ac.host, ac.port))
+
 		if err != nil {
-			log.Println("could not connect to rabbitmq. Retrying soon. Error:", err)
+			slog.With("err", err).Error("Failed to connect to RabbitMQ")
 			time.Sleep(reconnectTime)
 			continue
 		}
 
 		ch, err := conn.Channel()
 		if err != nil {
-			log.Println("could not create channel. Retrying soon. Error:", err)
+			slog.With("err", err).Error("Failed to create channel")
 			time.Sleep(reconnectTime)
 			continue
 		}
@@ -50,7 +54,7 @@ func (ac *AmqpConn) Connect() {
 		ac.conn = conn
 		ac.ch = ch
 
-		log.Println("connected to rabbitmq")
+		slog.Info("Connected to RabbitMQ")
 		go ac.monitorConnection()
 
 		return
@@ -62,7 +66,7 @@ func (ac *AmqpConn) monitorConnection() {
 	ac.ch.NotifyClose(closeErr)
 	err := <-closeErr
 
-	log.Println("connection to rabbitmq closed. Retrying. Error:", err)
+	slog.With("err", err).Error("connection to rabbitmq closed. Retrying")
 	ac.ch.Close()
 	ac.conn.Close()
 	ac.Connect()
@@ -120,11 +124,12 @@ func (ac *AmqpConn) Consume(queueName string, handler func(amqp091.Delivery)) er
 		for msg := range msgs {
 			handler(msg)
 		}
-		log.Println("Consumer closed. Attempting reconnection...")
+
+		slog.Info("Consumer closed. Attempting reconnection...")
 		ac.Connect()                   // Reconnect and re-consume if the connection drops
 		ac.Consume(queueName, handler) // Re-consume the queue after reconnecting
 	}()
 
-	log.Printf("Consuming from queue: %s", queueName)
+	slog.With("queue", queueName).Info("Consumer started")
 	return nil
 }

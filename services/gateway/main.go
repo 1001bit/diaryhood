@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -11,11 +11,16 @@ import (
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
+func init() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+}
+
 func main() {
 	// userclient
 	conn, err := grpcclient.New("user", os.Getenv("PORT"))
 	if err != nil {
-		log.Fatal(err)
+		slog.With("err", err).Error("Failed to connect to user service")
+		return
 	}
 	userclient := userpb.NewUserServiceClient(conn)
 
@@ -23,6 +28,10 @@ func main() {
 	r := router.New(userclient)
 
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	log.Println("Listening on", addr)
-	log.Fatal(http.ListenAndServe(addr, r))
+
+	slog.With("addr", addr).Info("Listening")
+	if err := http.ListenAndServe(addr, r); err != nil {
+		slog.With("err", err).Error("Error Listening")
+	}
+	slog.Info("Shutting down")
 }
