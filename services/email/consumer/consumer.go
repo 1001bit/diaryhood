@@ -10,6 +10,8 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
+var ErrBadBody = errors.New("invalid body format")
+
 type QueueConsumer interface {
 	Consume(queueName string, handler func(amqp091.Delivery)) error
 }
@@ -20,12 +22,20 @@ type EmailSender interface {
 
 func ConsumeFromQueue(consumer QueueConsumer, sender EmailSender) {
 	consumer.Consume("email", func(delivery amqp091.Delivery) {
-		// acknowledge message
-		delivery.Ack(false)
-
 		err := handleQueueMessage(delivery.Body, sender)
-		if err != nil {
+		if err == ErrBadBody {
+			slog.Error("Bad queue body")
+			_ = delivery.Nack(false, false)
+			return
+		} else if err != nil {
 			slog.With("err", err).Error("Failed to handle queue message")
+			_ = delivery.Nack(false, true)
+			return
+		}
+
+		err = delivery.Ack(false)
+		if err != nil {
+			slog.With("err", err).Error("Failed to ack queue message")
 			return
 		}
 
@@ -38,7 +48,7 @@ func handleQueueMessage(body []byte, sender EmailSender) error {
 	var email, name, otp string
 	bodySplit := strings.Split(string(body), " ")
 	if len(bodySplit) != 3 {
-		return errors.New("invalid body format")
+		return ErrBadBody
 	}
 	email, name, otp = bodySplit[0], bodySplit[1], bodySplit[2]
 
