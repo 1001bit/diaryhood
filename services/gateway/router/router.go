@@ -3,12 +3,10 @@ package router
 import (
 	"log/slog"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/router/handler"
 	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
-	"github.com/1001bit/pathgoer/services/gateway/storageclient"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
 	"github.com/go-chi/chi/v5"
@@ -17,7 +15,11 @@ import (
 	slogchi "github.com/samber/slog-chi"
 )
 
-func New(userclient userpb.UserServiceClient) *chi.Mux {
+type StorageProxy interface {
+	ReverseProxy() http.HandlerFunc
+}
+
+func New(userclient userpb.UserServiceClient, storageProxy StorageProxy) *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 
@@ -59,9 +61,8 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	r.Get("/auth/logout", handler.LogoutHandler(userclient))
 
 	// Storage
-	storageClient := storageclient.MustNew("storage", os.Getenv("PORT"))
-	r.Get("/storage/*", http.StripPrefix("/storage", storageClient.ReverseProxy()).ServeHTTP)
-	r.Get("/favicon.ico", storageClient.ReverseProxy())
+	r.Get("/storage/*", http.StripPrefix("/storage", storageProxy.ReverseProxy()).ServeHTTP)
+	r.Get("/favicon.ico", storageProxy.ReverseProxy().ServeHTTP)
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

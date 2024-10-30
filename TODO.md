@@ -47,3 +47,4 @@
     [X] Slog
     [X] More logs and levels
 [ ] Tests
+    [X] Pass interfaces instead of implementations to server

@@ -30,8 +30,6 @@ func main() {
 		Port: os.Getenv("POSTGRES_PORT"),
 	}
 
-	slog.Info("connecting to postgreSQL")
-
 	db, err := database.NewFromEnv(cfg)
 	if err != nil {
 		slog.
@@ -40,18 +38,16 @@ func main() {
 			With("port", cfg.Port).
 			With("name", cfg.Name).
 			With("user", cfg.User).
-			Error("Failed to connect to database")
+			Error("Failed to connect to PostgreSQL")
 		return
 	}
 	defer db.Close()
-
 	slog.Info("connected to postgreSQL")
 
 	// models
 	userstore := usermodel.NewUserStore(db)
 
 	// RabbitMQ connection
-	slog.Info("Connecting to RabbitMQ")
 	amqpConn := amqpconn.New(os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASS"), "email-rabbitmq", os.Getenv("RABBITMQ_PORT"))
 	go amqpConn.Connect()
 

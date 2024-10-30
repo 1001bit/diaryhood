@@ -12,16 +12,16 @@ type Client struct {
 	url *url.URL
 }
 
-func MustNew(host, port string) *Client {
+func New(host, port string) (*Client, error) {
 	url, err := url.Parse(fmt.Sprintf("http://%s:%s", host, port))
 	if err != nil {
 		slog.With("err", err).Error("Failed to parse url")
-		panic(err)
+		return nil, err
 	}
 
 	return &Client{
 		url: url,
-	}
+	}, nil
 }
 
 func (c *Client) ReverseProxy() http.HandlerFunc {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/1001bit/pathgoer/services/gateway/grpcclient"
 	"github.com/1001bit/pathgoer/services/gateway/router"
+	"github.com/1001bit/pathgoer/services/gateway/storageclient"
 	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
@@ -26,8 +27,19 @@ func main() {
 	defer conn.Close()
 	slog.With("addr", conn.Target()).Info("Connected to user service")
 
+	// storageclient
+	storageclient, err := storageclient.New("storage", os.Getenv("STORAGE_PORT"))
+	if err != nil {
+		slog.With("err", err).
+			With("host", "storage").
+			With("port", os.Getenv("STORAGE_PORT")).
+			Error("Failed to connect to storage service")
+		return
+	}
+	slog.Info("Connected to storage service")
+
 	// http server
-	r := router.New(userclient)
+	r := router.New(userclient, storageclient)
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 
 	slog.With("addr", addr).Info("Listening")
