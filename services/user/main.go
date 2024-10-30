@@ -53,9 +53,11 @@ func main() {
 
 	// otpStorage
 	otpStorage := otp.NewStorage("otp-redis", os.Getenv("REDIS_PORT"))
+	slog.With("addr", "otp-redis:"+os.Getenv("REDIS_PORT")).Info("Connected to Redis")
 
 	// refresh storage
 	refreshStorage := refresh.NewStorage("refresh-redis", os.Getenv("REDIS_PORT"))
+	slog.With("addr", "refresh-redis:"+os.Getenv("REDIS_PORT")).Info("Connected to Redis")
 
 	// start tcp listener
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("PORT")))

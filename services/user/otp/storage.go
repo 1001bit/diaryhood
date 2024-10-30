@@ -3,7 +3,6 @@ package otp
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -17,8 +16,6 @@ type Storage struct {
 
 func NewStorage(host, port string) *Storage {
 	connStr := fmt.Sprintf("%s:%s", host, port)
-	slog.With("addr", connStr).Info("Connecting to redis")
-
 	return &Storage{
 		redisClient: redis.NewClient(&redis.Options{
 			Addr: connStr,
