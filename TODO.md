@@ -42,8 +42,8 @@
 
 [X] Shared code
 [X] Handle RabbitMQ reconnection
-[ ] Logs
+[X] Logs
     [X] PLG Stack
     [X] Slog
-    [ ] More logs and levels
+    [X] More logs and levels
 [ ] Tests

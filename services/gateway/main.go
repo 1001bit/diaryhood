@@ -23,10 +23,11 @@ func main() {
 		return
 	}
 	userclient := userpb.NewUserServiceClient(conn)
+	defer conn.Close()
+	slog.With("addr", conn.Target()).Info("Connected to user service")
 
 	// http server
 	r := router.New(userclient)
-
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 
 	slog.With("addr", addr).Info("Listening")

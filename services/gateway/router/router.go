@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -13,6 +14,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
+	slogchi "github.com/samber/slog-chi"
 )
 
 func New(userclient userpb.UserServiceClient) *chi.Mux {
@@ -22,7 +24,7 @@ func New(userclient userpb.UserServiceClient) *chi.Mux {
 	// Middleware
 	// Logging
 	r.Use(chimw.RealIP)
-	r.Use(chimw.Logger)
+	r.Use(slogchi.New(slog.Default()))
 	// Recovery
 	r.Use(chimw.Recoverer)
 	// Limits

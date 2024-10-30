@@ -22,25 +22,38 @@ func init() {
 
 func main() {
 	// start database
-	db, err := database.NewFromEnv(database.Config{
+	cfg := database.Config{
 		User: os.Getenv("POSTGRES_USER"),
 		Name: os.Getenv("POSTGRES_DB"),
 		Pass: os.Getenv("POSTGRES_PASSWORD"),
 		Host: "user-postgres",
 		Port: os.Getenv("POSTGRES_PORT"),
-	})
+	}
+
+	slog.Info("connecting to postgreSQL")
+
+	db, err := database.NewFromEnv(cfg)
 	if err != nil {
-		slog.With("err", err).Error("Failed to connect to database")
+		slog.
+			With("err", err).
+			With("host", cfg.Host).
+			With("port", cfg.Port).
+			With("name", cfg.Name).
+			With("user", cfg.User).
+			Error("Failed to connect to database")
 		return
 	}
 	defer db.Close()
+
+	slog.Info("connected to postgreSQL")
 
 	// models
 	userstore := usermodel.NewUserStore(db)
 
 	// RabbitMQ connection
+	slog.Info("Connecting to RabbitMQ")
 	amqpConn := amqpconn.New(os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASS"), "email-rabbitmq", os.Getenv("RABBITMQ_PORT"))
-	amqpConn.Connect()
+	go amqpConn.Connect()
 
 	// otpStorage
 	otpStorage := otp.NewStorage("otp-redis", os.Getenv("REDIS_PORT"))

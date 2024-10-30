@@ -33,29 +33,34 @@ func New(user, pass, host, port string) *AmqpConn {
 
 func (ac *AmqpConn) Connect() {
 	for {
-		slog.Info("Connecting to RabbitMQ")
-
 		// Connect
 		conn, err := amqp091.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", ac.user, ac.pass, ac.host, ac.port))
 
 		if err != nil {
-			slog.With("err", err).Error("Failed to connect to RabbitMQ")
+			slog.
+				With("err", err).
+				With("host", ac.host).
+				With("port", ac.port).
+				Error("Failed to connect to RabbitMQ. Retrying")
 			time.Sleep(reconnectTime)
 			continue
 		}
 
 		ch, err := conn.Channel()
 		if err != nil {
-			slog.With("err", err).Error("Failed to create channel")
+			slog.With("err", err).
+				With("host", ac.host).
+				With("port", ac.port).
+				Error("Failed to create channel. Retrying")
 			time.Sleep(reconnectTime)
 			continue
 		}
 
 		ac.conn = conn
 		ac.ch = ch
+		go ac.monitorConnection()
 
 		slog.Info("Connected to RabbitMQ")
-		go ac.monitorConnection()
 
 		return
 	}
@@ -66,7 +71,7 @@ func (ac *AmqpConn) monitorConnection() {
 	ac.ch.NotifyClose(closeErr)
 	err := <-closeErr
 
-	slog.With("err", err).Error("connection to rabbitmq closed. Retrying")
+	slog.With("err", err).Warn("connection to rabbitmq closed. Retrying")
 	ac.ch.Close()
 	ac.conn.Close()
 	ac.Connect()
@@ -125,11 +130,9 @@ func (ac *AmqpConn) Consume(queueName string, handler func(amqp091.Delivery)) er
 			handler(msg)
 		}
 
-		slog.Info("Consumer closed. Attempting reconnection...")
+		slog.Warn("Consumer closed. Attempting reconnection...")
 		ac.Connect()                   // Reconnect and re-consume if the connection drops
 		ac.Consume(queueName, handler) // Re-consume the queue after reconnecting
 	}()
-
-	slog.With("queue", queueName).Info("Consumer started")
 	return nil
 }
