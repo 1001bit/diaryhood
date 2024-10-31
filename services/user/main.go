@@ -30,7 +30,7 @@ func main() {
 		Port: os.Getenv("POSTGRES_PORT"),
 	}
 
-	db, err := database.NewFromEnv(cfg)
+	db, err := database.NewFromCfg(cfg)
 	if err != nil {
 		slog.
 			With("err", err).

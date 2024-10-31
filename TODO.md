@@ -48,3 +48,5 @@
     [X] More logs and levels
 [ ] Tests
     [X] Pass interfaces instead of implementations to server
+    [X] Email unit test
+    [ ] user login flow test

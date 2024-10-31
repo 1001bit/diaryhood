@@ -15,7 +15,7 @@ type Config struct {
 	Port string
 }
 
-func NewFromEnv(cfg Config) (*sql.DB, error) {
+func NewFromCfg(cfg Config) (*sql.DB, error) {
 	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.Host, cfg.User, cfg.Pass, cfg.Name, cfg.Port)
 	return sql.Open("postgres", connStr)
 }
