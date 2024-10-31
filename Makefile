@@ -20,6 +20,21 @@ build:
 	@echo "\nBuilding Docker containers..."
 	$(DOCKER_COMPOSE) build
 
+# Start the Docker containers
+up:
+	@echo "\nStarting Docker containers..."
+	$(DOCKER_COMPOSE) up
+
+# Stop the Docker containers
+down:
+	@echo "\nStopping Docker containers..."
+	$(DOCKER_COMPOSE) down
+
+# Clean up Docker resources
+clean:
+	@echo "\nCleaning up Docker resources..."
+	$(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
+
 # Generate go from templ files
 templ:
 	@echo "\nGenerating go from templ files..."
@@ -42,18 +57,3 @@ tscompile:
 copyshared:
 	@echo "\nCopying shared go files..."
 	$(SHARED) $(SHARED_PATH)
-
-# Start the Docker containers
-up:
-	@echo "\nStarting Docker containers..."
-	$(DOCKER_COMPOSE) up
-
-# Stop the Docker containers
-down:
-	@echo "\nStopping Docker containers..."
-	$(DOCKER_COMPOSE) down
-
-# Clean up Docker resources
-clean:
-	@echo "\nCleaning up Docker resources..."
-	$(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
