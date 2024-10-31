@@ -100,7 +100,7 @@ func (ac *AmqpConn) Publish(queueName string, body string) error {
 	)
 }
 
-func (ac *AmqpConn) Consume(queueName string, handler func(amqp091.Delivery)) error {
+func (ac *AmqpConn) Consume(queueName string, callback func(amqp091.Delivery) error) error {
 	if ac.ch == nil {
 		err := fmt.Errorf("not connected to rabbitmq")
 		return err
@@ -127,12 +127,17 @@ func (ac *AmqpConn) Consume(queueName string, handler func(amqp091.Delivery)) er
 
 	go func() {
 		for msg := range msgs {
-			handler(msg)
+			err := callback(msg)
+			if err != nil {
+				slog.With("err", err).Error("Error processing message")
+				continue
+			}
+			slog.Info("Succesfully processed message from queue")
 		}
 
 		slog.Warn("Consumer closed. Attempting reconnection...")
-		ac.Connect()                   // Reconnect and re-consume if the connection drops
-		ac.Consume(queueName, handler) // Re-consume the queue after reconnecting
+		ac.Connect()                    // Reconnect and re-consume if the connection drops
+		ac.Consume(queueName, callback) // Re-consume the queue after reconnecting
 	}()
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
+	"net/mail"
 
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 	"github.com/1001bit/pathgoer/services/user/userpb"
@@ -15,6 +16,10 @@ import (
 func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailRequest) (*userpb.SendOtpEmailResponse, error) {
 	creds, err := s.userStore.GetCredentials(ctx, req.Login)
 	if err == sql.ErrNoRows {
+		if !emailValid(req.Login) {
+			return nil, status.Error(codes.NotFound, "no such user")
+		}
+
 		creds = &usermodel.Credentials{
 			Email: req.Login,
 			Name:  "guest",
@@ -42,4 +47,9 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 	return &userpb.SendOtpEmailResponse{
 		Email: creds.Email,
 	}, nil
+}
+
+func emailValid(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
