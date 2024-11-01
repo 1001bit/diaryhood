@@ -2,40 +2,28 @@ package testcontainer
 
 import (
 	"context"
-	"fmt"
+	"time"
 
 	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func StartPostgres(ctx context.Context) (testcontainers.Container, string, error) {
-	req := testcontainers.ContainerRequest{
-		Image:        "postgres:17-alpine",
-		ExposedPorts: []string{"5432/tcp"},
-		Env: map[string]string{
-			"POSTGRES_USER":     "test",
-			"POSTGRES_PASSWORD": "test",
-			"POSTGRES_DB":       "testdb",
-		},
-		WaitingFor: wait.ForListeningPort("5432/tcp"),
-	}
-	postgresContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: req,
-		Started:          true,
-	})
+func StartPostgres(ctx context.Context, initPath string) (testcontainers.Container, string, error) {
+	pgContainer, err := postgres.Run(ctx,
+		"postgres:17-alpine",
+		postgres.WithInitScripts(initPath),
+		postgres.WithDatabase("test-db"),
+		postgres.WithUsername("postgres"),
+		postgres.WithPassword("postgres"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).WithStartupTimeout(5*time.Second)),
+	)
 	if err != nil {
 		return nil, "", err
 	}
 
-	host, err := postgresContainer.Host(ctx)
-	if err != nil {
-		return nil, "", err
-	}
-	port, err := postgresContainer.MappedPort(ctx, "5432")
-	if err != nil {
-		return nil, "", err
-	}
-
-	dsn := fmt.Sprintf("postgres://test:test@%s:%s/testdb?sslmode=disable", host, port.Port())
-	return postgresContainer, dsn, nil
+	connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
+	return pgContainer, connStr, err
 }
