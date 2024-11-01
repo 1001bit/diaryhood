@@ -20,7 +20,7 @@ func init() {
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 }
 
-func initServer() *server.Server {
+func initServer() (*server.Server, func()) {
 	// start database
 	dbCfg := database.Config{
 		User: os.Getenv("POSTGRES_USER"),
@@ -52,7 +52,7 @@ func initServer() *server.Server {
 	refreshStorage := refreshstorage.New("refresh-redis", os.Getenv("REDIS_PORT"))
 
 	// user server
-	return server.New(userstore, otpStorage, refreshStorage, amqpConn)
+	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
 }
 
 func startServer(server *server.Server) {
@@ -75,7 +75,9 @@ func startServer(server *server.Server) {
 }
 
 func main() {
-	userServer := initServer()
+	userServer, close := initServer()
+	defer close()
+
 	startServer(userServer)
 	slog.Info("Shutting down")
 }
