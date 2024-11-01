@@ -1,11 +1,37 @@
-package main
+package test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/1001bit/pathgoer/services/user/amqpconn"
+	"github.com/1001bit/pathgoer/services/user/database"
+	"github.com/1001bit/pathgoer/services/user/otpstorage"
+	"github.com/1001bit/pathgoer/services/user/refreshstorage"
+	"github.com/1001bit/pathgoer/services/user/server"
 	"github.com/1001bit/pathgoer/services/user/testcontainer"
+	"github.com/1001bit/pathgoer/services/user/usermodel"
 )
+
+func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*server.Server, func()) {
+	// start database
+	dbConn := database.NewConn(dbConnStr)
+	go dbConn.Connect()
+	// models
+	userstore := usermodel.NewUserStore(dbConn)
+
+	// RabbitMQ connection
+	amqpConn := amqpconn.New(amqpConnStr)
+	go amqpConn.Connect()
+
+	// refresh storage
+	refreshStorage := refreshstorage.New(refreshConnStr)
+	// otpStorage
+	otpStorage := otpstorage.New(otpConnStr)
+
+	// user server
+	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
+}
 
 func TestLoginFlow(t *testing.T) {
 	ctx := context.Background()
@@ -52,7 +78,16 @@ func TestLoginFlow(t *testing.T) {
 		close()
 	})
 
-	// TODO: Test the server in all the ways
+	// TODO: Test the server in all the ways:
+	// Init rabbitMQ consumer (instead of email service)
+	// Send email via server (test all the inputs)
+	// Catch email from consumer
+	// Login with OTP from email (test all the inputs)
+	// Get profile
+	// Refresh the tokens
+	// Logout
+	// Login again
+
 	_ = server
 	t.Skip("TestLoginFlow: TODO")
 }

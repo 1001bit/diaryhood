@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log/slog"
-	"net"
 	"os"
 
 	"github.com/1001bit/pathgoer/services/user/amqpconn"
@@ -13,8 +12,6 @@ import (
 	"github.com/1001bit/pathgoer/services/user/refreshstorage"
 	"github.com/1001bit/pathgoer/services/user/server"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
-	"github.com/1001bit/pathgoer/services/user/userpb"
-	"google.golang.org/grpc"
 )
 
 func init() {
@@ -39,25 +36,6 @@ func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*ser
 
 	// user server
 	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
-}
-
-func startServer(server *server.Server) {
-	// start tcp listener
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("PORT")))
-	if err != nil {
-		slog.With("err", err).With("port", os.Getenv("PORT")).Error("Failed to listen to TCP")
-		return
-	}
-
-	// create grpc server
-	grpcServer := grpc.NewServer()
-	userpb.RegisterUserServiceServer(grpcServer, server)
-
-	// start grpc server
-	slog.With("addr", lis.Addr()).Info("Starting gRPC server")
-	if err := grpcServer.Serve(lis); err != nil {
-		slog.With("err", err).Error("Failed to start gRPC server")
-	}
 }
 
 func main() {
@@ -93,6 +71,9 @@ func main() {
 	userServer, close := initServer(dbCfg.String(), amqpCfg.String(), refreshCfg.String(), otpCfg.String())
 	defer close()
 
-	startServer(userServer)
+	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	if err := userServer.Start(addr); err != nil {
+		slog.With("err", err).Error("Failed to run server")
+	}
 	slog.Info("Shutting down")
 }
