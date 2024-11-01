@@ -18,7 +18,13 @@ func main() {
 	mgClient := mailgunclient.New(os.Getenv("MG_DOMAIN"), os.Getenv("MG_API_KEY"))
 
 	// RabbitMQ connection
-	amqpConn := amqpconn.New(os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASS"), "email-rabbitmq", os.Getenv("RABBITMQ_PORT"))
+	cfg := amqpconn.Config{
+		User: os.Getenv("RABBITMQ_USER"),
+		Pass: os.Getenv("RABBITMQ_PASS"),
+		Host: "email-rabbitmq",
+		Port: os.Getenv("RABBITMQ_PORT"),
+	}
+	amqpConn := amqpconn.New(cfg)
 	amqpConn.Connect()
 
 	// start consuming

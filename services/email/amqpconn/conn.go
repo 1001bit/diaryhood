@@ -12,35 +12,41 @@ const (
 	reconnectTime = 5 * time.Second
 )
 
+type Config struct {
+	User string
+	Pass string
+	Host string
+	Port string
+}
+
 type AmqpConn struct {
-	user string
-	pass string
-	host string
-	port string
+	cfg Config
 
 	conn *amqp091.Connection
 	ch   *amqp091.Channel
 }
 
-func New(user, pass, host, port string) *AmqpConn {
+func New(cfg Config) *AmqpConn {
 	return &AmqpConn{
-		user: user,
-		pass: pass,
-		host: host,
-		port: port,
+		cfg: cfg,
+
+		conn: nil,
+		ch:   nil,
 	}
 }
 
 func (ac *AmqpConn) Connect() {
+	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", ac.cfg.User, ac.cfg.Pass, ac.cfg.Host, ac.cfg.Port)
+
 	for {
 		// Connect
-		conn, err := amqp091.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", ac.user, ac.pass, ac.host, ac.port))
+		conn, err := amqp091.Dial(connStr)
 
 		if err != nil {
 			slog.
 				With("err", err).
-				With("host", ac.host).
-				With("port", ac.port).
+				With("host", ac.cfg.Host).
+				With("port", ac.cfg.Port).
 				Error("Failed to connect to RabbitMQ. Retrying")
 			time.Sleep(reconnectTime)
 			continue
@@ -49,8 +55,8 @@ func (ac *AmqpConn) Connect() {
 		ch, err := conn.Channel()
 		if err != nil {
 			slog.With("err", err).
-				With("host", ac.host).
-				With("port", ac.port).
+				With("host", ac.cfg.Host).
+				With("port", ac.cfg.Port).
 				Error("Failed to create channel. Retrying")
 			time.Sleep(reconnectTime)
 			continue

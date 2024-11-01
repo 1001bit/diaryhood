@@ -42,6 +42,7 @@
 
 [X] Shared code
 [X] Handle RabbitMQ reconnection
+[X] Handle postgres reconnection
 [X] Logs
     [X] PLG Stack
     [X] Slog

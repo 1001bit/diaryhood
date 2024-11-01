@@ -8,8 +8,8 @@ import (
 
 	"github.com/1001bit/pathgoer/services/user/amqpconn"
 	"github.com/1001bit/pathgoer/services/user/database"
-	"github.com/1001bit/pathgoer/services/user/otp"
-	"github.com/1001bit/pathgoer/services/user/refresh"
+	"github.com/1001bit/pathgoer/services/user/otpstorage"
+	"github.com/1001bit/pathgoer/services/user/refreshstorage"
 	"github.com/1001bit/pathgoer/services/user/server"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 	"github.com/1001bit/pathgoer/services/user/userpb"
@@ -22,30 +22,34 @@ func init() {
 
 func initServer() *server.Server {
 	// start database
-	cfg := database.Config{
+	dbCfg := database.Config{
 		User: os.Getenv("POSTGRES_USER"),
 		Pass: os.Getenv("POSTGRES_PASSWORD"),
 		Host: "user-postgres",
 		Port: os.Getenv("POSTGRES_PORT"),
 		Name: os.Getenv("POSTGRES_DB"),
 	}
-	dbConn := database.NewConn(cfg)
+	dbConn := database.NewConn(dbCfg)
 	go dbConn.Connect()
 
 	// models
 	userstore := usermodel.NewUserStore(dbConn)
 
 	// RabbitMQ connection
-	amqpConn := amqpconn.New(os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASS"), "email-rabbitmq", os.Getenv("RABBITMQ_PORT"))
+	amqpCfg := amqpconn.Config{
+		User: os.Getenv("RABBITMQ_USER"),
+		Pass: os.Getenv("RABBITMQ_PASS"),
+		Host: "email-rabbitmq",
+		Port: os.Getenv("RABBITMQ_PORT"),
+	}
+	amqpConn := amqpconn.New(amqpCfg)
 	go amqpConn.Connect()
 
 	// otpStorage
-	otpStorage := otp.NewStorage("otp-redis", os.Getenv("REDIS_PORT"))
-	slog.With("addr", "otp-redis:"+os.Getenv("REDIS_PORT")).Info("Connected to Redis")
+	otpStorage := otpstorage.New("otp-redis", os.Getenv("REDIS_PORT"))
 
 	// refresh storage
-	refreshStorage := refresh.NewStorage("refresh-redis", os.Getenv("REDIS_PORT"))
-	slog.With("addr", "refresh-redis:"+os.Getenv("REDIS_PORT")).Info("Connected to Redis")
+	refreshStorage := refreshstorage.New("refresh-redis", os.Getenv("REDIS_PORT"))
 
 	// user server
 	return server.New(userstore, otpStorage, refreshStorage, amqpConn)
