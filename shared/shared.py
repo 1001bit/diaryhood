@@ -9,7 +9,7 @@ def copy_directory(src, dest):
     shutil.copytree(src, dest, ignore=shutil.ignore_patterns('copyto.txt'))
     # Add 'NOEDIT.txt' to the destination directory
     with open(os.path.join(dest, 'NOEDIT.txt'), 'w') as f:
-        f.write('This directory was copied and should not be edited.')
+        f.write("This directory was copied and its contents should not be edited.")
 
 
 def process_directory(root_dir):
