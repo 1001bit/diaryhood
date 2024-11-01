@@ -15,9 +15,9 @@ type Storage struct {
 	redisClient *redis.Client
 }
 
-func New(cfg redisclient.Config) *Storage {
+func New(connStr string) *Storage {
 	return &Storage{
-		redisClient: redisclient.New(cfg),
+		redisClient: redisclient.New(connStr),
 	}
 }
 

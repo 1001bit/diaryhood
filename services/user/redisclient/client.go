@@ -14,11 +14,13 @@ type Config struct {
 	Db   int
 }
 
-func New(cfg Config) *redis.Client {
-	slog.With("host", cfg.Host).With("port", cfg.Port).Info("Connecting to Redis")
+func (cfg *Config) String() string {
+	return fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
+}
+
+func New(connStr string) *redis.Client {
+	slog.With("addr", connStr).Info("Connecting to Redis")
 	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-		Password: cfg.Pass,
-		DB:       cfg.Db,
+		Addr: connStr,
 	})
 }

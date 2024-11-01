@@ -25,30 +25,30 @@ type Config struct {
 	Name string
 }
 
-type Conn struct {
-	cfg Config
-	db  *sql.DB
+func (cfg Config) String() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.Host, cfg.User, cfg.Pass, cfg.Name, cfg.Port)
 }
 
-func NewConn(cfg Config) *Conn {
-	return &Conn{
-		cfg: cfg,
+type Conn struct {
+	connStr string
+	db      *sql.DB
+}
 
-		db: nil,
+func NewConn(connStr string) *Conn {
+	return &Conn{
+		connStr: connStr,
+		db:      nil,
 	}
 }
 
 func (c *Conn) Connect() {
-	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", c.cfg.Host, c.cfg.User, c.cfg.Pass, c.cfg.Name, c.cfg.Port)
 	var err error
 
 	for {
-		c.db, err = sql.Open("postgres", connStr)
+		c.db, err = sql.Open("postgres", c.connStr)
 		if err != nil {
 			slog.
 				With("err", err).
-				With("host", c.cfg.Host).
-				With("port", c.cfg.Port).
 				Error("Failed to connect to PostgreSQL. Retrying")
 			time.Sleep(reconnectTime)
 			continue

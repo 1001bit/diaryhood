@@ -21,21 +21,21 @@ func init() {
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 }
 
-func initServer(dbCfg database.Config, amqpCfg amqpconn.Config, refreshCfg, otpCfg redisclient.Config) (*server.Server, func()) {
+func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*server.Server, func()) {
 	// start database
-	dbConn := database.NewConn(dbCfg)
+	dbConn := database.NewConn(dbConnStr)
 	go dbConn.Connect()
 	// models
 	userstore := usermodel.NewUserStore(dbConn)
 
 	// RabbitMQ connection
-	amqpConn := amqpconn.New(amqpCfg)
+	amqpConn := amqpconn.New(amqpConnStr)
 	go amqpConn.Connect()
 
-	// otpStorage
-	otpStorage := otpstorage.New(otpCfg)
 	// refresh storage
-	refreshStorage := refreshstorage.New(refreshCfg)
+	refreshStorage := refreshstorage.New(refreshConnStr)
+	// otpStorage
+	otpStorage := otpstorage.New(otpConnStr)
 
 	// user server
 	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
@@ -90,7 +90,7 @@ func main() {
 		Db:   0,
 	}
 
-	userServer, close := initServer(dbCfg, amqpCfg, refreshCfg, otpCfg)
+	userServer, close := initServer(dbCfg.String(), amqpCfg.String(), refreshCfg.String(), otpCfg.String())
 	defer close()
 
 	startServer(userServer)
