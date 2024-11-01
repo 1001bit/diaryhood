@@ -4,10 +4,10 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	"log/slog"
 	"math/big"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/user/redisclient"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -17,13 +17,9 @@ type Storage struct {
 	redisClient *redis.Client
 }
 
-func New(host, port string) *Storage {
-	connStr := fmt.Sprintf("%s:%s", host, port)
-	slog.With("addr", connStr).Info("Connecting to Redis")
+func New(cfg redisclient.Config) *Storage {
 	return &Storage{
-		redisClient: redis.NewClient(&redis.Options{
-			Addr: connStr,
-		}),
+		redisClient: redisclient.New(cfg),
 	}
 }
 

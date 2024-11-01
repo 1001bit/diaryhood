@@ -72,7 +72,9 @@ func (c *Conn) monitorConnection() {
 }
 
 func (c *Conn) Close() {
-	c.db.Close()
+	if c.db != nil {
+		c.db.Close()
+	}
 }
 
 func (c *Conn) QueryRowContext(ctx context.Context, query string, args ...interface{}) (*sql.Row, error) {
