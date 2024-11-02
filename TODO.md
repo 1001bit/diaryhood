@@ -56,3 +56,11 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
+    [ ] Path creation
+        [ ] Frontend
+        [ ] Backend
+    [ ] Path page
+    [ ] Path edit
+    [ ] Adding tasks
+    [ ] Completing/removing tasks
+    [ ] Path deletion

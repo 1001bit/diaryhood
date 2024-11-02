@@ -8,23 +8,23 @@ Doing:
 L1
     Paths for each player
     Step counter for each path
-    One-time tasks, which add some amount of steps
-    Profile Page
-    Home Page
+    Other stats for path (1 stat unit equals some number of steps)
+    Stats incrementers
 
 Future:
+L1.5:
+    Enhanced Profile page
+    Enhanced Home page
+
 L2
     Path levels
     Streak
 
 L3
-    Tasks that are done X times every some period of time
-    Weekday tasks
+    Special (one-time) tasks that increment some stats
+    Routine tasks/quota
 
 L4
     Time stat for a task
     Possibility to add time for a task
     Tasks, that start a timer
-
-L5
-    Possibility to add your own stats along/instead of steps
