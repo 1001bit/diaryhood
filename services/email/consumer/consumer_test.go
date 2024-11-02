@@ -6,7 +6,7 @@ import (
 	"net/mail"
 	"testing"
 
-	"github.com/1001bit/pathgoer/services/email/rmqemail"
+	"github.com/1001bit/pathgoer/services/email/shared/rmqemail"
 )
 
 var ErrBadEmail = errors.New("invalid email")

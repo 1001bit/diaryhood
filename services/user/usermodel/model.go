@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/1001bit/pathgoer/services/user/database"
+	"github.com/1001bit/pathgoer/services/user/shared/database"
 )
 
 var ErrNoDB = errors.New("no database connection")

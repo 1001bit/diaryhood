@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/user/redisclient"
+	"github.com/1001bit/pathgoer/services/user/shared/redisclient"
 	"github.com/redis/go-redis/v9"
 )
 

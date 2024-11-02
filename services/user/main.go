@@ -5,12 +5,12 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/user/amqpconn"
-	"github.com/1001bit/pathgoer/services/user/database"
 	"github.com/1001bit/pathgoer/services/user/otpstorage"
-	"github.com/1001bit/pathgoer/services/user/redisclient"
 	"github.com/1001bit/pathgoer/services/user/refreshstorage"
 	"github.com/1001bit/pathgoer/services/user/server"
+	"github.com/1001bit/pathgoer/services/user/shared/amqpconn"
+	"github.com/1001bit/pathgoer/services/user/shared/database"
+	"github.com/1001bit/pathgoer/services/user/shared/redisclient"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 )
 

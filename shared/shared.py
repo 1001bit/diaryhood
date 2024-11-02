@@ -3,14 +3,13 @@ import shutil
 import sys
 
 def copy_directory(src, dest):
-    # Copy all contents except 'copyto.txt'
+    # Copy source directory to destination directory, excluding 'copyto.txt'
     if os.path.exists(dest):
         shutil.rmtree(dest)
     shutil.copytree(src, dest, ignore=shutil.ignore_patterns('copyto.txt'))
     # Add 'NOEDIT.txt' to the destination directory
     with open(os.path.join(dest, 'NOEDIT.txt'), 'w') as f:
         f.write("This directory was copied and its contents should not be edited.")
-
 
 def process_directory(root_dir):
     for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -24,13 +23,15 @@ def process_directory(root_dir):
 
             for target_dir in target_dirs:
                 if os.path.isdir(target_dir):
-                    target_subdir = os.path.join(target_dir, current_dir_name)
+                    # Create "shared" directory inside the target directory
+                    shared_subdir = os.path.join(target_dir, 'shared')
+                    os.makedirs(shared_subdir, exist_ok=True)
+                    target_shared_subdir = os.path.join(shared_subdir, current_dir_name)
                     # Remove existing directory if present
-                    if os.path.exists(target_subdir):
-                        shutil.rmtree(target_subdir)
-                    # Copy current directory to target, excluding copyto.txt and adding NOEDIT.txt
-                    copy_directory(dirpath, target_subdir)
-
+                    if os.path.exists(target_shared_subdir):
+                        shutil.rmtree(target_shared_subdir)
+                    # Copy current directory to the target shared directory, excluding copyto.txt and adding NOEDIT.txt
+                    copy_directory(dirpath, target_shared_subdir)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

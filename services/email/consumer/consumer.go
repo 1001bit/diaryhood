@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/email/rmqemail"
+	"github.com/1001bit/pathgoer/services/email/shared/rmqemail"
 	"github.com/rabbitmq/amqp091-go"
 )
 

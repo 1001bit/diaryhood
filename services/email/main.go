@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/email/amqpconn"
 	"github.com/1001bit/pathgoer/services/email/consumer"
 	"github.com/1001bit/pathgoer/services/email/mailgunclient"
+	"github.com/1001bit/pathgoer/services/email/shared/amqpconn"
 )
 
 func init() {

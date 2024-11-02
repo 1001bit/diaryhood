@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/mail"
 
-	"github.com/1001bit/pathgoer/services/user/rmqemail"
+	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
 	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
