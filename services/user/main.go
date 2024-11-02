@@ -35,7 +35,10 @@ func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*ser
 	otpStorage := otpstorage.New(otpConnStr)
 
 	// user server
-	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
+	return server.New(userstore, otpStorage, refreshStorage, amqpConn), func() {
+		dbConn.Close()
+		amqpConn.Close()
+	}
 }
 
 func main() {

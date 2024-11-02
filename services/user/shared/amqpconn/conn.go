@@ -65,7 +65,6 @@ func (ac *AmqpConn) Connect() {
 		go ac.monitorConnection()
 
 		slog.Info("Connected to RabbitMQ")
-
 		return
 	}
 }
@@ -139,9 +138,19 @@ func (ac *AmqpConn) Consume(queueName string, callback func(amqp091.Delivery) er
 			slog.Info("Succesfully processed message from queue")
 		}
 
-		slog.Warn("Consumer closed. Attempting reconnection...")
-		ac.Connect()                    // Reconnect and re-consume if the connection drops
+		slog.Warn("Consumer closed. Opening new consumer...")
+		time.Sleep(reconnectTime)
 		ac.Consume(queueName, callback) // Re-consume the queue after reconnecting
 	}()
 	return nil
+}
+
+func (ac *AmqpConn) Close() {
+	if ac.ch != nil {
+		ac.ch.Close()
+	}
+
+	if ac.conn != nil {
+		ac.conn.Close()
+	}
 }
