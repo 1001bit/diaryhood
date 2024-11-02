@@ -1,15 +1,18 @@
-Doing:
+Done:
 L0
-    Profile page
-    Home page
-    Log in and sign up
+    Raw Profile page
+    Raw Home page
+    OTP Email sign in + auth
 
-Will be doing:
+Doing:
 L1
     Paths for each player
     Step counter for each path
     One-time tasks, which add some amount of steps
+    Profile Page
+    Home Page
 
+Future:
 L2
     Path levels
     Streak
