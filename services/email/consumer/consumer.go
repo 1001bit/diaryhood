@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/email/shared/rmqemail"
+	"github.com/1001bit/pathgoer/services/email/shared/rabbitemail"
 	"github.com/rabbitmq/amqp091-go"
 )
 
@@ -24,7 +24,7 @@ func ConsumeFromQueue(consumer QueueConsumer, sender EmailSender) {
 
 func handleQueueMessage(body []byte, sender EmailSender) error {
 	// get email, name, otp from body
-	emBody, err := rmqemail.VerifyBody(body)
+	emBody, err := rabbitemail.VerifyBody(body)
 	if err != nil {
 		return err
 	}

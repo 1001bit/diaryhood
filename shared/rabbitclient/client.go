@@ -1,4 +1,4 @@
-package amqpconn
+package rabbitclient
 
 import (
 	"fmt"
@@ -23,15 +23,15 @@ func (cfg *Config) String() string {
 	return fmt.Sprintf("amqp://%s:%s@%s:%s/", cfg.User, cfg.Pass, cfg.Host, cfg.Port)
 }
 
-type AmqpConn struct {
+type Client struct {
 	connStr string
 
 	conn *amqp091.Connection
 	ch   *amqp091.Channel
 }
 
-func New(connStr string) *AmqpConn {
-	return &AmqpConn{
+func New(connStr string) *Client {
+	return &Client{
 		connStr: connStr,
 
 		conn: nil,
@@ -39,10 +39,10 @@ func New(connStr string) *AmqpConn {
 	}
 }
 
-func (ac *AmqpConn) Connect() {
+func (c *Client) Connect() {
 	for {
 		// Connect
-		conn, err := amqp091.Dial(ac.connStr)
+		conn, err := amqp091.Dial(c.connStr)
 
 		if err != nil {
 			slog.
@@ -60,38 +60,38 @@ func (ac *AmqpConn) Connect() {
 			continue
 		}
 
-		ac.conn = conn
-		ac.ch = ch
-		go ac.monitorConnection()
+		c.conn = conn
+		c.ch = ch
+		go c.monitorConnection()
 
 		slog.Info("Connected to RabbitMQ")
 		return
 	}
 }
 
-func (ac *AmqpConn) monitorConnection() {
+func (c *Client) monitorConnection() {
 	closeErr := make(chan *amqp091.Error)
-	ac.ch.NotifyClose(closeErr)
+	c.ch.NotifyClose(closeErr)
 	err := <-closeErr
 
 	slog.With("err", err).Warn("connection to rabbitmq closed. Retrying")
-	ac.ch.Close()
-	ac.conn.Close()
-	ac.Connect()
+	c.ch.Close()
+	c.conn.Close()
+	c.Connect()
 }
 
-func (ac *AmqpConn) Publish(queueName string, body string) error {
-	if ac.ch == nil {
+func (c *Client) Publish(queueName string, body string) error {
+	if c.ch == nil {
 		err := fmt.Errorf("not connected to rabbitmq")
 		return err
 	}
 
-	_, err := ac.ch.QueueDeclare(queueName, false, false, false, false, nil)
+	_, err := c.ch.QueueDeclare(queueName, false, false, false, false, nil)
 	if err != nil {
 		return err
 	}
 
-	return ac.ch.Publish(
+	return c.ch.Publish(
 		"",        // exchange
 		queueName, // routing key (queue name)
 		false,     // mandatory
@@ -103,19 +103,19 @@ func (ac *AmqpConn) Publish(queueName string, body string) error {
 	)
 }
 
-func (ac *AmqpConn) Consume(queueName string, callback func(amqp091.Delivery) error) error {
-	if ac.ch == nil {
+func (c *Client) Consume(queueName string, callback func(amqp091.Delivery) error) error {
+	if c.ch == nil {
 		err := fmt.Errorf("not connected to rabbitmq")
 		return err
 	}
 
 	// Declare the queue in case it doesn’t exist
-	_, err := ac.ch.QueueDeclare(queueName, false, false, false, false, nil)
+	_, err := c.ch.QueueDeclare(queueName, false, false, false, false, nil)
 	if err != nil {
 		return err
 	}
 
-	msgs, err := ac.ch.Consume(
+	msgs, err := c.ch.Consume(
 		queueName, // queue name
 		"",        // consumer tag
 		true,      // auto-acknowledge
@@ -140,17 +140,17 @@ func (ac *AmqpConn) Consume(queueName string, callback func(amqp091.Delivery) er
 
 		slog.Warn("Consumer closed. Opening new consumer...")
 		time.Sleep(reconnectTime)
-		ac.Consume(queueName, callback) // Re-consume the queue after reconnecting
+		c.Consume(queueName, callback) // Re-consume the queue after reconnecting
 	}()
 	return nil
 }
 
-func (ac *AmqpConn) Close() {
-	if ac.ch != nil {
-		ac.ch.Close()
+func (c *Client) Close() {
+	if c.ch != nil {
+		c.ch.Close()
 	}
 
-	if ac.conn != nil {
-		ac.conn.Close()
+	if c.conn != nil {
+		c.conn.Close()
 	}
 }

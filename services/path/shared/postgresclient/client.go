@@ -1,4 +1,4 @@
-package database
+package postgresclient
 
 import (
 	"context"
@@ -29,19 +29,19 @@ func (cfg Config) String() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.Host, cfg.User, cfg.Pass, cfg.Name, cfg.Port)
 }
 
-type Conn struct {
+type Client struct {
 	connStr string
 	db      *sql.DB
 }
 
-func NewConn(connStr string) *Conn {
-	return &Conn{
+func New(connStr string) *Client {
+	return &Client{
 		connStr: connStr,
 		db:      nil,
 	}
 }
 
-func (c *Conn) Connect() {
+func (c *Client) Connect() {
 	var err error
 
 	for {
@@ -59,7 +59,7 @@ func (c *Conn) Connect() {
 	}
 }
 
-func (c *Conn) monitorConnection() {
+func (c *Client) monitorConnection() {
 	for {
 		time.Sleep(reconnectTime)
 		if err := c.db.Ping(); err != nil {
@@ -71,13 +71,13 @@ func (c *Conn) monitorConnection() {
 	}
 }
 
-func (c *Conn) Close() {
+func (c *Client) Close() {
 	if c.db != nil {
 		c.db.Close()
 	}
 }
 
-func (c *Conn) QueryRowContext(ctx context.Context, query string, args ...interface{}) (*sql.Row, error) {
+func (c *Client) QueryRowContext(ctx context.Context, query string, args ...interface{}) (*sql.Row, error) {
 	if c.db == nil {
 		return nil, ErrNoConn
 	}

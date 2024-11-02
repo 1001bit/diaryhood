@@ -3,17 +3,17 @@ package pathmodel
 import (
 	"errors"
 
-	"github.com/1001bit/pathgoer/services/path/shared/database"
+	"github.com/1001bit/pathgoer/services/path/shared/postgresclient"
 )
 
 var ErrNoDB = errors.New("no database connection")
 
 type PathStore struct {
-	dbConn *database.Conn
+	postgresC *postgresclient.Client
 }
 
-func NewPathStore(dbConn *database.Conn) *PathStore {
+func NewPathStore(postgresC *postgresclient.Client) *PathStore {
 	return &PathStore{
-		dbConn: dbConn,
+		postgresC: postgresC,
 	}
 }

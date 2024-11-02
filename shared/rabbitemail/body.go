@@ -1,4 +1,4 @@
-package rmqemail
+package rabbitemail
 
 import (
 	"errors"

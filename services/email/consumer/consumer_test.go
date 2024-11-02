@@ -6,7 +6,7 @@ import (
 	"net/mail"
 	"testing"
 
-	"github.com/1001bit/pathgoer/services/email/shared/rmqemail"
+	"github.com/1001bit/pathgoer/services/email/shared/rabbitemail"
 )
 
 var ErrBadEmail = errors.New("invalid email")
@@ -30,7 +30,7 @@ func TestHandleQueueMessage(t *testing.T) {
 	}{
 		{[]byte("bademail name1 123456"), ErrBadEmail},
 		{[]byte("good@gmail.com name1 123456"), nil},
-		{[]byte("nomail 123456"), rmqemail.ErrBadBody},
+		{[]byte("nomail 123456"), rabbitemail.ErrBadBody},
 	}
 
 	sender := EmailSenderMock{}

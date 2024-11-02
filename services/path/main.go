@@ -7,7 +7,7 @@ import (
 
 	"github.com/1001bit/pathgoer/services/path/pathmodel"
 	"github.com/1001bit/pathgoer/services/path/server"
-	"github.com/1001bit/pathgoer/services/path/shared/database"
+	"github.com/1001bit/pathgoer/services/path/shared/postgresclient"
 )
 
 func init() {
@@ -16,19 +16,19 @@ func init() {
 
 func initServer(dbConnStr string) (*server.Server, func()) {
 	// start database
-	dbConn := database.NewConn(dbConnStr)
-	go dbConn.Connect()
+	postrgesC := postgresclient.New(dbConnStr)
+	go postrgesC.Connect()
 	// models
-	pathstore := pathmodel.NewPathStore(dbConn)
+	pathstore := pathmodel.NewPathStore(postrgesC)
 
 	// user server
 	return server.New(pathstore), func() {
-		dbConn.Close()
+		postrgesC.Close()
 	}
 }
 
 func main() {
-	dbCfg := database.Config{
+	dbCfg := postgresclient.Config{
 		User: os.Getenv("POSTGRES_USER"),
 		Pass: os.Getenv("POSTGRES_PASSWORD"),
 		Host: "path-postgres",

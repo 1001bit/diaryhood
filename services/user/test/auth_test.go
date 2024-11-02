@@ -7,23 +7,23 @@ import (
 	"github.com/1001bit/pathgoer/services/user/otpstorage"
 	"github.com/1001bit/pathgoer/services/user/refreshstorage"
 	"github.com/1001bit/pathgoer/services/user/server"
-	"github.com/1001bit/pathgoer/services/user/shared/amqpconn"
-	"github.com/1001bit/pathgoer/services/user/shared/database"
+	"github.com/1001bit/pathgoer/services/user/shared/postgresclient"
+	"github.com/1001bit/pathgoer/services/user/shared/rabbitclient"
 	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
 	"github.com/1001bit/pathgoer/services/user/shared/testcontainer"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 )
 
-func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*server.Server, func()) {
+func initServer(postgresConnStr, rabbitConnStr, refreshConnStr, otpConnStr string) (*server.Server, func()) {
 	// start database
-	dbConn := database.NewConn(dbConnStr)
-	go dbConn.Connect()
+	postgresC := postgresclient.New(postgresConnStr)
+	go postgresC.Connect()
 	// models
-	userstore := usermodel.NewUserStore(dbConn)
+	userstore := usermodel.NewUserStore(postgresC)
 
 	// RabbitMQ connection
-	amqpConn := amqpconn.New(amqpConnStr)
-	go amqpConn.Connect()
+	rabbitC := rabbitclient.New(rabbitConnStr)
+	go rabbitC.Connect()
 
 	// refresh storage
 	refreshStorage := refreshstorage.New(refreshConnStr)
@@ -31,13 +31,16 @@ func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*ser
 	otpStorage := otpstorage.New(otpConnStr)
 
 	// user server
-	return server.New(userstore, otpStorage, refreshStorage, amqpConn), dbConn.Close
+	return server.New(userstore, otpStorage, refreshStorage, rabbitC), func() {
+		postgresC.Close()
+		rabbitC.Close()
+	}
 }
 
 func TestLoginFlow(t *testing.T) {
 	ctx := context.Background()
 
-	db, dbConnStr, err := testcontainer.StartPostgres(ctx, "../../../sql/user-postgres.init.sql")
+	postgres, postgresConnStr, err := testcontainer.StartPostgres(ctx, "../../../sql/user-postgres.init.sql")
 	if err != nil {
 		t.Fatalf("failed to start postgres: %v", err)
 	}
@@ -52,15 +55,15 @@ func TestLoginFlow(t *testing.T) {
 		t.Fatalf("failed to start redis: %v", err)
 	}
 
-	rmq, rmqConnStr, err := testcontainer.StartRabbitMQ(ctx)
+	rabbit, rabbitConnStr, err := testcontainer.StartRabbitMQ(ctx)
 	if err != nil {
 		t.Fatalf("failed to start rabbitmq: %v", err)
 	}
 
-	server, close := initServer(dbConnStr, rmqConnStr, refreshRedisConnStr, otpRedisConnStr)
+	server, close := initServer(postgresConnStr, rabbitConnStr, refreshRedisConnStr, otpRedisConnStr)
 
 	t.Cleanup(func() {
-		if err := db.Terminate(ctx); err != nil {
+		if err := postgres.Terminate(ctx); err != nil {
 			t.Errorf("failed to terminate postgres: %s", err)
 		}
 
@@ -72,7 +75,7 @@ func TestLoginFlow(t *testing.T) {
 			t.Errorf("failed to terminate redis: %s", err)
 		}
 
-		if err := rmq.Terminate(ctx); err != nil {
+		if err := rabbit.Terminate(ctx); err != nil {
 			t.Errorf("failed to terminate rabbitmq: %s", err)
 		}
 
@@ -80,10 +83,10 @@ func TestLoginFlow(t *testing.T) {
 	})
 
 	// Init rabbitMQ consumer (instead of email service)
-	amqpConn := amqpconn.New(rmqConnStr)
-	amqpConn.Connect()
+	rabbitC := rabbitclient.New(rabbitConnStr)
+	rabbitC.Connect()
 	emailChan := make(chan *rmqemail.EmailBody, 1)
-	ConsumeFromQueue(amqpConn, emailChan)
+	ConsumeFromQueue(rabbitC, emailChan)
 
 	testServer(t, ctx, server, emailChan)
 }
