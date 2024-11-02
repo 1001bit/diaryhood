@@ -52,5 +52,4 @@
     [X] Email unit test
     [ ] user login flow test
         [X] Setup containers and server for test
-        [ ] Test email send
-        [ ] Test login with otp
+        [ ] Actual tests

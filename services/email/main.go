@@ -24,7 +24,7 @@ func main() {
 		Host: "email-rabbitmq",
 		Port: os.Getenv("RABBITMQ_PORT"),
 	}
-	amqpConn := amqpconn.New(cfg)
+	amqpConn := amqpconn.New(cfg.String())
 	amqpConn.Connect()
 
 	// start consuming

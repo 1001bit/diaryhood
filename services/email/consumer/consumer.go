@@ -2,14 +2,11 @@ package consumer
 
 import (
 	"context"
-	"errors"
-	"strings"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/email/rmqemail"
 	"github.com/rabbitmq/amqp091-go"
 )
-
-var ErrBadBody = errors.New("invalid body format")
 
 type QueueConsumer interface {
 	Consume(queueName string, handler func(amqp091.Delivery) error) error
@@ -26,7 +23,7 @@ func ConsumeFromQueue(consumer QueueConsumer, sender EmailSender) {
 		switch err {
 		case nil:
 			delivery.Ack(false)
-		case ErrBadBody:
+		case rmqemail.ErrBadBody:
 			delivery.Nack(false, false)
 		default:
 			delivery.Nack(false, true)
@@ -38,16 +35,14 @@ func ConsumeFromQueue(consumer QueueConsumer, sender EmailSender) {
 
 func handleQueueMessage(body []byte, sender EmailSender) error {
 	// get email, name, otp from body
-	var email, name, otp string
-	bodySplit := strings.Split(string(body), " ")
-	if len(bodySplit) != 3 {
-		return ErrBadBody
+	emBody, err := rmqemail.VerifyBody(body)
+	if err != nil {
+		return err
 	}
-	email, name, otp = bodySplit[0], bodySplit[1], bodySplit[2]
 
 	// send otp email
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	return sender.SendOtp(ctx, email, name, otp)
+	return sender.SendOtp(ctx, emBody.Email, emBody.Name, emBody.Otp)
 }
