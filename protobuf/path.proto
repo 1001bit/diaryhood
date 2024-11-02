@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package pathpb;
+
+option go_package = "./pathpb";
+
+service PathService {
+
+}
