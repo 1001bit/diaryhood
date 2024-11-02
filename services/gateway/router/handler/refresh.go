@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/gateway/userpb"
+	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

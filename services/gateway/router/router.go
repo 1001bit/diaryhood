@@ -7,8 +7,8 @@ import (
 
 	"github.com/1001bit/pathgoer/services/gateway/router/handler"
 	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
+	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
-	"github.com/1001bit/pathgoer/services/gateway/userpb"
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"

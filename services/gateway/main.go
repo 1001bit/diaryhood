@@ -8,8 +8,8 @@ import (
 
 	"github.com/1001bit/pathgoer/services/gateway/grpcclient"
 	"github.com/1001bit/pathgoer/services/gateway/router"
+	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
-	"github.com/1001bit/pathgoer/services/gateway/userpb"
 )
 
 func init() {

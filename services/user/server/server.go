@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net"
 
+	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
-	"github.com/1001bit/pathgoer/services/user/userpb"
 	"google.golang.org/grpc"
 )
 

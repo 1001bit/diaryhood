@@ -44,8 +44,8 @@ templ:
 protoc:
 	@echo "\nGenerating user protoc..."
 	$(PROTOC) \
-	--go_out=$(GATEWAY_PATH) --go-grpc_out=$(GATEWAY_PATH) \
-    --go_out=$(USER_PATH) --go-grpc_out=$(USER_PATH) \
+	--go_out=$(GATEWAY_PATH)/shared --go-grpc_out=$(GATEWAY_PATH)/shared \
+    --go_out=$(USER_PATH)/shared --go-grpc_out=$(USER_PATH)/shared \
     protobuf/user.proto
 
 # Compile typescript files

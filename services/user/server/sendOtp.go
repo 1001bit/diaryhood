@@ -7,7 +7,7 @@ import (
 	"net/mail"
 
 	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
-	"github.com/1001bit/pathgoer/services/user/userpb"
+	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
