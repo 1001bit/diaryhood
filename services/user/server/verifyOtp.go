@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"log/slog"
 
 	"github.com/1001bit/pathgoer/services/user/accesstoken"
@@ -16,13 +17,21 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 	}
 
 	// Ask userservice for name and id by email
-	username, id, err := s.userStore.GetNameAndIdByEmail(ctx, req.Email)
-	if err != nil {
+	name, id, err := s.userStore.GetNameAndIdByEmail(ctx, req.Email)
+	if err == sql.ErrNoRows {
+		// Create new user if doesn't exist
+		name, id, err = s.userStore.CreateUserGetNameAndId(ctx, req.Email)
+		if err != nil {
+			slog.With("err", err).Error("Failed to create user")
+			return nil, status.Error(codes.Internal, "an error occurred")
+		}
+	} else if err != nil {
+		// if something went wrong
 		slog.With("err", err).Error("Failed to get name and id by email")
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	access, err := accesstoken.Generate(username)
+	access, err := accesstoken.Generate(name)
 	if err != nil {
 		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")

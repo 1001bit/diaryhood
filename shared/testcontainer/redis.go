@@ -14,6 +14,8 @@ func StartRedis(ctx context.Context) (testcontainers.Container, string, error) {
 	}
 
 	connStr, err := redisContainer.ConnectionString(ctx)
+	// remove redis:// from connstr
+	connStr = connStr[8:]
 	if err != nil {
 		return nil, "", err
 	}

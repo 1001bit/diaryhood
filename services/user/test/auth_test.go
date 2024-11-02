@@ -9,6 +9,7 @@ import (
 	"github.com/1001bit/pathgoer/services/user/server"
 	"github.com/1001bit/pathgoer/services/user/shared/amqpconn"
 	"github.com/1001bit/pathgoer/services/user/shared/database"
+	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
 	"github.com/1001bit/pathgoer/services/user/shared/testcontainer"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 )
@@ -36,7 +37,7 @@ func initServer(dbConnStr, amqpConnStr, refreshConnStr, otpConnStr string) (*ser
 func TestLoginFlow(t *testing.T) {
 	ctx := context.Background()
 
-	db, dbConnStr, err := testcontainer.StartPostgres(ctx, "../../sql/user-postgres.init.sql")
+	db, dbConnStr, err := testcontainer.StartPostgres(ctx, "../../../sql/user-postgres.init.sql")
 	if err != nil {
 		t.Fatalf("failed to start postgres: %v", err)
 	}
@@ -78,16 +79,11 @@ func TestLoginFlow(t *testing.T) {
 		close()
 	})
 
-	// TODO: Test the server in all the ways:
 	// Init rabbitMQ consumer (instead of email service)
-	// Send email via server (test all the inputs)
-	// Catch email from consumer
-	// Login with OTP from email (test all the inputs)
-	// Get profile
-	// Refresh the tokens
-	// Logout
-	// Login again
+	amqpConn := amqpconn.New(rmqConnStr)
+	amqpConn.Connect()
+	emailChan := make(chan *rmqemail.EmailBody, 1)
+	ConsumeFromQueue(amqpConn, emailChan)
 
-	_ = server
-	t.Skip("TestLoginFlow: TODO")
+	testServer(t, ctx, server, emailChan)
 }

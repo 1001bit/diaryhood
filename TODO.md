@@ -47,9 +47,10 @@
     [X] PLG Stack
     [X] Slog
     [X] More logs and levels
-[ ] Tests
+[X] Tests
     [X] Pass interfaces instead of implementations to server
     [X] Email unit test
-    [ ] user login flow test
+    [X] user login flow test
         [X] Setup containers and server for test
-        [ ] Actual tests
+        [X] Actual tests
+        [X] Find and fix a bug during testing

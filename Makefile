@@ -57,3 +57,7 @@ tscompile:
 copyshared:
 	@echo "\nCopying shared go files..."
 	$(SHARED) $(SHARED_PATH)
+
+# Tests
+test auth:
+	cd services/user/ ; go test -v ./... ; cd -

@@ -18,18 +18,7 @@ type EmailSender interface {
 
 func ConsumeFromQueue(consumer QueueConsumer, sender EmailSender) {
 	consumer.Consume("email", func(delivery amqp091.Delivery) error {
-		err := handleQueueMessage(delivery.Body, sender)
-
-		switch err {
-		case nil:
-			delivery.Ack(false)
-		case rmqemail.ErrBadBody:
-			delivery.Nack(false, false)
-		default:
-			delivery.Nack(false, true)
-		}
-
-		return err
+		return handleQueueMessage(delivery.Body, sender)
 	})
 }
 

@@ -72,6 +72,22 @@ func (us *UserStore) GetNameAndIdByEmail(ctx context.Context, email string) (str
 	return name, id, err
 }
 
+func (us *UserStore) CreateUserGetNameAndId(ctx context.Context, email string) (string, string, error) {
+	name := ""
+	id := ""
+
+	row, err := us.dbConn.QueryRowContext(ctx, "INSERT INTO users (email) VALUES ($1) RETURNING name, id", email)
+	if err != nil {
+		return "", "", err
+	}
+
+	err = row.Scan(&name, &id)
+	if err != nil {
+		return "", "", err
+	}
+	return name, id, err
+}
+
 func (us *UserStore) GetNameByID(ctx context.Context, id string) (string, error) {
 	name := ""
 
