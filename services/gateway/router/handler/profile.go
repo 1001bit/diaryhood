@@ -9,14 +9,14 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func HandleIdlessProfile(w http.ResponseWriter, r *http.Request) {
+func HandleIDlessProfile(w http.ResponseWriter, r *http.Request) {
 	username, ok := r.Context().Value("username").(string)
 	if !ok {
 		template.RefreshOrLogin().Render(r.Context(), w)
 		return
 	}
 
-	http.Redirect(w, r, "/profile/"+username, http.StatusSeeOther)
+	http.Redirect(w, r, "/user/"+username, http.StatusSeeOther)
 }
 
 func ProfileHandler(userclient userpb.UserServiceClient) http.HandlerFunc {

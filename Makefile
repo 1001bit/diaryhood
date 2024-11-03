@@ -66,8 +66,8 @@ copyshared:
 	$(SHARED) $(SHARED_PATH)
 
 # Tests
-test user:
+test-user:
 	cd services/user/ ; go test -v ./... ; cd -
 
-test path:
+test-path:
 	cd services/path/ ; go test -v ./... ; cd -

@@ -44,13 +44,13 @@ func New(userclient userpb.UserServiceClient, storageProxy StorageProxy) *chi.Mu
 		// Home
 		r.Get("/", handler.HandleHome)
 		// Pseudo Profile
-		r.Get("/profile", handler.HandleIdlessProfile)
+		r.Get("/user", handler.HandleIDlessProfile)
 		// Login page
 		r.Get("/login", handler.LoginPageHandler)
 	})
 
 	// Profile
-	r.Get("/profile/{name}", handler.ProfileHandler(userclient))
+	r.Get("/user/{name}", handler.ProfileHandler(userclient))
 
 	// Login API
 	r.Post("/login/email", handler.LoginEmailHandler(userclient))
