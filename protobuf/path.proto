@@ -5,18 +5,14 @@ package pathpb;
 option go_package = "./pathpb";
 
 service PathService {
-    rpc CreatePath(CreatePathRequest) returns (CreatePathResponse) {}
+    rpc CreatePath(CreatePathRequest) returns (Empty) {}
 }
 
+// CreatePath
 message CreatePathRequest {
-    int32 id = 1;
-    int32 userId = 2;
-    string name = 3;
-    bool public = 4;
-    int32 steps = 5;
-    map<string, int32> other_stats = 6;
+    int32 userId = 1;
+    string name = 2;
+    bool public = 3;
 }
 
-message CreatePathResponse {
-    // TODO: name or id
-}
+message Empty{}

@@ -10,16 +10,12 @@ import (
 
 func testServer(t *testing.T, ctx context.Context, server *server.Server) {
 	// Create path
-	_, err := server.CreatePath(ctx, &pathpb.CreatePathRequest{
-		Id:     1,
+	originalPath := &pathpb.CreatePathRequest{
 		UserId: 1,
 		Name:   "test",
-		Public: true,
-		Steps:  1,
-		OtherStats: map[string]int32{
-			"test": 1,
-		},
-	})
+		Public: false,
+	}
+	_, err := server.CreatePath(ctx, originalPath)
 
 	if err != nil {
 		t.Fatal("Expected nil, got:", err)

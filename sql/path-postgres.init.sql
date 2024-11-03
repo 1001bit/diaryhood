@@ -2,9 +2,7 @@ CREATE TABLE IF NOT EXISTS paths (
     id SERIAL PRIMARY KEY,
     user_id SERIAL NOT NULL,
     name VARCHAR(255) NOT NULL,
-    public BOOLEAN NOT NULL,
-    steps INT NOT NULL,
-    other_stats JSONB NOT NULL
+    public BOOLEAN NOT NULL
 );
 
 -- Make ownerId and id pair unique

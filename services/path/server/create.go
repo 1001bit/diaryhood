@@ -10,14 +10,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) CreatePath(ctx context.Context, req *pathpb.CreatePathRequest) (*pathpb.CreatePathResponse, error) {
+func (s *Server) CreatePath(ctx context.Context, req *pathpb.CreatePathRequest) (*pathpb.Empty, error) {
 	path := pathmodel.Path{
-		Id:     req.Id,
 		UserId: req.UserId,
 		Name:   req.Name,
 		Public: req.Public,
-		Steps:  req.Steps,
-		Stats:  req.OtherStats,
 	}
 
 	err := s.pathstore.CreatePath(ctx, path)
@@ -26,5 +23,5 @@ func (s *Server) CreatePath(ctx context.Context, req *pathpb.CreatePathRequest) 
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	return &pathpb.CreatePathResponse{}, nil
+	return &pathpb.Empty{}, nil
 }

@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PathServiceClient interface {
-	CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*CreatePathResponse, error)
+	CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type pathServiceClient struct {
@@ -33,8 +33,8 @@ func NewPathServiceClient(cc grpc.ClientConnInterface) PathServiceClient {
 	return &pathServiceClient{cc}
 }
 
-func (c *pathServiceClient) CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*CreatePathResponse, error) {
-	out := new(CreatePathResponse)
+func (c *pathServiceClient) CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/pathpb.PathService/CreatePath", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *pathServiceClient) CreatePath(ctx context.Context, in *CreatePathReques
 // All implementations must embed UnimplementedPathServiceServer
 // for forward compatibility
 type PathServiceServer interface {
-	CreatePath(context.Context, *CreatePathRequest) (*CreatePathResponse, error)
+	CreatePath(context.Context, *CreatePathRequest) (*Empty, error)
 	mustEmbedUnimplementedPathServiceServer()
 }
 
@@ -54,7 +54,7 @@ type PathServiceServer interface {
 type UnimplementedPathServiceServer struct {
 }
 
-func (UnimplementedPathServiceServer) CreatePath(context.Context, *CreatePathRequest) (*CreatePathResponse, error) {
+func (UnimplementedPathServiceServer) CreatePath(context.Context, *CreatePathRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePath not implemented")
 }
 func (UnimplementedPathServiceServer) mustEmbedUnimplementedPathServiceServer() {}
