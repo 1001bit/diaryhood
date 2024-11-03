@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PathServiceClient interface {
 	CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*Empty, error)
+	UpdateStats(ctx context.Context, in *UpdateStatsRequest, opts ...grpc.CallOption) (*Empty, error)
+	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
 }
 
 type pathServiceClient struct {
@@ -42,11 +44,31 @@ func (c *pathServiceClient) CreatePath(ctx context.Context, in *CreatePathReques
 	return out, nil
 }
 
+func (c *pathServiceClient) UpdateStats(ctx context.Context, in *UpdateStatsRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/pathpb.PathService/UpdateStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pathServiceClient) GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error) {
+	out := new(GetStatsResponse)
+	err := c.cc.Invoke(ctx, "/pathpb.PathService/GetStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PathServiceServer is the server API for PathService service.
 // All implementations must embed UnimplementedPathServiceServer
 // for forward compatibility
 type PathServiceServer interface {
 	CreatePath(context.Context, *CreatePathRequest) (*Empty, error)
+	UpdateStats(context.Context, *UpdateStatsRequest) (*Empty, error)
+	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
 	mustEmbedUnimplementedPathServiceServer()
 }
 
@@ -56,6 +78,12 @@ type UnimplementedPathServiceServer struct {
 
 func (UnimplementedPathServiceServer) CreatePath(context.Context, *CreatePathRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePath not implemented")
+}
+func (UnimplementedPathServiceServer) UpdateStats(context.Context, *UpdateStatsRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateStats not implemented")
+}
+func (UnimplementedPathServiceServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
 }
 func (UnimplementedPathServiceServer) mustEmbedUnimplementedPathServiceServer() {}
 
@@ -88,6 +116,42 @@ func _PathService_CreatePath_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PathService_UpdateStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PathServiceServer).UpdateStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pathpb.PathService/UpdateStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PathServiceServer).UpdateStats(ctx, req.(*UpdateStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PathService_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PathServiceServer).GetStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pathpb.PathService/GetStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PathServiceServer).GetStats(ctx, req.(*GetStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PathService_ServiceDesc is the grpc.ServiceDesc for PathService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +162,14 @@ var PathService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePath",
 			Handler:    _PathService_CreatePath_Handler,
+		},
+		{
+			MethodName: "UpdateStats",
+			Handler:    _PathService_UpdateStats_Handler,
+		},
+		{
+			MethodName: "GetStats",
+			Handler:    _PathService_GetStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

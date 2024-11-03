@@ -7,9 +7,7 @@ L0
 Doing:
 L1
     Paths for each player
-    Step counter for each path
-    Other stats for path (1 stat unit equals some number of steps)
-    Stats incrementers
+    Stats for path. One of them is steps. 1 Stat unit = Some step units
 
 Future:
 L1.5:

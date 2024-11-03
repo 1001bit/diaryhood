@@ -83,3 +83,24 @@ func (c *Client) QueryRowContext(ctx context.Context, query string, args ...inte
 	}
 	return c.db.QueryRowContext(ctx, query, args...), nil
 }
+
+func (c *Client) QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
+	if c.db == nil {
+		return nil, ErrNoConn
+	}
+	return c.db.QueryContext(ctx, query, args...)
+}
+
+func (c *Client) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	if c.db == nil {
+		return nil, ErrNoConn
+	}
+	return c.db.ExecContext(ctx, query, args...)
+}
+
+func (c *Client) BeginTx(ctx context.Context) (*sql.Tx, error) {
+	if c.db == nil {
+		return nil, ErrNoConn
+	}
+	return c.db.BeginTx(ctx, nil)
+}

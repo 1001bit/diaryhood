@@ -56,13 +56,11 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
-    [ ] Path creation
-        [ ] Backend
-            [X] Via gRPC
-            [ ] Via gateway
-        [ ] Frontend
-    [ ] Path page
-    [ ] Path edit
-    [ ] Adding tasks
-    [ ] Completing/removing tasks
-    [ ] Path deletion
+    [X] Path creation
+    [ ] Stats Edit
+        [X] Stats Update/Create
+        [ ] Steps stat
+        [ ] Step stat auto update
+        [ ] Stats delete
+    [ ] Path delete
+    [ ] Frontend

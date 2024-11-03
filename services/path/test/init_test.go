@@ -39,5 +39,7 @@ func TestPathService(t *testing.T) {
 		close()
 	})
 
-	testServer(t, ctx, server)
+	createPath(t, ctx, server)
+	createStats(t, ctx, server)
+	updateStats(t, ctx, server)
 }

@@ -6,6 +6,16 @@ option go_package = "./pathpb";
 
 service PathService {
     rpc CreatePath(CreatePathRequest) returns (Empty) {}
+    rpc UpdateStats(UpdateStatsRequest) returns (Empty) {}
+    rpc GetStats(GetStatsRequest) returns (GetStatsResponse) {}
+}
+
+message Empty{}
+
+message Stat {
+    string name = 1;
+    int32 count = 2;
+    int32 stepEquivalent = 3;
 }
 
 // CreatePath
@@ -15,4 +25,24 @@ message CreatePathRequest {
     bool public = 3;
 }
 
-message Empty{}
+// UpdateStats
+message UpdateStatsRequest {
+    int32 userId = 1;
+    string pathName = 2;
+
+    repeated Stat stats = 3;
+    
+    int32 askerId = 4;
+}
+
+// GetPathStats
+message GetStatsRequest {
+    int32 userId = 1;
+    string pathName = 2;
+
+    int32 askerId = 3;
+}
+
+message GetStatsResponse {
+    repeated Stat stats = 1;
+}
