@@ -9,21 +9,25 @@ import (
 	"github.com/1001bit/pathgoer/services/user/server"
 	"github.com/1001bit/pathgoer/services/user/shared/postgresclient"
 	"github.com/1001bit/pathgoer/services/user/shared/rabbitclient"
-	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
-	"github.com/1001bit/pathgoer/services/user/shared/testcontainer"
+	"github.com/1001bit/pathgoer/services/user/shared/rabbitemail"
+	"github.com/1001bit/pathgoer/services/user/shared/testcontainer/postgrestest"
+	"github.com/1001bit/pathgoer/services/user/shared/testcontainer/rabbittest"
+	"github.com/1001bit/pathgoer/services/user/shared/testcontainer/redistest"
 	"github.com/1001bit/pathgoer/services/user/usermodel"
 )
 
 func initServer(postgresConnStr, rabbitConnStr, refreshConnStr, otpConnStr string) (*server.Server, func()) {
 	// start database
 	postgresC := postgresclient.New(postgresConnStr)
-	go postgresC.Connect()
+	// no goroutine, need to wait
+	postgresC.Connect()
 	// models
 	userstore := usermodel.NewUserStore(postgresC)
 
 	// RabbitMQ connection
 	rabbitC := rabbitclient.New(rabbitConnStr)
-	go rabbitC.Connect()
+	// no goroutine, need to wait
+	rabbitC.Connect()
 
 	// refresh storage
 	refreshStorage := refreshstorage.New(refreshConnStr)
@@ -37,25 +41,25 @@ func initServer(postgresConnStr, rabbitConnStr, refreshConnStr, otpConnStr strin
 	}
 }
 
-func TestLoginFlow(t *testing.T) {
+func TestUserService(t *testing.T) {
 	ctx := context.Background()
 
-	postgres, postgresConnStr, err := testcontainer.StartPostgres(ctx, "../../../sql/user-postgres.init.sql")
+	postgres, postgresConnStr, err := postgrestest.StartContainer(ctx, "../../../sql/user-postgres.init.sql")
 	if err != nil {
 		t.Fatalf("failed to start postgres: %v", err)
 	}
 
-	otpRedis, otpRedisConnStr, err := testcontainer.StartRedis(ctx)
+	otpRedis, otpRedisConnStr, err := redistest.StartContainer(ctx)
 	if err != nil {
 		t.Fatalf("failed to start redis: %v", err)
 	}
 
-	refreshRedis, refreshRedisConnStr, err := testcontainer.StartRedis(ctx)
+	refreshRedis, refreshRedisConnStr, err := redistest.StartContainer(ctx)
 	if err != nil {
 		t.Fatalf("failed to start redis: %v", err)
 	}
 
-	rabbit, rabbitConnStr, err := testcontainer.StartRabbitMQ(ctx)
+	rabbit, rabbitConnStr, err := rabbittest.StartContainer(ctx)
 	if err != nil {
 		t.Fatalf("failed to start rabbitmq: %v", err)
 	}
@@ -85,7 +89,7 @@ func TestLoginFlow(t *testing.T) {
 	// Init rabbitMQ consumer (instead of email service)
 	rabbitC := rabbitclient.New(rabbitConnStr)
 	rabbitC.Connect()
-	emailChan := make(chan *rmqemail.EmailBody, 1)
+	emailChan := make(chan *rabbitemail.EmailBody, 1)
 	ConsumeFromQueue(rabbitC, emailChan)
 
 	testServer(t, ctx, server, emailChan)

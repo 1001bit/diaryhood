@@ -1,4 +1,4 @@
-package testcontainer
+package redistest
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/redis"
 )
 
-func StartRedis(ctx context.Context) (testcontainers.Container, string, error) {
+func StartContainer(ctx context.Context) (testcontainers.Container, string, error) {
 	redisContainer, err := redis.Run(ctx, "redis:7.4-alpine")
 	if err != nil {
 		return nil, "", err

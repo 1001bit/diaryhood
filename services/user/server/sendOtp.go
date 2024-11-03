@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/mail"
 
-	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
+	"github.com/1001bit/pathgoer/services/user/shared/rabbitemail"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,7 +34,7 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 	}
 
 	// send otp to rabbitmq queue
-	err = s.publisher.Publish("email", rmqemail.NewBody(email, name, otp))
+	err = s.publisher.Publish("email", rabbitemail.NewBody(email, name, otp))
 	if err != nil {
 		slog.With("err", err).Error("Failed to publish email to RabbitMQ")
 		return nil, status.Error(codes.Internal, "an error occurred")

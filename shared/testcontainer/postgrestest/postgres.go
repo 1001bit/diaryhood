@@ -1,4 +1,4 @@
-package testcontainer
+package postgrestest
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func StartPostgres(ctx context.Context, initPath string) (testcontainers.Container, string, error) {
+func StartContainer(ctx context.Context, initPath string) (testcontainers.Container, string, error) {
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:17-alpine",
 		postgres.WithInitScripts(initPath),

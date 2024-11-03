@@ -16,7 +16,7 @@ def process_directory(root_dir):
                 target_dirs = [line.strip() for line in f]
 
             for target_dir in target_dirs:
-                shared_subdir = os.path.join(target_dir, 'shared', os.path.basename(dirpath))
+                shared_subdir = os.path.join(target_dir, dirpath)
                 os.makedirs(shared_subdir, exist_ok=True)
                 copy_directory(dirpath, shared_subdir)
 

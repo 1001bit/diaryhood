@@ -57,8 +57,10 @@
 
 [ ] Path service
     [ ] Path creation
-        [ ] Frontend
         [ ] Backend
+            [X] Via gRPC
+            [ ] Via gateway
+        [ ] Frontend
     [ ] Path page
     [ ] Path edit
     [ ] Adding tasks

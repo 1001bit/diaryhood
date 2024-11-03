@@ -1,4 +1,4 @@
-package testcontainer
+package rabbittest
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/rabbitmq"
 )
 
-func StartRabbitMQ(ctx context.Context) (testcontainers.Container, string, error) {
+func StartContainer(ctx context.Context) (testcontainers.Container, string, error) {
 	rmqContainer, err := rabbitmq.Run(ctx, "rabbitmq:4.0.2-management")
 
 	if err != nil {

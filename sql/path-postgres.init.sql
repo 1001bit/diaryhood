@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS paths (
     name VARCHAR(255) NOT NULL,
     public BOOLEAN NOT NULL,
     steps INT NOT NULL,
-    other_stats JSONB NOT NULL,
+    other_stats JSONB NOT NULL
 );
 
 -- Make ownerId and id pair unique
-CREATE UNIQUE INDEX IF NOT EXISTS paths_ownerId_id_unique ON paths (ownerId, id)
+CREATE UNIQUE INDEX IF NOT EXISTS paths_userid_id_unique ON paths (user_id, id)

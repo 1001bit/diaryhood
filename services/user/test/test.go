@@ -7,13 +7,13 @@ import (
 
 	"github.com/1001bit/pathgoer/services/user/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/server"
-	"github.com/1001bit/pathgoer/services/user/shared/rmqemail"
+	"github.com/1001bit/pathgoer/services/user/shared/rabbitemail"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func testServer(t *testing.T, ctx context.Context, server *server.Server, emailChan <-chan *rmqemail.EmailBody) {
+func testServer(t *testing.T, ctx context.Context, server *server.Server, emailChan <-chan *rabbitemail.EmailBody) {
 	// Send Bad Login
 	_, err := server.SendOtpEmail(ctx, &userpb.SendOtpEmailRequest{Login: "unknown"})
 	if status.Code(err) != codes.NotFound {
