@@ -7,9 +7,11 @@ option go_package = "./pathpb";
 service PathService {
     rpc CreatePath(CreatePathRequest) returns (Empty) {}
     rpc UpdateStats(UpdateStatsRequest) returns (Empty) {}
-    rpc GetStats(GetStatsRequest) returns (GetStatsResponse) {}
+    rpc DeleteStats(DeleteStatsRequest) returns (Empty) {}
+    rpc GetStats(PathAccessRequest) returns (GetStatsResponse) {}
 }
 
+// General
 message Empty{}
 
 message Stat {
@@ -18,31 +20,32 @@ message Stat {
     int32 stepEquivalent = 3;
 }
 
+message PathAccessRequest {
+    int32 userId = 1;
+    string pathName = 2;
+    int32 askerId = 3;
+}
+
 // CreatePath
 message CreatePathRequest {
     int32 userId = 1;
-    string name = 2;
+    string pathName = 2;
     bool public = 3;
 }
 
 // UpdateStats
 message UpdateStatsRequest {
-    int32 userId = 1;
-    string pathName = 2;
-
-    repeated Stat stats = 3;
-    
-    int32 askerId = 4;
+    PathAccessRequest access = 1;
+    repeated Stat stats = 2;
 }
 
-// GetPathStats
-message GetStatsRequest {
-    int32 userId = 1;
-    string pathName = 2;
-
-    int32 askerId = 3;
+// DeleteStats
+message DeleteStatsRequest {
+    PathAccessRequest access = 1;
+    repeated string statNames = 2;
 }
 
+// GetStats
 message GetStatsResponse {
-    repeated Stat stats = 1;
+    repeated Stat stats = 2;
 }

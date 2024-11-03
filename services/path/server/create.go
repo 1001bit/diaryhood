@@ -2,25 +2,21 @@ package server
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/1001bit/pathgoer/services/path/pathmodel"
 	"github.com/1001bit/pathgoer/services/path/shared/pathpb"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Server) CreatePath(ctx context.Context, req *pathpb.CreatePathRequest) (*pathpb.Empty, error) {
 	path := pathmodel.Path{
 		UserId: req.UserId,
-		Name:   req.Name,
+		Name:   req.PathName,
 		Public: req.Public,
 	}
 
 	err := s.pathstore.CreatePath(ctx, path)
 	if err != nil {
-		slog.With("err", err).Error("Failed to create path")
-		return nil, status.Error(codes.Internal, "an error occurred")
+		return nil, handleSqlError(err, "Failed to create path")
 	}
 
 	return &pathpb.Empty{}, nil

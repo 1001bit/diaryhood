@@ -10,9 +10,9 @@ import (
 
 func createPath(t *testing.T, ctx context.Context, s *server.Server) {
 	originalPath := &pathpb.CreatePathRequest{
-		UserId: 1,
-		Name:   "test",
-		Public: false,
+		UserId:   1,
+		PathName: "test",
+		Public:   false,
 	}
 	_, err := s.CreatePath(ctx, originalPath)
 

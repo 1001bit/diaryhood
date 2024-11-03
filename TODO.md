@@ -57,10 +57,9 @@
 
 [ ] Path service
     [X] Path creation
-    [ ] Stats Edit
+    [X] Stats
+        [X] Stats Get
         [X] Stats Update/Create
-        [ ] Steps stat
-        [ ] Step stat auto update
-        [ ] Stats delete
+        [X] Stats delete
     [ ] Path delete
-    [ ] Frontend
+    [ ] Frontend (steps are calculated here)

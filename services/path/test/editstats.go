@@ -10,27 +10,29 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func compareServerStatsToLocal(t *testing.T, ctx context.Context, s *server.Server, localStats []*pathpb.Stat) {
-	stats, err := s.GetStats(ctx, &pathpb.GetStatsRequest{
+func compareServerStatsToLocal(ctx context.Context, s *server.Server, localStats []*pathpb.Stat) (bool, error) {
+	stats, err := s.GetStats(ctx, &pathpb.PathAccessRequest{
 		UserId:   1,
 		PathName: "test",
 		AskerId:  1,
 	})
 	if err != nil {
-		t.Fatal("Expected nil, got:", err)
+		return false, err
 	}
 
 	if len(stats.Stats) != len(localStats) {
-		t.Fatal("Server stats are not equal to test stats")
+		return false, nil
 	}
 
 	dbStatsModel := server.PbStatsToModel(stats.Stats)
 	testStatsModel := server.PbStatsToModel(localStats)
 	for i := range len(localStats) {
 		if dbStatsModel[i] != testStatsModel[i] {
-			t.Fatal("Server stats are not equal to test stats")
+			return false, nil
 		}
 	}
+
+	return true, nil
 }
 
 func createStats(t *testing.T, ctx context.Context, s *server.Server) {
@@ -44,10 +46,12 @@ func createStats(t *testing.T, ctx context.Context, s *server.Server) {
 
 	// Another user tries to access private path
 	_, err := s.UpdateStats(ctx, &pathpb.UpdateStatsRequest{
-		UserId:   1,
-		PathName: "test",
-		AskerId:  2,
-		Stats:    testStats,
+		Access: &pathpb.PathAccessRequest{
+			UserId:   1,
+			PathName: "unknown",
+			AskerId:  2,
+		},
+		Stats: testStats,
 	})
 	if status.Code(err) != codes.NotFound {
 		t.Fatal("Expected not found, got:", err)
@@ -55,10 +59,12 @@ func createStats(t *testing.T, ctx context.Context, s *server.Server) {
 
 	// Unknown path name
 	_, err = s.UpdateStats(ctx, &pathpb.UpdateStatsRequest{
-		UserId:   1,
-		PathName: "unknown",
-		AskerId:  1,
-		Stats:    testStats,
+		Access: &pathpb.PathAccessRequest{
+			UserId:   1,
+			PathName: "unknown",
+			AskerId:  1,
+		},
+		Stats: testStats,
 	})
 	if status.Code(err) != codes.NotFound {
 		t.Fatal("Expected not found, got:", err)
@@ -66,17 +72,25 @@ func createStats(t *testing.T, ctx context.Context, s *server.Server) {
 
 	// Good
 	_, err = s.UpdateStats(ctx, &pathpb.UpdateStatsRequest{
-		UserId:   1,
-		PathName: "test",
-		AskerId:  1,
-		Stats:    testStats,
+		Access: &pathpb.PathAccessRequest{
+			UserId:   1,
+			PathName: "test",
+			AskerId:  1,
+		},
+		Stats: testStats,
 	})
 	if err != nil {
 		t.Fatal("Expected nil, got:", err)
 	}
 
 	// Compare stats from db and local stats
-	compareServerStatsToLocal(t, ctx, s, testStats)
+	same, err := compareServerStatsToLocal(ctx, s, testStats)
+	if err != nil {
+		t.Fatal("Expected nil, got:", err)
+	}
+	if !same {
+		t.Fatal("stats not equal")
+	}
 }
 
 func updateStats(t *testing.T, ctx context.Context, s *server.Server) {
@@ -90,15 +104,45 @@ func updateStats(t *testing.T, ctx context.Context, s *server.Server) {
 
 	// Update stats
 	_, err := s.UpdateStats(ctx, &pathpb.UpdateStatsRequest{
-		UserId:   1,
-		PathName: "test",
-		AskerId:  1,
-		Stats:    testStats,
+		Access: &pathpb.PathAccessRequest{
+			UserId:   1,
+			PathName: "test",
+			AskerId:  1,
+		},
+		Stats: testStats,
 	})
 	if err != nil {
 		t.Fatal("Expected nil, got:", err)
 	}
 
 	// Compare stats from db and local stats
-	compareServerStatsToLocal(t, ctx, s, testStats)
+	same, err := compareServerStatsToLocal(ctx, s, testStats)
+	if err != nil {
+		t.Fatal("Expected nil, got:", err)
+	}
+	if !same {
+		t.Fatal("stats not equal")
+	}
+
+	// Delete stats
+	_, err = s.DeleteStats(ctx, &pathpb.DeleteStatsRequest{
+		Access: &pathpb.PathAccessRequest{
+			UserId:   1,
+			PathName: "test",
+			AskerId:  1,
+		},
+		StatNames: []string{"test"},
+	})
+	if err != nil {
+		t.Fatal("Expected nil, got:", err)
+	}
+
+	// Compare stats from db and local stats
+	same, err = compareServerStatsToLocal(ctx, s, []*pathpb.Stat{})
+	if err != nil {
+		t.Fatal("Expected nil, got:", err)
+	}
+	if !same {
+		t.Fatal("stats not equal")
+	}
 }

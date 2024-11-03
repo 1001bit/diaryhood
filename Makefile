@@ -16,6 +16,8 @@ PATH_PATH = services/path
 # Build and start
 all: build up
 
+gencopy: templ protoc copyshared
+
 # Build the Docker containers
 build:
 	@echo "\nBuilding Docker containers..."
@@ -55,15 +57,15 @@ protoc:
     --go_out=$(PATH_PATH)/shared --go-grpc_out=$(PATH_PATH)/shared \
     protobuf/path.proto
 
-# Compile typescript files
-tscompile:
-	@echo "\nCompiling typescript files..."
-	$(TSCOMPILER) $(TS_PATH)
-
 # Copy shared files to their destinations
 copyshared:
 	@echo "\nCopying shared go files..."
 	$(SHARED) $(SHARED_PATH)
+
+# Compile typescript files
+tscompile:
+	@echo "\nCompiling typescript files..."
+	$(TSCOMPILER) $(TS_PATH)
 
 # Tests
 test-user:
