@@ -5,47 +5,5 @@ package pathpb;
 option go_package = "./pathpb";
 
 service PathService {
-    rpc CreatePath(CreatePathRequest) returns (Empty) {}
-    rpc UpdateStats(UpdateStatsRequest) returns (Empty) {}
-    rpc DeleteStats(DeleteStatsRequest) returns (Empty) {}
-    rpc GetStats(PathAccessRequest) returns (GetStatsResponse) {}
-}
-
-// General
-message Empty{}
-
-message Stat {
-    string name = 1;
-    int32 count = 2;
-    int32 stepEquivalent = 3;
-}
-
-message PathAccessRequest {
-    int32 userId = 1;
-    string pathName = 2;
-    int32 askerId = 3;
-}
-
-// CreatePath
-message CreatePathRequest {
-    int32 userId = 1;
-    string pathName = 2;
-    bool public = 3;
-}
-
-// UpdateStats
-message UpdateStatsRequest {
-    PathAccessRequest access = 1;
-    repeated Stat stats = 2;
-}
-
-// DeleteStats
-message DeleteStatsRequest {
-    PathAccessRequest access = 1;
-    repeated string statNames = 2;
-}
-
-// GetStats
-message GetStatsResponse {
-    repeated Stat stats = 2;
+    
 }

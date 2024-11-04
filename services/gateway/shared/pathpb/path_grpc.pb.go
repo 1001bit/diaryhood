@@ -7,10 +7,7 @@
 package pathpb
 
 import (
-	context "context"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,10 +19,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PathServiceClient interface {
-	CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*Empty, error)
-	UpdateStats(ctx context.Context, in *UpdateStatsRequest, opts ...grpc.CallOption) (*Empty, error)
-	DeleteStats(ctx context.Context, in *DeleteStatsRequest, opts ...grpc.CallOption) (*Empty, error)
-	GetStats(ctx context.Context, in *PathAccessRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
 }
 
 type pathServiceClient struct {
@@ -36,50 +29,10 @@ func NewPathServiceClient(cc grpc.ClientConnInterface) PathServiceClient {
 	return &pathServiceClient{cc}
 }
 
-func (c *pathServiceClient) CreatePath(ctx context.Context, in *CreatePathRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/pathpb.PathService/CreatePath", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *pathServiceClient) UpdateStats(ctx context.Context, in *UpdateStatsRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/pathpb.PathService/UpdateStats", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *pathServiceClient) DeleteStats(ctx context.Context, in *DeleteStatsRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/pathpb.PathService/DeleteStats", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *pathServiceClient) GetStats(ctx context.Context, in *PathAccessRequest, opts ...grpc.CallOption) (*GetStatsResponse, error) {
-	out := new(GetStatsResponse)
-	err := c.cc.Invoke(ctx, "/pathpb.PathService/GetStats", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // PathServiceServer is the server API for PathService service.
 // All implementations must embed UnimplementedPathServiceServer
 // for forward compatibility
 type PathServiceServer interface {
-	CreatePath(context.Context, *CreatePathRequest) (*Empty, error)
-	UpdateStats(context.Context, *UpdateStatsRequest) (*Empty, error)
-	DeleteStats(context.Context, *DeleteStatsRequest) (*Empty, error)
-	GetStats(context.Context, *PathAccessRequest) (*GetStatsResponse, error)
 	mustEmbedUnimplementedPathServiceServer()
 }
 
@@ -87,18 +40,6 @@ type PathServiceServer interface {
 type UnimplementedPathServiceServer struct {
 }
 
-func (UnimplementedPathServiceServer) CreatePath(context.Context, *CreatePathRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreatePath not implemented")
-}
-func (UnimplementedPathServiceServer) UpdateStats(context.Context, *UpdateStatsRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateStats not implemented")
-}
-func (UnimplementedPathServiceServer) DeleteStats(context.Context, *DeleteStatsRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteStats not implemented")
-}
-func (UnimplementedPathServiceServer) GetStats(context.Context, *PathAccessRequest) (*GetStatsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
-}
 func (UnimplementedPathServiceServer) mustEmbedUnimplementedPathServiceServer() {}
 
 // UnsafePathServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -112,102 +53,13 @@ func RegisterPathServiceServer(s grpc.ServiceRegistrar, srv PathServiceServer) {
 	s.RegisterService(&PathService_ServiceDesc, srv)
 }
 
-func _PathService_CreatePath_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreatePathRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PathServiceServer).CreatePath(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pathpb.PathService/CreatePath",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PathServiceServer).CreatePath(ctx, req.(*CreatePathRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PathService_UpdateStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateStatsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PathServiceServer).UpdateStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pathpb.PathService/UpdateStats",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PathServiceServer).UpdateStats(ctx, req.(*UpdateStatsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PathService_DeleteStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteStatsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PathServiceServer).DeleteStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pathpb.PathService/DeleteStats",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PathServiceServer).DeleteStats(ctx, req.(*DeleteStatsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PathService_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PathAccessRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PathServiceServer).GetStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pathpb.PathService/GetStats",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PathServiceServer).GetStats(ctx, req.(*PathAccessRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // PathService_ServiceDesc is the grpc.ServiceDesc for PathService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PathService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pathpb.PathService",
 	HandlerType: (*PathServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "CreatePath",
-			Handler:    _PathService_CreatePath_Handler,
-		},
-		{
-			MethodName: "UpdateStats",
-			Handler:    _PathService_UpdateStats_Handler,
-		},
-		{
-			MethodName: "DeleteStats",
-			Handler:    _PathService_DeleteStats_Handler,
-		},
-		{
-			MethodName: "GetStats",
-			Handler:    _PathService_GetStats_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "protobuf/path.proto",
+	Methods:     []grpc.MethodDesc{},
+	Streams:     []grpc.StreamDesc{},
+	Metadata:    "protobuf/path.proto",
 }

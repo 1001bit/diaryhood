@@ -56,10 +56,4 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
-    [X] Path creation
-    [X] Stats
-        [X] Stats Get
-        [X] Stats Update/Create
-        [X] Stats delete
-    [ ] Path delete
-    [ ] Frontend (steps are calculated here)
+    [ ] Use graphQL for path operations

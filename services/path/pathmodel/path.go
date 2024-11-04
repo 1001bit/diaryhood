@@ -16,6 +16,15 @@ func (ps *PathStore) CreatePath(ctx context.Context, path Path) error {
 	return err
 }
 
+func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {
+	_, err := ps.postgresC.ExecContext(ctx, `
+		DELETE FROM paths
+		WHERE id = $1
+	`, pathId)
+
+	return err
+}
+
 func (ps *PathStore) GetPathId(ctx context.Context, pathName string, userId, askerId int32) (int32, error) {
 	var id int32
 	row, err := ps.postgresC.QueryRowContext(ctx, `

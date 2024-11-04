@@ -10,19 +10,6 @@ import (
 	"github.com/1001bit/pathgoer/services/path/shared/testcontainer/postgrestest"
 )
 
-func initServer(dbConnStr string) (*server.Server, func()) {
-	// start database
-	postrgesC := postgresclient.New(dbConnStr)
-	postrgesC.Connect()
-	// models
-	pathstore := pathmodel.NewPathStore(postrgesC)
-
-	// user server
-	return server.New(pathstore), func() {
-		postrgesC.Close()
-	}
-}
-
 func TestPathService(t *testing.T) {
 	ctx := context.Background()
 
@@ -39,7 +26,18 @@ func TestPathService(t *testing.T) {
 		close()
 	})
 
-	createPath(t, ctx, server)
-	createStats(t, ctx, server)
-	updateStats(t, ctx, server)
+	_ = server
+}
+
+func initServer(dbConnStr string) (*server.Server, func()) {
+	// start database
+	postrgesC := postgresclient.New(dbConnStr)
+	postrgesC.Connect()
+	// models
+	pathstore := pathmodel.NewPathStore(postrgesC)
+
+	// user server
+	return server.New(pathstore), func() {
+		postrgesC.Close()
+	}
 }
