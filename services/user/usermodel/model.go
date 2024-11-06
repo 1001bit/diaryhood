@@ -24,7 +24,7 @@ func NewUserStore(postrgesC *postgresclient.Client) *UserStore {
 	}
 }
 
-func (us *UserStore) GetProfile(ctx context.Context, name string) (*Profile, error) {
+func (us *UserStore) GetProfileByName(ctx context.Context, name string) (*Profile, error) {
 	profile := &Profile{}
 
 	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name, date FROM users WHERE LOWER(name) = LOWER($1)", name)
@@ -40,7 +40,7 @@ func (us *UserStore) GetProfile(ctx context.Context, name string) (*Profile, err
 	return profile, nil
 }
 
-func (us *UserStore) GetNameAndEmail(ctx context.Context, login string) (string, string, error) {
+func (us *UserStore) GetNameAndEmailByLogin(ctx context.Context, login string) (string, string, error) {
 	var name, email string
 
 	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name, email FROM users WHERE LOWER(name) = LOWER($1) OR LOWER(email) = LOWER($1)", login)
@@ -88,7 +88,7 @@ func (us *UserStore) CreateUserGetNameAndId(ctx context.Context, email string) (
 	return name, id, err
 }
 
-func (us *UserStore) GetNameByID(ctx context.Context, id string) (string, error) {
+func (us *UserStore) GetNameById(ctx context.Context, id string) (string, error) {
 	name := ""
 
 	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name FROM users WHERE id = $1", id)

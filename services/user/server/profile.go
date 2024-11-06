@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) (*userpb.GetProfileResponse, error) {
-	profile, err := s.userStore.GetProfile(ctx, req.Name)
+	profile, err := s.userStore.GetProfileByName(ctx, req.Name)
 
 	if err == sql.ErrNoRows {
 		return nil, status.Error(codes.NotFound, "not found")

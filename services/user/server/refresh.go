@@ -21,7 +21,7 @@ func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokenRequ
 	}
 
 	// Get username by userID
-	username, err := s.userStore.GetNameByID(ctx, userID)
+	username, err := s.userStore.GetNameById(ctx, userID)
 	if err != nil {
 		slog.With("err", err).Error("Failed to get username by id")
 		return nil, status.Error(codes.Internal, "an error occurred")

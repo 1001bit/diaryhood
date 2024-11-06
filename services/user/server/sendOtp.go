@@ -13,7 +13,7 @@ import (
 )
 
 func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailRequest) (*userpb.SendOtpEmailResponse, error) {
-	name, email, err := s.userStore.GetNameAndEmail(ctx, req.Login)
+	name, email, err := s.userStore.GetNameAndEmailByLogin(ctx, req.Login)
 	if err == sql.ErrNoRows {
 		if !emailValid(req.Login) {
 			return nil, status.Error(codes.NotFound, "no such user")

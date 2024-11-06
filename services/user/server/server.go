@@ -11,11 +11,11 @@ import (
 )
 
 type UserStorage interface {
-	GetNameAndEmail(ctx context.Context, login string) (string, string, error)
-	GetProfile(ctx context.Context, name string) (*usermodel.Profile, error)
+	GetNameAndEmailByLogin(ctx context.Context, login string) (string, string, error)
+	GetProfileByName(ctx context.Context, name string) (*usermodel.Profile, error)
 	GetNameAndIdByEmail(ctx context.Context, email string) (string, string, error)
 	CreateUserGetNameAndId(ctx context.Context, email string) (string, string, error)
-	GetNameByID(ctx context.Context, id string) (string, error)
+	GetNameById(ctx context.Context, id string) (string, error)
 }
 
 type OtpStorage interface {
