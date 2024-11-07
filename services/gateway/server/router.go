@@ -76,7 +76,7 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 		r.Use(middleware.JwtToHeader)
 
 		// Path
-		r.Handle("/path/*", pathProxy.ReverseProxy("/path"))
+		r.Handle("/api/path/*", pathProxy.ReverseProxy("/api/path"))
 	})
 
 	// 404

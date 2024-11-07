@@ -56,6 +56,14 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
+    [ ] Database
+        [X] Path
+        [X] Stats
+        [ ] Tasks
     [X] Path http dummy server
     [X] Path http proxy on gateway
+    [ ] Frontend
+        [ ] Profile page with paths+stats
+        [ ] Path page with path + stats + tasks
+        [ ] Home page with paths + tasks
     [ ] Path http server

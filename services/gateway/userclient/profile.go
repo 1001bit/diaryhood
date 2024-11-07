@@ -2,6 +2,7 @@ package userclient
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
@@ -23,5 +24,19 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template.Profile(response.Name, response.Date).Render(r.Context(), w)
+	date, err := formatPostgresDate(response.Date)
+	if err != nil {
+		date = "unknown"
+	}
+
+	template.Profile(response.Name, date).Render(r.Context(), w)
+}
+
+func formatPostgresDate(dateStr string) (string, error) {
+	t, err := time.Parse("2006-01-02T15:04:05Z", dateStr)
+	if err != nil {
+		return "", err
+	}
+
+	return t.Format("2 January 2006"), nil
 }
