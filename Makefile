@@ -11,7 +11,6 @@ TS_PATH = typescript
 SHARED_PATH = shared
 GATEWAY_PATH = services/gateway
 USER_PATH = services/user
-PATH_PATH = services/path
 
 # Build and start
 all: build up
@@ -50,12 +49,6 @@ protoc:
 	--go_out=$(GATEWAY_PATH)/shared --go-grpc_out=$(GATEWAY_PATH)/shared \
     --go_out=$(USER_PATH)/shared --go-grpc_out=$(USER_PATH)/shared \
     protobuf/user.proto
-
-	@echo "\nGenerating path protoc..."
-	$(PROTOC) \
-	--go_out=$(GATEWAY_PATH)/shared --go-grpc_out=$(GATEWAY_PATH)/shared \
-    --go_out=$(PATH_PATH)/shared --go-grpc_out=$(PATH_PATH)/shared \
-    protobuf/path.proto
 
 # Copy shared files to their destinations
 copyshared:

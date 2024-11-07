@@ -56,4 +56,4 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
-    [ ] Use graphQL for path operations
+    [ ] Use http for path service
