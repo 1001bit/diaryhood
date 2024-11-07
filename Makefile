@@ -15,7 +15,8 @@ USER_PATH = services/user
 # Build and start
 all: build up
 
-gencopy: templ protoc copyshared
+# build and copy all files that are needed
+gencopy: templ protoc copyshared tscompile
 
 # Build the Docker containers
 build:

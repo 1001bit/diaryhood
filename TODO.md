@@ -38,6 +38,7 @@
         [X] RefreshUUID Gen
         [X] Tokens Refresh
         [X] Logout
+        [X] Test
         [ ] Username change
 
 [X] Shared code
@@ -47,23 +48,17 @@
     [X] PLG Stack
     [X] Slog
     [X] More logs and levels
-[X] Tests
-    [X] Pass interfaces instead of implementations to server
-    [X] Email unit test
-    [X] user login flow test
-        [X] Setup containers and server for test
-        [X] Actual tests
-        [X] Find and fix a bug during testing
 
 [ ] Path service
-    [ ] Database
+    [X] Database
         [X] Path
         [X] Stats
-        [ ] Tasks
     [X] Path http dummy server
     [X] Path http proxy on gateway
     [ ] Frontend
-        [ ] Profile page with paths+stats
-        [ ] Path page with path + stats + tasks
-        [ ] Home page with paths + tasks
+        [ ] Profile page with paths + stats
+            [X] Dummy layout
+            [ ] Use templ variables to fill the layout
+        [ ] Path page with path + stats (w incrementers)
+        [ ] Home page with paths or their statistics or smth else
     [ ] Path http server

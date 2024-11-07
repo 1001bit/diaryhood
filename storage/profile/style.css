@@ -1,0 +1,55 @@
+main {
+	display: flex;
+	gap: 6%;
+	justify-content: center;
+}
+
+.path {
+	display: flex;
+	padding: 20px;
+	border: 2px solid var(--main1-dim);
+	border-radius: 4px;
+	flex-direction: column;
+	width: fit-content;
+	justify-content: center;
+	align-items: center;
+}
+
+.path:hover {
+	border: 2px solid var(--main1);
+}
+
+.line-separator {
+	margin-block: 10px;
+}
+
+a.path {
+	color: var(--main1);
+}
+
+a.path:hover {
+	text-decoration: none;
+}
+
+/* profile box (left) */
+#profile-box {
+	max-width: 200px;
+}
+
+.avatar {
+	width: 100%;
+	border-radius: 100%;
+	border: 2px solid var(--main1-dim);
+}
+
+/* Paths (right) */
+#paths {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 40%;
+	height: fit-content;
+	border: 1px solid var(--main1-dim);
+	border-radius: 4px;
+	padding: 12px;
+}

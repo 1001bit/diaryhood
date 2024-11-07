@@ -4,12 +4,32 @@ templ Profile(name, date string) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
+			<link rel="stylesheet" href="/storage/profile/style.css"/>
 		</head>
 		<body>
 			@nav(name)
 			<main>
-				<h3>{ name }'s profile!</h3>
-				<p>member since { date }</p>
+				<div id="profile-box">
+					// TODO: Avatar
+					<img class="avatar" src="avatar.png"/>
+					<div class="line-separator"></div>
+					<p>
+						member since
+						<br/>
+						{ date }
+					</p>
+					<div class="line-separator"></div>
+					// TODO: Steps data
+					<p>999 steps</p>
+				</div>
+				<div id="paths">
+					// TODO: paths
+					<a href="#/path/1" class="path">
+						<p>999 steps</p>
+						<div class="line-separator"></div>
+						<h3>path1</h3>
+					</a>
+				</div>
 			</main>
 		</body>
 	</html>

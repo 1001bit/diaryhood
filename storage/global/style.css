@@ -16,12 +16,18 @@ body {
 	padding-top: 4px;
 	padding-inline: 12px;
 	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
 	color: var(--main1);
 	overflow-x: hidden;
 }
 
-main {
-	margin-top: 24px;
+/* Line */
+.line-separator {
+	width: 100%;
+	height: 2px;
+	background: var(--main1-dim);
 }
 
 /* Text */
@@ -103,7 +109,7 @@ input .big {
 	padding-block: 8px;
 }
 
-/* text */
+/* input text */
 input[type="text"] {
 	background: var(--main2);
 	border: 2px solid var(--main1-dim);
@@ -123,7 +129,7 @@ input[type="text"]::placeholder {
 	color: var(--main1-dim);
 }
 
-/* button */
+/* input button */
 input[type="button"] {
 	background: var(--acc1);
 	color: var(--main2);
