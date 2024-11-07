@@ -13,10 +13,6 @@ type LoginRequest struct {
 	Login string `json:"login"`
 }
 
-type OTPRequest struct {
-	Otp string `json:"otp"`
-}
-
 func LoginEmailHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &LoginRequest{}

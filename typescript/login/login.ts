@@ -10,7 +10,7 @@ const loginButton = document.getElementById(
 const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 
 // is on second stage of authentication
-let sentEmail = false;
+let email = "";
 
 // remove loginInput style on focus
 loginInput.addEventListener("focus", () => {
@@ -46,7 +46,7 @@ function requestEmail() {
 		switch (res.status) {
 			case 200:
 				// Success
-				sentEmail = true;
+				email = loginInput.value;
 				setInputStyle("acc1");
 				setInputPlaceholder("one-time password");
 				showInfo("check your email");
@@ -71,6 +71,7 @@ function requestOTP() {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
+			email: email,
 			otp: loginInput.value,
 		}),
 	}).then((res) => {
@@ -97,7 +98,7 @@ function inputLoginData() {
 
 	showInfo("...");
 
-	if (!sentEmail) {
+	if (email == "") {
 		requestEmail();
 	} else {
 		requestOTP();

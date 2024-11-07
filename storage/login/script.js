@@ -3,7 +3,7 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-let sentEmail = false;
+let email = "";
 loginInput.addEventListener("focus", () => {
     loginInput.removeAttribute("style");
 });
@@ -29,7 +29,7 @@ function requestEmail() {
     }).then((res) => {
         switch (res.status) {
             case 200:
-                sentEmail = true;
+                email = loginInput.value;
                 setInputStyle("acc1");
                 setInputPlaceholder("one-time password");
                 showInfo("check your email");
@@ -52,6 +52,7 @@ function requestOTP() {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
+            email: email,
             otp: loginInput.value,
         }),
     }).then((res) => {
@@ -72,7 +73,7 @@ function inputLoginData() {
         return;
     }
     showInfo("...");
-    if (!sentEmail) {
+    if (email == "") {
         requestEmail();
     }
     else {

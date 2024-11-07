@@ -10,6 +10,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+type OTPRequest struct {
+	Otp   string `json:"otp"`
+	Email string `json:"email"`
+}
+
 func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &OTPRequest{}
@@ -19,15 +24,8 @@ func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
 			return
 		}
 
-		// Extract email from cookie
-		emailCookie, err := r.Cookie("email")
-		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
 		tokens, err := userclient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
-			Email: emailCookie.Value,
+			Email: req.Email,
 			Otp:   req.Otp,
 		})
 		if status.Code(err) == codes.NotFound {
