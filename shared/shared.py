@@ -6,8 +6,6 @@ def copy_directory(src, dest):
     if os.path.exists(dest):
         shutil.rmtree(dest)
     shutil.copytree(src, dest, ignore=shutil.ignore_patterns('copyto.txt'))
-    with open(os.path.join(dest, 'NOEDIT.txt'), 'w') as f:
-        f.write("This directory was copied and its contents should not be edited.")
 
 def process_directory(root_dir):
     for dirpath, _, filenames in os.walk(root_dir):
@@ -19,6 +17,9 @@ def process_directory(root_dir):
                 shared_subdir = os.path.join(target_dir, dirpath)
                 os.makedirs(shared_subdir, exist_ok=True)
                 copy_directory(dirpath, shared_subdir)
+
+                with open(os.path.join(os.path.join(target_dir, root_dir), 'NOEDIT.txt'), 'w') as f:
+                    f.write("The contents of this directory have been copied and shouldn't be edited.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2 or not os.path.isdir(sys.argv[1]):
