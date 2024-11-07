@@ -1,4 +1,4 @@
-package handler
+package userclient
 
 import (
 	"encoding/json"
@@ -15,32 +15,29 @@ type OTPRequest struct {
 	Email string `json:"email"`
 }
 
-func LoginOTPHandler(userclient userpb.UserServiceClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		req := &OTPRequest{}
-		err := json.NewDecoder(r.Body).Decode(req)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		tokens, err := userclient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
-			Email: req.Email,
-			Otp:   req.Otp,
-		})
-		if status.Code(err) == codes.NotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		} else if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		removeCookie(w, r, "email", "/login/otp")
-		setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
-
-		w.WriteHeader(http.StatusOK)
+func (c *Client) HandleLoginOtp(w http.ResponseWriter, r *http.Request) {
+	req := &OTPRequest{}
+	err := json.NewDecoder(r.Body).Decode(req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
+	tokens, err := c.serviceClient.VerifyOtp(r.Context(), &userpb.VerifyOtpRequest{
+		Email: req.Email,
+		Otp:   req.Otp,
+	})
+	if status.Code(err) == codes.NotFound {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func setAuthCookies(w http.ResponseWriter, access, refresh string) {

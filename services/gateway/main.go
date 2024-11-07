@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/gateway/grpcclient"
 	"github.com/1001bit/pathgoer/services/gateway/router"
-	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/storageclient"
+	"github.com/1001bit/pathgoer/services/gateway/userclient"
 )
 
 func init() {
@@ -18,14 +17,13 @@ func init() {
 
 func main() {
 	// userclient
-	conn, err := grpcclient.New("user", os.Getenv("PORT"))
+	userclient, err := userclient.New("user", os.Getenv("PORT"))
 	if err != nil {
 		slog.With("err", err).Error("Failed to connect to user service")
 		return
 	}
-	userclient := userpb.NewUserServiceClient(conn)
-	defer conn.Close()
-	slog.With("addr", conn.Target()).Info("Connected to user service")
+	defer userclient.Close()
+	slog.With("addr", userclient.Target()).Info("Connected to user service")
 
 	// storageclient
 	storageclient, err := storageclient.New("storage", os.Getenv("STORAGE_PORT"))

@@ -7,7 +7,6 @@ import (
 
 	"github.com/1001bit/pathgoer/services/gateway/router/handler"
 	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
-	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
@@ -19,7 +18,15 @@ type StorageProxy interface {
 	ReverseProxy() http.HandlerFunc
 }
 
-func New(userclient userpb.UserServiceClient, storageProxy StorageProxy) *chi.Mux {
+type UserServiceClient interface {
+	HandleProfile(w http.ResponseWriter, r *http.Request)
+	HandleLogout(w http.ResponseWriter, r *http.Request)
+	HandleRefresh(w http.ResponseWriter, r *http.Request)
+	HandleLoginEmail(w http.ResponseWriter, r *http.Request)
+	HandleLoginOtp(w http.ResponseWriter, r *http.Request)
+}
+
+func New(userclient UserServiceClient, storageProxy StorageProxy) *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 
@@ -50,15 +57,15 @@ func New(userclient userpb.UserServiceClient, storageProxy StorageProxy) *chi.Mu
 	})
 
 	// Profile
-	r.Get("/user/{name}", handler.ProfileHandler(userclient))
+	r.Get("/user/{name}", userclient.HandleProfile)
 
 	// Login API
-	r.Post("/login/email", handler.LoginEmailHandler(userclient))
-	r.Post("/login/otp", handler.LoginOTPHandler(userclient))
+	r.Post("/login/email", userclient.HandleLoginEmail)
+	r.Post("/login/otp", userclient.HandleLoginOtp)
 	// Refresh
-	r.Get("/auth/refresh", handler.RefreshHandler(userclient))
+	r.Get("/auth/refresh", userclient.HandleRefresh)
 	// Logout
-	r.Get("/auth/logout", handler.LogoutHandler(userclient))
+	r.Get("/auth/logout", userclient.HandleLogout)
 
 	// Storage
 	r.Get("/storage/*", http.StripPrefix("/storage", storageProxy.ReverseProxy()).ServeHTTP)
