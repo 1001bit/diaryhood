@@ -15,7 +15,7 @@ import (
 )
 
 type HttpProxy interface {
-	ReverseProxy() http.HandlerFunc
+	ReverseProxy(stripPrefix string) http.HandlerFunc
 }
 
 type UserServiceClient interface {
@@ -68,11 +68,16 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 	r.Get("/auth/logout", userclient.HandleLogout)
 
 	// Storage
-	r.Get("/storage/*", http.StripPrefix("/storage", storageProxy.ReverseProxy()).ServeHTTP)
-	r.Get("/favicon.ico", storageProxy.ReverseProxy().ServeHTTP)
+	r.Get("/storage/*", storageProxy.ReverseProxy("/storage"))
+	r.Get("/favicon.ico", storageProxy.ReverseProxy("").ServeHTTP)
 
-	// Path
-	r.Handle("/path/*", pathProxy.ReverseProxy())
+	// With JWT from cookie to header
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.JwtToHeader)
+
+		// Path
+		r.Handle("/path/*", pathProxy.ReverseProxy("/path"))
+	})
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

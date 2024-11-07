@@ -23,6 +23,6 @@ func New(addr string) (*Proxy, error) {
 	}, nil
 }
 
-func (c *Proxy) ReverseProxy() http.HandlerFunc {
-	return httputil.NewSingleHostReverseProxy(c.url).ServeHTTP
+func (c *Proxy) ReverseProxy(stripPrefix string) http.HandlerFunc {
+	return http.StripPrefix(stripPrefix, httputil.NewSingleHostReverseProxy(c.url)).ServeHTTP
 }

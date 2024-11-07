@@ -1,10 +1,12 @@
 package server
 
 import (
+	"net/http"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/path/server/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimw "github.com/go-chi/chi/v5/middleware"
 )
 
 type PathStore interface {
@@ -13,9 +15,17 @@ type PathStore interface {
 func newRouter(pathstore PathStore) *chi.Mux {
 	r := chi.NewRouter()
 	// Middleware
-	r.Use(middleware.Timeout(time.Second * 10))
-	r.Use(middleware.CleanPath)
-	r.Use(middleware.Recoverer)
+	r.Use(chimw.Timeout(time.Second * 10))
+	r.Use(chimw.CleanPath)
+	r.Use(chimw.Recoverer)
+
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.JwtClaimsToContext)
+
+		r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("hello, " + r.Context().Value("username").(string)))
+		})
+	})
 
 	return r
 }
