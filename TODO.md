@@ -56,4 +56,6 @@
         [X] Find and fix a bug during testing
 
 [ ] Path service
-    [ ] Use http for path service
+    [X] Path http dummy server
+    [X] Path http proxy on gateway
+    [ ] Path http server

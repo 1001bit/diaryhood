@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/gateway/cookiemanager"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -41,21 +42,17 @@ func (c *Client) HandleLoginOtp(w http.ResponseWriter, r *http.Request) {
 }
 
 func setAuthCookies(w http.ResponseWriter, access, refresh string) {
-	// INSECURE
-	http.SetCookie(w, &http.Cookie{
+	cookiemanager.Set(w, &http.Cookie{
 		Name:     "access",
 		Value:    access,
-		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
 		Path:     "/",
 	})
 
-	// INSECURE
-	http.SetCookie(w, &http.Cookie{
+	cookiemanager.Set(w, &http.Cookie{
 		Name:     "refresh",
 		Value:    refresh,
-		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
 		Path:     "/auth",

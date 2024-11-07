@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 
-	"github.com/1001bit/pathgoer/services/storage/router"
+	"github.com/1001bit/pathgoer/services/storage/server"
 )
 
 func init() {
@@ -14,12 +12,8 @@ func init() {
 }
 
 func main() {
-	r := router.New()
-
-	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
-
-	slog.With("addr", addr).Info("Listening")
-	if err := http.ListenAndServe(addr, r); err != nil {
+	server := server.New()
+	if err := server.ListenAndServe(os.Getenv("PORT")); err != nil {
 		slog.With("err", err).Error("Error Listening")
 	}
 	slog.Info("Shutting down")

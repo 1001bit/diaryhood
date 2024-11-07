@@ -1,4 +1,4 @@
-package router
+package server
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func CacheMiddleware(dur time.Duration) func(next http.Handler) http.Handler {
 	}
 }
 
-func New() *chi.Mux {
+func newRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Timeout(time.Second * 10))
 	r.Use(middleware.CleanPath)

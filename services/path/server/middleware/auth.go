@@ -10,9 +10,9 @@ import (
 
 var secret = []byte(os.Getenv("JWT_SECRET"))
 
-func InjectJwtClaims(next http.Handler) http.Handler {
+func JwtClaimsToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		username, ok := getUsername(r)
+		username, ok := getUsernameFromHeader(r)
 		if ok {
 			ctx := context.WithValue(r.Context(), "username", username)
 			next.ServeHTTP(w, r.WithContext(ctx))
@@ -23,13 +23,8 @@ func InjectJwtClaims(next http.Handler) http.Handler {
 	})
 }
 
-func getUsername(r *http.Request) (string, bool) {
-	access, err := r.Cookie("access")
-	if err != nil {
-		return "", false
-	}
-
-	token, err := jwt.Parse(access.Value, func(token *jwt.Token) (interface{}, error) {
+func getUsernameFromHeader(r *http.Request) (string, bool) {
+	token, err := jwt.Parse(r.Header.Get("Authorization"), func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 	if err != nil {

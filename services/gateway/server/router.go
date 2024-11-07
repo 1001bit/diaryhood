@@ -1,12 +1,12 @@
-package router
+package server
 
 import (
 	"log/slog"
 	"net/http"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/router/handler"
-	"github.com/1001bit/pathgoer/services/gateway/router/middleware"
+	"github.com/1001bit/pathgoer/services/gateway/server/handler"
+	"github.com/1001bit/pathgoer/services/gateway/server/middleware"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
@@ -14,7 +14,7 @@ import (
 	slogchi "github.com/samber/slog-chi"
 )
 
-type StorageProxy interface {
+type HttpProxy interface {
 	ReverseProxy() http.HandlerFunc
 }
 
@@ -26,7 +26,7 @@ type UserServiceClient interface {
 	HandleLoginOtp(w http.ResponseWriter, r *http.Request)
 }
 
-func New(userclient UserServiceClient, storageProxy StorageProxy) *chi.Mux {
+func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 
@@ -46,7 +46,7 @@ func New(userclient UserServiceClient, storageProxy StorageProxy) *chi.Mux {
 	// Routes
 	// With JWT claims in context
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.InjectJwtClaims)
+		r.Use(middleware.JwtClaimsToContext)
 
 		// Home
 		r.Get("/", handler.HandleHome)
@@ -70,6 +70,9 @@ func New(userclient UserServiceClient, storageProxy StorageProxy) *chi.Mux {
 	// Storage
 	r.Get("/storage/*", http.StripPrefix("/storage", storageProxy.ReverseProxy()).ServeHTTP)
 	r.Get("/favicon.ico", storageProxy.ReverseProxy().ServeHTTP)
+
+	// Path
+	r.Handle("/path/*", pathProxy.ReverseProxy())
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

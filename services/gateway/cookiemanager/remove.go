@@ -1,10 +1,10 @@
-package handler
+package cookiemanager
 
 import (
 	"net/http"
 )
 
-func RemoveCookie(w http.ResponseWriter, r *http.Request, name string, path string) {
+func Remove(w http.ResponseWriter, r *http.Request, name string, path string) {
 	_, err := r.Cookie(name)
 	if err == nil {
 		http.SetCookie(w, &http.Cookie{

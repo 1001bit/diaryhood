@@ -1,8 +1,6 @@
 package userclient
 
 import (
-	"fmt"
-
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,9 +11,7 @@ type Client struct {
 	serviceClient userpb.UserServiceClient
 }
 
-func New(host, port string) (*Client, error) {
-	addr := fmt.Sprintf("%s:%s", host, port)
-
+func New(addr string) (*Client, error) {
 	// INSECURE
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
