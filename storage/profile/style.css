@@ -4,7 +4,43 @@ main {
 	justify-content: center;
 }
 
-.path {
+.line-separator {
+	margin-block: 10px;
+}
+
+/* profile box (left) */
+#profile-box {
+	display: flex;
+	flex-direction: column;
+	width: 200px;
+	overflow-wrap: break-word;
+}
+
+.avatar {
+	width: 200px;
+	height: 200px;
+	border-radius: 100%;
+	border: 2px solid var(--main1-dim);
+	margin-bottom: 12px;
+}
+
+/* Paths (right) */
+#paths {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 20px;
+	width: 40%;
+	height: fit-content;
+	border: 1px solid var(--main1-dim);
+	border-radius: 4px;
+	padding: 12px;
+}
+
+.path,
+.path-create {
+	max-width: 130px;
+	min-width: 130px;
 	display: flex;
 	padding: 20px;
 	border: 2px solid var(--main1-dim);
@@ -13,43 +49,15 @@ main {
 	width: fit-content;
 	justify-content: center;
 	align-items: center;
+	overflow-wrap: break-word;
 }
 
-.path:hover {
-	border: 2px solid var(--main1);
+.path-create {
+	white-space: pre-line;
+	border: 2px solid var(--acc1-dim);
+	color: var(--acc1);
 }
 
-.line-separator {
-	margin-block: 10px;
-}
-
-a.path {
-	color: var(--main1);
-}
-
-a.path:hover {
-	text-decoration: none;
-}
-
-/* profile box (left) */
-#profile-box {
-	max-width: 200px;
-}
-
-.avatar {
-	width: 100%;
-	border-radius: 100%;
-	border: 2px solid var(--main1-dim);
-}
-
-/* Paths (right) */
-#paths {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	width: 40%;
-	height: fit-content;
-	border: 1px solid var(--main1-dim);
-	border-radius: 4px;
-	padding: 12px;
+.path-create a {
+	text-align: center;
 }

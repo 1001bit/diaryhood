@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"google.golang.org/grpc/codes"
@@ -12,6 +13,7 @@ import (
 
 func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
+	askerName := r.Context().Value("username").(string)
 
 	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
 	if status.Code(err) == codes.NotFound {
@@ -24,12 +26,40 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sameUser := response.Name == askerName
+
 	date, err := formatPostgresDate(response.Date)
 	if err != nil {
 		date = "unknown"
 	}
 
-	template.Profile(response.Name, date).Render(r.Context(), w)
+	// TODO: Get paths
+	paths := []pathmodel.Path{
+		{
+			Id:   1,
+			Name: "test",
+			Stats: []pathmodel.Stat{
+				{
+					Name:           "test",
+					Count:          1,
+					StepEquivalent: 1,
+				},
+			},
+		},
+		{
+			Id:   2,
+			Name: "test",
+			Stats: []pathmodel.Stat{
+				{
+					Name:           "test",
+					Count:          2,
+					StepEquivalent: 2,
+				},
+			},
+		},
+	}
+
+	template.Profile(response.Name, date, paths, sameUser).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {

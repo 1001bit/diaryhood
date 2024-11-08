@@ -13,20 +13,15 @@ GATEWAY_PATH = services/gateway
 USER_PATH = services/user
 
 # Build and start
-all: build up
+all: start
 
 # build and copy all files that are needed
 gencopy: templ protoc copyshared tscompile
 
 # Build the Docker containers
-build:
-	@echo "\nBuilding Docker containers..."
-	$(DOCKER_COMPOSE) build
-
-# Start the Docker containers
-up:
+start:
 	@echo "\nStarting Docker containers..."
-	$(DOCKER_COMPOSE) up
+	$(DOCKER_COMPOSE) up --build -d
 
 # Stop the Docker containers
 down:

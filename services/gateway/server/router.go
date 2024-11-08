@@ -50,14 +50,13 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 
 		// Home
 		r.Get("/", handler.HandleHome)
-		// Pseudo Profile
-		r.Get("/user", handler.HandleIDlessProfile)
 		// Login page
 		r.Get("/login", handler.LoginPageHandler)
+		// Pseudo Profile
+		r.Get("/user", handler.HandleIDlessProfile)
+		// Profile
+		r.Get("/user/{name}", userclient.HandleProfile)
 	})
-
-	// Profile
-	r.Get("/user/{name}", userclient.HandleProfile)
 
 	// Login API
 	r.Post("/login/email", userclient.HandleLoginEmail)

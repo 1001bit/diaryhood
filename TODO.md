@@ -58,7 +58,10 @@
     [ ] Frontend
         [ ] Profile page with paths + stats
             [X] Dummy layout
-            [ ] Use templ variables to fill the layout
+            [X] Use templ variables to fill the layout
+            [ ] Name change
+            [ ] Other stats view
+        [ ] Path creation page
         [ ] Path page with path + stats (w incrementers)
         [ ] Home page with paths or their statistics or smth else
     [ ] Path http server

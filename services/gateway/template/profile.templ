@@ -1,6 +1,11 @@
 package template
 
-templ Profile(name, date string) {
+import (
+	"fmt"
+	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
+)
+
+templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -12,6 +17,11 @@ templ Profile(name, date string) {
 				<div id="profile-box">
 					// TODO: Avatar
 					<img class="avatar" src="avatar.png"/>
+					if sameUser {
+						<p>{ name } <a class="tiny" style="display: inline-block;" id="change-name">change</a></p>
+					} else {
+						<p>{ name }</p>
+					}
 					<div class="line-separator"></div>
 					<p>
 						member since
@@ -19,18 +29,25 @@ templ Profile(name, date string) {
 						{ date }
 					</p>
 					<div class="line-separator"></div>
-					// TODO: Steps data
-					<p>999 steps</p>
+					<p id="user-steps">steps: ?</p>
 				</div>
 				<div id="paths">
-					// TODO: paths
-					<a href="#/path/1" class="path">
-						<p>999 steps</p>
-						<div class="line-separator"></div>
-						<h3>path1</h3>
-					</a>
+					for _, path := range paths {
+						<div class="path" stats-data={ templ.JSONString(path.Stats) }>
+							<a href={ templ.SafeURL("/path/" + fmt.Sprint(path.Id)) }><h3>{ path.Name }</h3></a>
+							<div class="line-separator"></div>
+							<p class="path-steps">steps: ?</p>
+							// TODO: view additional path stats
+						</div>
+					}
+					if sameUser {
+						<div class="path-create">
+							<a href={ "/path/new" }><h3>new path</h3></a>
+						</div>
+					}
 				</div>
 			</main>
+			<script src="/storage/profile/script.js"></script>
 		</body>
 	</html>
 }
