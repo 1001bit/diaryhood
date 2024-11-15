@@ -36,12 +36,13 @@ func (c *Client) HandleLoginOtp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
+	setAccessCookie(w, tokens.AccessJWT)
+	setRefreshCookie(w, tokens.RefreshUUID)
 
 	w.WriteHeader(http.StatusOK)
 }
 
-func setAuthCookies(w http.ResponseWriter, access, refresh string) {
+func setAccessCookie(w http.ResponseWriter, access string) {
 	cookiemanager.Set(w, &http.Cookie{
 		Name:     "access",
 		Value:    access,
@@ -49,7 +50,9 @@ func setAuthCookies(w http.ResponseWriter, access, refresh string) {
 		HttpOnly: true,
 		Path:     "/",
 	})
+}
 
+func setRefreshCookie(w http.ResponseWriter, refresh string) {
 	cookiemanager.Set(w, &http.Cookie{
 		Name:     "refresh",
 		Value:    refresh,

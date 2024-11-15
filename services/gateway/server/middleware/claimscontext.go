@@ -10,6 +10,15 @@ import (
 
 var secret = []byte(os.Getenv("JWT_SECRET"))
 
+func GetUsernameFromContext(ctx context.Context) (string, bool) {
+	username, ok := ctx.Value("username").(string)
+	if !ok {
+		return "", false
+	}
+
+	return username, true
+}
+
 func JwtClaimsToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		username, ok := getUsernameFromCookie(r)

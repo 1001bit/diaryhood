@@ -23,7 +23,8 @@ func newRouter(pathstore PathStore) *chi.Mux {
 		r.Use(middleware.JwtClaimsToContext)
 
 		r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("hello, " + r.Context().Value("username").(string)))
+			username, _ := middleware.GetUsernameFromContext(r.Context())
+			w.Write([]byte("hello, " + username))
 		})
 	})
 

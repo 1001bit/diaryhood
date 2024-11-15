@@ -24,6 +24,7 @@ type UserServiceClient interface {
 	HandleRefresh(w http.ResponseWriter, r *http.Request)
 	HandleLoginEmail(w http.ResponseWriter, r *http.Request)
 	HandleLoginOtp(w http.ResponseWriter, r *http.Request)
+	HandleChangeUsername(w http.ResponseWriter, r *http.Request)
 }
 
 func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) *chi.Mux {
@@ -58,25 +59,30 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 		r.Get("/user/{name}", userclient.HandleProfile)
 	})
 
-	// Login API
-	r.Post("/login/email", userclient.HandleLoginEmail)
-	r.Post("/login/otp", userclient.HandleLoginOtp)
-	// Refresh
-	r.Get("/auth/refresh", userclient.HandleRefresh)
-	// Logout
-	r.Get("/auth/logout", userclient.HandleLogout)
+	// Json API
+	r.Route("/api", func(r chi.Router) {
+		// Login
+		r.Post("/login/email", userclient.HandleLoginEmail)
+		r.Post("/login/otp", userclient.HandleLoginOtp)
+
+		// Change username
+		r.Post("/change-name", middleware.JwtClaimsToContext(http.HandlerFunc(userclient.HandleChangeUsername)).ServeHTTP)
+
+		// Path
+		r.Handle("/path/*", middleware.JwtToHeader(pathProxy.ReverseProxy("/api/path")))
+	})
+
+	// Routes that get refresh token
+	r.Route("/auth", func(r chi.Router) {
+		// Refresh
+		r.Get("/refresh", userclient.HandleRefresh)
+		// Logout
+		r.Get("/logout", userclient.HandleLogout)
+	})
 
 	// Storage
 	r.Get("/storage/*", storageProxy.ReverseProxy("/storage"))
 	r.Get("/favicon.ico", storageProxy.ReverseProxy("").ServeHTTP)
-
-	// With JWT from cookie to header
-	r.Group(func(r chi.Router) {
-		r.Use(middleware.JwtToHeader)
-
-		// Path
-		r.Handle("/api/path/*", pathProxy.ReverseProxy("/api/path"))
-	})
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

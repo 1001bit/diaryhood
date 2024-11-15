@@ -17,11 +17,13 @@ templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
 				<div id="profile-box">
 					// TODO: Avatar
 					<img class="avatar" src="avatar.png"/>
-					if sameUser {
-						<p>{ name } <a class="tiny" style="display: inline-block;" id="change-name">change</a></p>
-					} else {
-						<p>{ name }</p>
-					}
+					<div id="name-box">
+						<p id="name">{ name }</p>
+						if sameUser {
+							<textarea id="edit-name" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
+							<a class="tiny" id="change-name">change</a>
+						}
+					</div>
 					<div class="line-separator"></div>
 					<p>
 						member since

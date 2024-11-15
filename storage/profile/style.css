@@ -24,6 +24,17 @@ main {
 	margin-bottom: 12px;
 }
 
+/* make all text elements inside #name-box in one line */
+#name-box * {
+	display: inline;
+	margin-right: 5px;
+}
+
+#name-box textarea {
+	resize: none;
+	max-width: 100%;
+}
+
 /* Paths (right) */
 #paths {
 	display: flex;

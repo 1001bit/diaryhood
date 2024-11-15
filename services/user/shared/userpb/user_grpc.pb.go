@@ -29,6 +29,7 @@ type UserServiceClient interface {
 	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 	RefreshTokens(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 	Logout(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*Empty, error)
+	ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*ChangeUsernameResponse, error)
 }
 
 type userServiceClient struct {
@@ -84,6 +85,15 @@ func (c *userServiceClient) Logout(ctx context.Context, in *RefreshTokenRequest,
 	return out, nil
 }
 
+func (c *userServiceClient) ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*ChangeUsernameResponse, error) {
+	out := new(ChangeUsernameResponse)
+	err := c.cc.Invoke(ctx, "/userpb.UserService/ChangeUsername", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -95,6 +105,7 @@ type UserServiceServer interface {
 	VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error)
 	RefreshTokens(context.Context, *RefreshTokenRequest) (*TokensResponse, error)
 	Logout(context.Context, *RefreshTokenRequest) (*Empty, error)
+	ChangeUsername(context.Context, *ChangeUsernameRequest) (*ChangeUsernameResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -116,6 +127,9 @@ func (UnimplementedUserServiceServer) RefreshTokens(context.Context, *RefreshTok
 }
 func (UnimplementedUserServiceServer) Logout(context.Context, *RefreshTokenRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedUserServiceServer) ChangeUsername(context.Context, *ChangeUsernameRequest) (*ChangeUsernameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeUsername not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -220,6 +234,24 @@ func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_ChangeUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeUsernameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ChangeUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userpb.UserService/ChangeUsername",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ChangeUsername(ctx, req.(*ChangeUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -246,6 +278,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _UserService_Logout_Handler,
+		},
+		{
+			MethodName: "ChangeUsername",
+			Handler:    _UserService_ChangeUsername_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

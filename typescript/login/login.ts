@@ -9,7 +9,16 @@ const loginButton = document.getElementById(
 // additional info
 const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 
-// is on second stage of authentication
+// move to home page is refresh token is ok
+fetch("/auth/refresh", {
+	method: "GET",
+}).then((res) => {
+	if (res.status == 200) {
+		location.replace("/");
+	}
+});
+
+// email that user entered
 let email = "";
 
 // remove loginInput style on focus
@@ -22,6 +31,7 @@ function setInputStyle(colorVar: string) {
 	loginInput.style.border = `2px solid var(--${colorVar})`;
 }
 
+// set loginInput placeholder
 function setInputPlaceholder(text: string) {
 	loginInput.value = "";
 	loginInput.placeholder = text;
@@ -34,7 +44,7 @@ function showInfo(text: string) {
 
 // Request an email with OTP
 function requestEmail() {
-	fetch("/login/email", {
+	fetch("/api/login/email", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -42,30 +52,35 @@ function requestEmail() {
 		body: JSON.stringify({
 			login: loginInput.value,
 		}),
-	}).then((res) => {
-		switch (res.status) {
-			case 200:
-				// Success
-				email = loginInput.value;
-				setInputStyle("acc1");
-				setInputPlaceholder("one-time password");
-				showInfo("check your email");
-				break;
-			case 404:
-				setInputStyle("err");
-				showInfo("user not found");
-				break;
-			default:
-				setInputStyle("err");
-				showInfo("something went wrong");
-				break;
-		}
-	});
+	})
+		.then((res) => {
+			switch (res.status) {
+				case 200:
+					// Success
+					setInputPlaceholder("one-time password");
+					showInfo("check your email");
+					break;
+				case 404:
+					setInputStyle("err");
+					showInfo("user not found");
+					break;
+				default:
+					setInputStyle("err");
+					showInfo("something went wrong");
+					break;
+			}
+			return res.json();
+		})
+		.then((res) => {
+			if (res.email) {
+				email = res.email;
+			}
+		});
 }
 
 // Send OTP to server to verify
 function requestOTP() {
-	fetch("/login/otp", {
+	fetch("/api/login/otp", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -105,6 +120,7 @@ function inputLoginData() {
 	}
 }
 
+// Submit
 loginInput.addEventListener("keydown", (event) => {
 	if (event.key === "Enter") {
 		inputLoginData();

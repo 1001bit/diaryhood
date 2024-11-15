@@ -2,9 +2,9 @@ package userclient
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/gateway/cookiemanager"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,16 +31,5 @@ func (c *Client) HandleLoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setTemporaryLoginCookies(w, resp.Email)
-}
-
-func setTemporaryLoginCookies(w http.ResponseWriter, email string) {
-	// HACK: Also set temporaryId for better security
-	cookiemanager.Set(w, &http.Cookie{
-		Name:     "email",
-		Value:    email,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
-		Path:     "/login/otp",
-	})
+	fmt.Fprintf(w, `{"email": "%s"}`, resp.Email)
 }

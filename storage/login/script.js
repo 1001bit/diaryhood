@@ -3,6 +3,13 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
+fetch("/auth/refresh", {
+    method: "GET",
+}).then((res) => {
+    if (res.status == 200) {
+        location.replace("/");
+    }
+});
 let email = "";
 loginInput.addEventListener("focus", () => {
     loginInput.removeAttribute("style");
@@ -18,7 +25,7 @@ function showInfo(text) {
     loginInfo.innerHTML = text;
 }
 function requestEmail() {
-    fetch("/login/email", {
+    fetch("/api/login/email", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -26,11 +33,10 @@ function requestEmail() {
         body: JSON.stringify({
             login: loginInput.value,
         }),
-    }).then((res) => {
+    })
+        .then((res) => {
         switch (res.status) {
             case 200:
-                email = loginInput.value;
-                setInputStyle("acc1");
                 setInputPlaceholder("one-time password");
                 showInfo("check your email");
                 break;
@@ -43,10 +49,16 @@ function requestEmail() {
                 showInfo("something went wrong");
                 break;
         }
+        return res.json();
+    })
+        .then((res) => {
+        if (res.email) {
+            email = res.email;
+        }
     });
 }
 function requestOTP() {
-    fetch("/login/otp", {
+    fetch("/api/login/otp", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

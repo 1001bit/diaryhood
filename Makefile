@@ -13,7 +13,7 @@ GATEWAY_PATH = services/gateway
 USER_PATH = services/user
 
 # Build and start
-all: start
+all: gencopy start
 
 # build and copy all files that are needed
 gencopy: templ protoc copyshared tscompile

@@ -3,11 +3,12 @@ package handler
 import (
 	"net/http"
 
+	"github.com/1001bit/pathgoer/services/gateway/server/middleware"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 )
 
 func HandleIDlessProfile(w http.ResponseWriter, r *http.Request) {
-	username, ok := r.Context().Value("username").(string)
+	username, ok := middleware.GetUsernameFromContext(r.Context())
 	if !ok {
 		template.RefreshOrLogin().Render(r.Context(), w)
 		return

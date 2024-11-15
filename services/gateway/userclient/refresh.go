@@ -27,6 +27,7 @@ func (c *Client) HandleRefresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setAuthCookies(w, tokens.AccessJWT, tokens.RefreshUUID)
+	setAccessCookie(w, tokens.AccessJWT)
+	setRefreshCookie(w, tokens.RefreshUUID)
 	w.WriteHeader(http.StatusOK)
 }

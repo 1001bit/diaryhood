@@ -103,3 +103,8 @@ func (us *UserStore) GetNameById(ctx context.Context, id string) (string, error)
 
 	return name, err
 }
+
+func (us *UserStore) ChangeUsername(ctx context.Context, oldName, newName string) error {
+	_, err := us.postgresC.ExecContext(ctx, "UPDATE users SET name = $1 WHERE name = $2", newName, oldName)
+	return err
+}

@@ -39,7 +39,7 @@
         [X] Tokens Refresh
         [X] Logout
         [X] Test
-        [ ] Username change
+        [X] Username change
 
 [X] Shared code
 [X] Handle RabbitMQ reconnection
@@ -59,7 +59,7 @@
         [ ] Profile page with paths + stats
             [X] Dummy layout
             [X] Use templ variables to fill the layout
-            [ ] Name change
+            [X] Name change
             [ ] Other stats view
         [ ] Path creation page
         [ ] Path page with path + stats (w incrementers)

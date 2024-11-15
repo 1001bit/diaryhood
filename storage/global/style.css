@@ -101,7 +101,8 @@ p {
 }
 
 /* Input */
-input {
+input,
+textarea {
 	border-radius: 4px;
 	padding-inline: 8px;
 	padding-block: 4px;
@@ -117,22 +118,26 @@ input .big {
 }
 
 /* input text */
-input[type="text"] {
+input[type="text"],
+textarea {
 	background: var(--main2);
 	border: 2px solid var(--main1-dim);
 	color: var(--main1);
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+textarea:focus {
 	outline: none;
 	border: 2px solid var(--main1);
 }
 
-input[type="text"]:hover {
+input[type="text"]:hover,
+textarea:hover {
 	border: 2px solid var(--main1);
 }
 
-input[type="text"]::placeholder {
+input[type="text"]::placeholder,
+textarea::placeholder {
 	color: var(--main1-dim);
 }
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
+	"github.com/1001bit/pathgoer/services/gateway/server/middleware"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"google.golang.org/grpc/codes"
@@ -13,7 +14,7 @@ import (
 
 func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
-	askerName := r.Context().Value("username").(string)
+	askerName, _ := middleware.GetUsernameFromContext(r.Context())
 
 	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
 	if status.Code(err) == codes.NotFound {
