@@ -72,3 +72,12 @@ main {
 .path-create a {
 	text-align: center;
 }
+
+#new-path-name {
+	text-align: center;
+	border-color: var(--acc1-dim);
+}
+
+#new-path-name:hover {
+	border-color: var(--acc1);
+}

@@ -1,65 +1,84 @@
-const changeNameElem = document.getElementById("change-name");
-const nameBoxElem = document.getElementById("name-box");
 const nameElem = document.getElementById("name");
-const editNameElem = document.getElementById(
-	"edit-name"
+const changeNameElem = document.getElementById("change-name");
+const nameInputElem = document.getElementById(
+	"name-input"
 ) as HTMLTextAreaElement | null;
 
 let isEditing = false;
 
 function init() {
-	if (!(editNameElem && nameElem && changeNameElem)) {
+	if (!(nameInputElem && nameElem && changeNameElem)) {
 		return;
 	}
 
 	// trigger on editNameElem change
-	editNameElem.addEventListener("input", () => {
-		if (editNameElem.value == nameElem.innerText) {
+	nameInputElem.addEventListener("input", () => {
+		if (nameInputElem.value == nameElem.innerText) {
 			changeNameElem.innerText = "cancel";
 		} else {
 			changeNameElem.innerText = "save";
 		}
 	});
 
+	// trigger on changeNameElem click
 	changeNameElem.addEventListener("click", () => {
 		if (!isEditing) {
-			isEditing = true;
-			editNameElem.removeAttribute("style");
-			nameElem.style.display = "none";
-			changeNameElem.innerText = "cancel";
+			startEdit();
 		} else {
+			if (nameInputElem.value == nameElem.innerText) {
+				cancelEdit();
+				return;
+			}
 			save();
 		}
 	});
 
 	// remove loginInput style on focus
-	editNameElem.addEventListener("focus", () => {
-		editNameElem.removeAttribute("style");
+	nameInputElem.addEventListener("focus", () => {
+		nameInputElem.removeAttribute("style");
 	});
 }
 
-function cancel() {
-	if (!(editNameElem && nameElem && changeNameElem)) {
+// start chaning name
+function startEdit() {
+	if (!(nameInputElem && nameElem && changeNameElem)) {
+		return;
+	}
+
+	isEditing = true;
+	nameInputElem.removeAttribute("style");
+	nameElem.style.display = "none";
+	changeNameElem.innerText = "cancel";
+}
+
+// cancel changing name
+function cancelEdit() {
+	if (!(nameInputElem && nameElem && changeNameElem)) {
 		return;
 	}
 
 	isEditing = false;
 	nameElem.removeAttribute("style");
-	editNameElem.style.display = "none";
+	nameInputElem.style.display = "none";
 	changeNameElem.innerText = "change";
 }
 
+// set loginInput style
+function editNameStyle(colorVar: string) {
+	if (!nameInputElem) {
+		return;
+	}
+
+	nameInputElem.style.border = `2px solid var(--${colorVar})`;
+}
+
+// save new name
 function save() {
-	if (!(editNameElem && nameElem && changeNameElem)) {
+	if (!(nameInputElem && nameElem && changeNameElem)) {
 		return;
 	}
 
-	if (editNameElem.value == nameElem.innerText) {
-		cancel();
-		return;
-	}
-
-	if (editNameElem.value == "") {
+	if (nameInputElem.value == "") {
 		editNameStyle("err");
 		return;
 	}
@@ -70,13 +89,13 @@ function save() {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			name: editNameElem.value,
+			name: nameInputElem.value,
 		}),
 	}).then((res) => {
 		switch (res.status) {
 			case 200:
-				nameElem.innerText = editNameElem.value;
-				location.replace(`/user/${editNameElem.value}`);
+				nameElem.innerText = nameInputElem.value;
+				location.replace(`/user/${nameInputElem.value}`);
 				break;
 			case 400:
 				changeNameElem.innerText = "no special characters";
@@ -92,15 +111,6 @@ function save() {
 				break;
 		}
 	});
-}
-
-// set loginInput style
-function editNameStyle(colorVar: string) {
-	if (!editNameElem) {
-		return;
-	}
-
-	editNameElem.style.border = `2px solid var(--${colorVar})`;
 }
 
 init();

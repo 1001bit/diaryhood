@@ -65,14 +65,14 @@ func Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated 
 			return templ_7745c5c3_Err
 		}
 		if sameuser {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<textarea id=\"edit-name\" style=\"display: none;\" maxlength=\"31\" spellcheck=\"false\" rows=\"3\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<textarea id=\"name-input\" style=\"display: none;\" maxlength=\"31\" spellcheck=\"false\" rows=\"3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/profile.templ`, Line: 23, Col: 104}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/profile.templ`, Line: 23, Col: 105}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -142,7 +142,7 @@ func Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated 
 			}
 		}
 		if sameuser {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><a href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><input type=\"text\" id=\"new-path-name\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -151,7 +151,7 @@ func Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3>new path</h3></a></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3>create</h3></a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

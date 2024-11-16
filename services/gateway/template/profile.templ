@@ -20,7 +20,7 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 					<div id="name-box">
 						<p id="name">{ name }</p>
 						if sameuser {
-							<textarea id="edit-name" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
+							<textarea id="name-input" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
 							<a class="tiny" id="change-name">change</a>
 						}
 					</div>
@@ -44,7 +44,9 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 					}
 					if sameuser {
 						<div class="path-create">
-							<a href={ "/path/new" }><h3>new path</h3></a>
+							<input type="text" id="new-path-name" placeholder="name"/>
+							<div class="line-separator"></div>
+							<a href={ "/path/new" }><h3>create</h3></a>
 						</div>
 					}
 				</div>
