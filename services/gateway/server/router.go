@@ -44,6 +44,8 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Get("/user", handler.HandleIDlessProfile)
 		// Profile
 		r.Get("/user/{name}", s.userclient.HandleProfile)
+		// Path
+		r.Get("/path/{id}", handler.HandlePath)
 	})
 
 	// Json API

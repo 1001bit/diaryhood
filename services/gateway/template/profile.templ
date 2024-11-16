@@ -1,11 +1,6 @@
 package template
 
-import (
-	"fmt"
-	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
-)
-
-templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated bool) {
+templ Profile(name, date string, sameuser, authenticated bool) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -34,14 +29,6 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 					<p id="user-steps">steps: ?</p>
 				</div>
 				<div id="paths">
-					for _, path := range paths {
-						<div class="path" stats-data={ templ.JSONString(path.Stats) }>
-							<a href={ templ.SafeURL("/path/" + fmt.Sprint(path.Id)) }><h3>{ path.Name }</h3></a>
-							<div class="line-separator"></div>
-							<p class="path-steps">steps: ?</p>
-							// TODO: view additional path stats
-						</div>
-					}
 					if sameuser {
 						<div class="path-create">
 							<input type="text" id="path-name-input" placeholder="name"/>
@@ -51,6 +38,7 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 					}
 				</div>
 			</main>
+			@InvisiblePathCard()
 			<script src="/storage/profile/script.js"></script>
 			if !authenticated {
 				<script>
@@ -65,4 +53,12 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 			}
 		</body>
 	</html>
+}
+
+templ InvisiblePathCard() {
+	<div class="path" id="sample-path" style="display: none;">
+		<a href="/path/0"><h3>path</h3></a>
+		<div class="line-separator"></div>
+		<p class="path-steps">steps: ?</p>
+	</div>
 }

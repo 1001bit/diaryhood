@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
 	"github.com/1001bit/pathgoer/services/gateway/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
@@ -32,33 +31,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		date = "unknown"
 	}
 
-	// TODO: Get paths
-	paths := []pathmodel.Path{
-		{
-			Id:   1,
-			Name: "test",
-			Stats: []pathmodel.Stat{
-				{
-					Name:           "test",
-					Count:          1,
-					StepEquivalent: 1,
-				},
-			},
-		},
-		{
-			Id:   2,
-			Name: "test",
-			Stats: []pathmodel.Stat{
-				{
-					Name:           "test",
-					Count:          2,
-					StepEquivalent: 2,
-				},
-			},
-		},
-	}
-
-	template.Profile(response.Name, date, paths, response.Name == claims.Name, ok).Render(r.Context(), w)
+	template.Profile(response.Name, date, response.Name == claims.Name, ok).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {
