@@ -38,8 +38,8 @@
         [X] RefreshUUID Gen
         [X] Tokens Refresh
         [X] Logout
-        [X] Test
         [X] Username change
+        [X] Test
 
 [X] Shared code
 [X] Handle RabbitMQ reconnection

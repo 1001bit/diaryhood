@@ -75,6 +75,22 @@ func testServer(t *testing.T, ctx context.Context, server *server.Server, emailC
 
 	t.Log("date:", profile.Date)
 
+	// Rename user
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "bad name"})
+	if status.Code(err) != codes.InvalidArgument {
+		t.Fatal("expected InvalidArgument, but got:", err)
+	}
+
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "toolongname111111111111111111111111111111"})
+	if status.Code(err) != codes.InvalidArgument {
+		t.Fatal("expected InvalidArgument, but got:", err)
+	}
+
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "newname"})
+	if err != nil {
+		t.Fatal("expected OK, but got:", err)
+	}
+
 	// Refresh the tokens
 	tokens, err = server.RefreshTokens(ctx, &userpb.RefreshTokenRequest{RefreshUUID: tokens.RefreshUUID})
 	if err != nil {
