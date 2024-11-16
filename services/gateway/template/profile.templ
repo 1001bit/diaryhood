@@ -5,7 +5,7 @@ import (
 	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
 )
 
-templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
+templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated bool) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -19,7 +19,7 @@ templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
 					<img class="avatar" src="avatar.png"/>
 					<div id="name-box">
 						<p id="name">{ name }</p>
-						if sameUser {
+						if sameuser {
 							<textarea id="edit-name" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
 							<a class="tiny" id="change-name">change</a>
 						}
@@ -42,7 +42,7 @@ templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
 							// TODO: view additional path stats
 						</div>
 					}
-					if sameUser {
+					if sameuser {
 						<div class="path-create">
 							<a href={ "/path/new" }><h3>new path</h3></a>
 						</div>
@@ -50,6 +50,17 @@ templ Profile(name, date string, paths []pathmodel.Path, sameUser bool) {
 				</div>
 			</main>
 			<script src="/storage/profile/script.js"></script>
+			if !authenticated {
+				<script>
+					fetch("/auth/refresh", {
+						method: "GET",
+					}).then((res) => {
+						if(res.status == 200) {
+							location.reload();
+						}
+					});
+				</script>
+			}
 		</body>
 	</html>
 }

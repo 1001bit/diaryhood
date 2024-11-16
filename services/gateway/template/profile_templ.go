@@ -13,7 +13,7 @@ import (
 	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
 )
 
-func Profile(name, date string, paths []pathmodel.Path, sameUser bool) templ.Component {
+func Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -64,7 +64,7 @@ func Profile(name, date string, paths []pathmodel.Path, sameUser bool) templ.Com
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if sameUser {
+		if sameuser {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<textarea id=\"edit-name\" style=\"display: none;\" maxlength=\"31\" spellcheck=\"false\" rows=\"3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -141,7 +141,7 @@ func Profile(name, date string, paths []pathmodel.Path, sameUser bool) templ.Com
 				return templ_7745c5c3_Err
 			}
 		}
-		if sameUser {
+		if sameuser {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -156,7 +156,17 @@ func Profile(name, date string, paths []pathmodel.Path, sameUser bool) templ.Com
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main><script src=\"/storage/profile/script.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main><script src=\"/storage/profile/script.js\"></script>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !authenticated {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\t\t\t\tfetch(\"/auth/refresh\", {\n\t\t\t\t\t\tmethod: \"GET\",\n\t\t\t\t\t}).then((res) => {\n\t\t\t\t\t\tif(res.status == 200) {\n\t\t\t\t\t\t\tlocation.reload();\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t</script>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

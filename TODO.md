@@ -55,13 +55,11 @@
         [X] Stats
     [X] Path http dummy server
     [X] Path http proxy on gateway
-    [ ] Frontend
-        [ ] Profile page with paths + stats
-            [X] Dummy layout
-            [X] Use templ variables to fill the layout
-            [X] Name change
-            [ ] Other stats view
-        [ ] Path creation page
-        [ ] Path page with path + stats (w incrementers)
-        [ ] Home page with paths or their statistics or smth else
-    [ ] Path http server
+    [ ] Profile page with paths + stats
+        [X] Dummy layout
+        [X] Use templ variables to fill the layout
+        [X] Name change
+        [ ] Other stats view
+        [ ] Path creation
+    [ ] Path page with stats
+    [ ] Home page with paths or their statistics or smth else

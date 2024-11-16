@@ -14,7 +14,7 @@ import (
 
 func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
-	askerName, _ := middleware.GetUsernameFromContext(r.Context())
+	askerName, ok := middleware.GetUsernameFromContext(r.Context())
 
 	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
 	if status.Code(err) == codes.NotFound {
@@ -26,8 +26,6 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	sameUser := response.Name == askerName
 
 	date, err := formatPostgresDate(response.Date)
 	if err != nil {
@@ -60,7 +58,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	template.Profile(response.Name, date, paths, sameUser).Render(r.Context(), w)
+	template.Profile(response.Name, date, paths, response.Name == askerName, ok).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {
