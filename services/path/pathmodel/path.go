@@ -8,12 +8,18 @@ type Path struct {
 	Public bool
 }
 
-func (ps *PathStore) CreatePath(ctx context.Context, path Path) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
-		INSERT INTO paths (user_id, name, public) VALUES ($1, $2, $3)
-	`, path.UserId, path.Name, path.Public)
+func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (string, error) {
+	row, err := ps.postgresC.QueryRowContext(ctx, `
+		INSERT INTO paths (user_id, name) VALUES ($1, $2) RETURNING id
+	`, userId, pathName)
+	if err != nil {
+		return "", err
+	}
 
-	return err
+	id := ""
+	err = row.Scan(&id)
+
+	return id, err
 }
 
 func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {

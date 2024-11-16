@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/1001bit/pathgoer/services/path/server/handler"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -11,7 +12,7 @@ type Server struct {
 	mux *chi.Mux
 }
 
-func New(pathstore PathStore) *Server {
+func New(pathstore handler.PathStore) *Server {
 	return &Server{
 		mux: newRouter(pathstore),
 	}

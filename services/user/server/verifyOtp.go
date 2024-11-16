@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"log/slog"
 
-	"github.com/1001bit/pathgoer/services/user/accesstoken"
+	"github.com/1001bit/pathgoer/services/user/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,7 +31,7 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	access, err := accesstoken.Generate(name)
+	access, err := accesstoken.Generate(name, id)
 	if err != nil {
 		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")

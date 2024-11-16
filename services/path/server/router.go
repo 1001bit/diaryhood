@@ -9,15 +9,14 @@ import (
 	chimw "github.com/go-chi/chi/v5/middleware"
 )
 
-type PathStore interface {
-}
-
-func newRouter(pathstore PathStore) *chi.Mux {
+func newRouter(pathstore handler.PathStore) *chi.Mux {
 	r := chi.NewRouter()
 	// Middleware
 	r.Use(chimw.Timeout(time.Second * 10))
 	r.Use(chimw.CleanPath)
 	r.Use(chimw.Recoverer)
+
+	handler := handler.New(pathstore)
 
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.JwtClaimsToContext)

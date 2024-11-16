@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/1001bit/pathgoer/services/user/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/server"
+	"github.com/1001bit/pathgoer/services/user/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/shared/rabbitemail"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
@@ -60,17 +60,17 @@ func testServer(t *testing.T, ctx context.Context, server *server.Server, emailC
 	}
 
 	// Get profile
-	name, ok := accesstoken.ExtractUsername(tokens.AccessJWT)
+	claims, ok := accesstoken.ExtractClaims(tokens.AccessJWT)
 	if !ok {
 		t.Fatal("expected OK, but not OK")
 	}
-	profile, err := server.GetProfile(ctx, &userpb.GetProfileRequest{Name: strings.ToUpper(name)})
+	profile, err := server.GetProfile(ctx, &userpb.GetProfileRequest{Name: strings.ToUpper(claims.Name)})
 	if err != nil {
 		t.Fatal("expected OK, but got:", err)
 	}
 
-	if profile.Name != name {
-		t.Fatal("expected another name:", name, profile.Name)
+	if profile.Name != claims.Name {
+		t.Fatal("expected another name:", claims.Name, profile.Name)
 	}
 
 	t.Log("date:", profile.Date)

@@ -16,7 +16,7 @@ type UserStorage interface {
 	GetNameAndIdByEmail(ctx context.Context, email string) (string, string, error)
 	CreateUserGetNameAndId(ctx context.Context, email string) (string, string, error)
 	GetNameById(ctx context.Context, id string) (string, error)
-	ChangeUsername(ctx context.Context, oldName, newName string) error
+	ChangeUsername(ctx context.Context, id, newName string) error
 }
 
 type OtpStorage interface {

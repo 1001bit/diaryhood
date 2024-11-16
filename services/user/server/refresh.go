@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/1001bit/pathgoer/services/user/accesstoken"
+	"github.com/1001bit/pathgoer/services/user/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc/codes"
@@ -28,7 +28,7 @@ func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokenRequ
 	}
 
 	// Generate access token with username
-	access, err := accesstoken.Generate(username)
+	access, err := accesstoken.Generate(username, userID)
 	if err != nil {
 		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")

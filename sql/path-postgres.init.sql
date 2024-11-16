@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS paths (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     name VARCHAR(31) NOT NULL,
-    public BOOLEAN NOT NULL,
+    public BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT paths_userid_id_unique UNIQUE (user_id, name)
 );

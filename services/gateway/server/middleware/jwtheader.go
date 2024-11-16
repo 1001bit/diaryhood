@@ -6,8 +6,7 @@ import (
 
 func JwtToHeader(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("access")
-		if err == nil {
+		if cookie, err := r.Cookie("access"); err == nil {
 			r.Header.Set("Authorization", cookie.Value)
 		}
 

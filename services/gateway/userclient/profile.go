@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/1001bit/pathgoer/services/gateway/pathmodel"
-	"github.com/1001bit/pathgoer/services/gateway/server/middleware"
+	"github.com/1001bit/pathgoer/services/gateway/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"google.golang.org/grpc/codes"
@@ -14,7 +14,7 @@ import (
 
 func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
-	askerName, ok := middleware.GetUsernameFromContext(r.Context())
+	claims, ok := accesstoken.GetClaimsFromContext(r.Context())
 
 	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
 	if status.Code(err) == codes.NotFound {
@@ -58,7 +58,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	template.Profile(response.Name, date, paths, response.Name == askerName, ok).Render(r.Context(), w)
+	template.Profile(response.Name, date, paths, response.Name == claims.Name, ok).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {

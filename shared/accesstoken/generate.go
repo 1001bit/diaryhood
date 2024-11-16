@@ -12,11 +12,14 @@ var (
 	expiry = time.Minute * 10
 )
 
-func Generate(username string) (string, error) {
+func Generate(username, userId string) (string, error) {
 	// generate jwt token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": username,
 		"exp": time.Now().Add(expiry).Unix(),
+		"user": Claims{
+			Name: username,
+			Id:   userId,
+		},
 	})
 
 	return token.SignedString([]byte(secret))

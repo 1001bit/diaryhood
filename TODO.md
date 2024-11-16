@@ -53,8 +53,7 @@
     [X] Dummy layout
     [X] Use templ variables to fill the layout
     [X] Name change
-    [X] Path creation frontend
-    [ ] Path deletion frontend
+    [X] Path creation
     [ ] Real paths view
     [ ] Other stats view
 
@@ -64,9 +63,9 @@
         [X] Stats
     [X] Path http dummy server
     [X] Path http proxy on gateway
-    [ ] Path creation
+    [X] Path creation
         [X] Dummy path creation api
-        [ ] Real path creation
+        [X] Real path creation
     [ ] Path deletion
     [ ] Path updating
     [ ] Stats creation
@@ -74,4 +73,11 @@
     [ ] Stats deletion
 
 [ ] Path page
+    [ ] Path deletion
+    [ ] Path updating
+
+    [ ] Stats creation
+    [ ] Stats updating
+    [ ] Stats deletion
+
 [ ] Home page

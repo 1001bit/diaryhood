@@ -3,53 +3,20 @@ package middleware
 import (
 	"context"
 	"net/http"
-	"os"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/1001bit/pathgoer/services/path/shared/accesstoken"
 )
-
-var secret = []byte(os.Getenv("JWT_SECRET"))
-
-func GetUsernameFromContext(ctx context.Context) (string, bool) {
-	username, ok := ctx.Value("username").(string)
-	if !ok {
-		return "", false
-	}
-
-	return username, true
-}
 
 func JwtClaimsToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		username, ok := getUsernameFromHeader(r)
-		if ok {
-			ctx := context.WithValue(r.Context(), "username", username)
-			next.ServeHTTP(w, r.WithContext(ctx))
+		// get jwt from header
+		claims, ok := accesstoken.ExtractClaims(r.Header.Get("Authorization"))
+		if !ok {
+			next.ServeHTTP(w, r)
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), "claims", claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func getUsernameFromHeader(r *http.Request) (string, bool) {
-	token, err := jwt.Parse(r.Header.Get("Authorization"), func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
-	})
-	if err != nil {
-		return "", false
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok || !token.Valid {
-		return "", false
-	}
-
-	username, err := claims.GetSubject()
-	if err != nil {
-		return "", false
-	}
-
-	return username, true
 }

@@ -21,7 +21,7 @@ gencopy: templ protoc copyshared tscompile
 # Build the Docker containers
 start:
 	@echo "\nStarting Docker containers..."
-	$(DOCKER_COMPOSE) up --build -d
+	$(DOCKER_COMPOSE) up --build
 
 # Stop the Docker containers
 down:

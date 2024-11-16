@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/gateway/server/middleware"
+	"github.com/1001bit/pathgoer/services/gateway/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,7 +15,7 @@ type ChangeNameRequest struct {
 }
 
 func (c *Client) HandleChangeUsername(w http.ResponseWriter, r *http.Request) {
-	username, ok := middleware.GetUsernameFromContext(r.Context())
+	claims, ok := accesstoken.GetClaimsFromContext(r.Context())
 	if !ok {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -29,8 +29,9 @@ func (c *Client) HandleChangeUsername(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp, err := c.serviceClient.ChangeUsername(r.Context(), &userpb.ChangeUsernameRequest{
+		Id:      claims.Id,
 		NewName: req.NewName,
-		OldName: username,
+		OldName: claims.Name,
 	})
 
 	if status.Code(err) == codes.NotFound {

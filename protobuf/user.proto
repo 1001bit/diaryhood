@@ -57,8 +57,9 @@ message RefreshTokenRequest {
 
 // ChangeUsername
 message ChangeUsernameRequest {
-    string oldName = 1;
-    string newName = 2;
+    string id = 1;
+    string oldName = 2;
+    string newName = 3;
 }
 
 message ChangeUsernameResponse {
