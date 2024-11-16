@@ -6,7 +6,7 @@ const nameInputElem = document.getElementById(
 
 let isEditing = false;
 
-function init() {
+function changeNameInit() {
 	if (!(nameInputElem && nameElem && changeNameElem)) {
 		return;
 	}
@@ -33,10 +33,8 @@ function init() {
 		}
 	});
 
-	// remove loginInput style on focus
-	nameInputElem.addEventListener("focus", () => {
-		nameInputElem.removeAttribute("style");
-	});
+	// remove input style on focus
+	setRemoveStyleOnFocus(nameInputElem);
 }
 
 // start chaning name
@@ -63,15 +61,6 @@ function cancelEdit() {
 	changeNameElem.innerText = "change";
 }
 
-// set loginInput style
-function editNameStyle(colorVar: string) {
-	if (!nameInputElem) {
-		return;
-	}
-
-	nameInputElem.style.border = `2px solid var(--${colorVar})`;
-}
-
 // save new name
 function save() {
 	if (!(nameInputElem && nameElem && changeNameElem)) {
@@ -79,7 +68,7 @@ function save() {
 	}
 
 	if (nameInputElem.value == "") {
-		editNameStyle("err");
+		setElemColor(nameInputElem, "err");
 		return;
 	}
 
@@ -99,18 +88,18 @@ function save() {
 				break;
 			case 400:
 				changeNameElem.innerText = "no special characters";
-				editNameStyle("err");
+				setElemColor(nameInputElem, "err");
 				break;
 			case 409:
 				changeNameElem.innerText = "name already taken";
-				editNameStyle("err");
+				setElemColor(nameInputElem, "err");
 				break;
 			default:
 				changeNameElem.innerText = "error";
-				editNameStyle("err");
+				setElemColor(nameInputElem, "err");
 				break;
 		}
 	});
 }
 
-init();
+changeNameInit();

@@ -22,14 +22,7 @@ fetch("/auth/refresh", {
 let email = "";
 
 // remove loginInput style on focus
-loginInput.addEventListener("focus", () => {
-	loginInput.removeAttribute("style");
-});
-
-// set loginInput style
-function setInputStyle(colorVar: string) {
-	loginInput.style.border = `2px solid var(--${colorVar})`;
-}
+setRemoveStyleOnFocus(loginInput);
 
 // set loginInput placeholder
 function setInputPlaceholder(text: string) {
@@ -61,11 +54,11 @@ function requestEmail() {
 					showInfo("check your email");
 					break;
 				case 404:
-					setInputStyle("err");
+					setElemColor(loginInput, "err");
 					showInfo("user not found");
 					break;
 				default:
-					setInputStyle("err");
+					setElemColor(loginInput, "err");
 					showInfo("something went wrong");
 					break;
 			}
@@ -97,7 +90,7 @@ function requestOTP() {
 				break;
 			default:
 				// Error
-				setInputStyle("err");
+				setElemColor(loginInput, "err");
 				showInfo("wrong one-time password");
 				break;
 		}
@@ -107,7 +100,7 @@ function requestOTP() {
 // Enter data
 function inputLoginData() {
 	if (loginInput.value === "") {
-		setInputStyle("err");
+		setElemColor(loginInput, "err");
 		return;
 	}
 

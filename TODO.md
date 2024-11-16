@@ -49,17 +49,29 @@
     [X] Slog
     [X] More logs and levels
 
+[X] Profile page with paths
+    [X] Dummy layout
+    [X] Use templ variables to fill the layout
+    [X] Name change
+    [X] Path creation frontend
+    [ ] Path deletion frontend
+    [ ] Real paths view
+    [ ] Other stats view
+
 [ ] Path service
     [X] Database
         [X] Path
         [X] Stats
     [X] Path http dummy server
     [X] Path http proxy on gateway
-    [ ] Profile page with paths + stats
-        [X] Dummy layout
-        [X] Use templ variables to fill the layout
-        [X] Name change
-        [ ] Other stats view
-        [ ] Path creation
-    [ ] Path page with stats
-    [ ] Home page with paths or their statistics or smth else
+    [ ] Path creation
+        [X] Dummy path creation api
+        [ ] Real path creation
+    [ ] Path deletion
+    [ ] Path updating
+    [ ] Stats creation
+    [ ] Stats updating
+    [ ] Stats deletion
+
+[ ] Path page
+[ ] Home page

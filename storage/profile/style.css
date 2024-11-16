@@ -73,11 +73,12 @@ main {
 	text-align: center;
 }
 
-#new-path-name {
+#path-name-input {
 	text-align: center;
 	border-color: var(--acc1-dim);
 }
 
-#new-path-name:hover {
+#path-name-input:hover,
+#path-name-input:focus {
 	border-color: var(--acc1);
 }

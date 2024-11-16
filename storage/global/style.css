@@ -127,13 +127,10 @@ textarea {
 }
 
 input[type="text"]:focus,
-textarea:focus {
-	outline: none;
-	border: 2px solid var(--main1);
-}
-
 input[type="text"]:hover,
+textarea:focus,
 textarea:hover {
+	outline: none;
 	border: 2px solid var(--main1);
 }
 

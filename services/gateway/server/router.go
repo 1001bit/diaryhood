@@ -69,6 +69,7 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 		r.Post("/change-name", middleware.JwtClaimsToContext(http.HandlerFunc(userclient.HandleChangeUsername)).ServeHTTP)
 
 		// Path
+		r.Handle("/path", middleware.JwtToHeader(pathProxy.ReverseProxy("/api/path")))
 		r.Handle("/path/*", middleware.JwtToHeader(pathProxy.ReverseProxy("/api/path")))
 	})
 

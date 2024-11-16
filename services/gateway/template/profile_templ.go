@@ -142,16 +142,7 @@ func Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated 
 			}
 		}
 		if sameuser {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><input type=\"text\" id=\"new-path-name\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var8 templ.SafeURL = "/path/new"
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var8)))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3>create</h3></a></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><input type=\"text\" id=\"path-name-input\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"#create-path\" id=\"create-path\"><h3>create</h3></a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

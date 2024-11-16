@@ -3,7 +3,7 @@ const nameElem = document.getElementById("name");
 const changeNameElem = document.getElementById("change-name");
 const nameInputElem = document.getElementById("name-input");
 let isEditing = false;
-function init() {
+function changeNameInit() {
     if (!(nameInputElem && nameElem && changeNameElem)) {
         return;
     }
@@ -27,9 +27,7 @@ function init() {
             save();
         }
     });
-    nameInputElem.addEventListener("focus", () => {
-        nameInputElem.removeAttribute("style");
-    });
+    setRemoveStyleOnFocus(nameInputElem);
 }
 function startEdit() {
     if (!(nameInputElem && nameElem && changeNameElem)) {
@@ -49,18 +47,12 @@ function cancelEdit() {
     nameInputElem.style.display = "none";
     changeNameElem.innerText = "change";
 }
-function editNameStyle(colorVar) {
-    if (!nameInputElem) {
-        return;
-    }
-    nameInputElem.style.border = `2px solid var(--${colorVar})`;
-}
 function save() {
     if (!(nameInputElem && nameElem && changeNameElem)) {
         return;
     }
     if (nameInputElem.value == "") {
-        editNameStyle("err");
+        setElemColor(nameInputElem, "err");
         return;
     }
     fetch("/api/change-name", {
@@ -79,20 +71,72 @@ function save() {
                 break;
             case 400:
                 changeNameElem.innerText = "no special characters";
-                editNameStyle("err");
+                setElemColor(nameInputElem, "err");
                 break;
             case 409:
                 changeNameElem.innerText = "name already taken";
-                editNameStyle("err");
+                setElemColor(nameInputElem, "err");
                 break;
             default:
                 changeNameElem.innerText = "error";
-                editNameStyle("err");
+                setElemColor(nameInputElem, "err");
                 break;
         }
     });
 }
-init();
+changeNameInit();
+const pathNameInputElem = document.getElementById("path-name-input");
+const createPathElem = document.getElementById("create-path");
+function newPathInit() {
+    if (!(pathNameInputElem && createPathElem)) {
+        return;
+    }
+    createPathElem.addEventListener("click", createNewPath);
+    setRemoveStyleOnFocus(pathNameInputElem);
+}
+function createNewPath() {
+    if (!(pathNameInputElem && createPathElem)) {
+        return;
+    }
+    const name = pathNameInputElem.value;
+    if (name == "") {
+        setElemColor(pathNameInputElem, "err");
+        return;
+    }
+    fetch("/api/path", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: name,
+        }),
+    })
+        .then((res) => {
+        switch (res.status) {
+            case 200:
+                break;
+            case 400:
+                createPathElem.innerText = "no special characters";
+                setElemColor(pathNameInputElem, "err");
+                break;
+            case 409:
+                createPathElem.innerText = "path already exists";
+                setElemColor(pathNameInputElem, "err");
+                break;
+            default:
+                setElemColor(pathNameInputElem, "err");
+                break;
+        }
+        return res.json();
+    })
+        .then((res) => {
+        if (res && res.id) {
+            location.replace(`/path/${res.id}`);
+        }
+    });
+}
+newPathInit();
 const pathElems = document.getElementsByClassName("path");
 const userStepsElem = document.getElementById("user-steps");
 let totalSteps = 0;
@@ -109,3 +153,17 @@ for (let i = 0; i < pathElems.length; i++) {
     totalSteps += steps;
 }
 userStepsElem.innerText = "steps: " + totalSteps.toString();
+function setElemColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.border = `2px solid var(--${colorVar})`;
+}
+function setRemoveStyleOnFocus(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.addEventListener("focus", () => {
+        elem.removeAttribute("style");
+    });
+}

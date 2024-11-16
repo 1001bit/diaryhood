@@ -44,9 +44,9 @@ templ Profile(name, date string, paths []pathmodel.Path, sameuser, authenticated
 					}
 					if sameuser {
 						<div class="path-create">
-							<input type="text" id="new-path-name" placeholder="name"/>
+							<input type="text" id="path-name-input" placeholder="name"/>
 							<div class="line-separator"></div>
-							<a href={ "/path/new" }><h3>create</h3></a>
+							<a href="#create-path" id="create-path"><h3>create</h3></a>
 						</div>
 					}
 				</div>

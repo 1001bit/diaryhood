@@ -11,12 +11,7 @@ fetch("/auth/refresh", {
     }
 });
 let email = "";
-loginInput.addEventListener("focus", () => {
-    loginInput.removeAttribute("style");
-});
-function setInputStyle(colorVar) {
-    loginInput.style.border = `2px solid var(--${colorVar})`;
-}
+setRemoveStyleOnFocus(loginInput);
 function setInputPlaceholder(text) {
     loginInput.value = "";
     loginInput.placeholder = text;
@@ -41,11 +36,11 @@ function requestEmail() {
                 showInfo("check your email");
                 break;
             case 404:
-                setInputStyle("err");
+                setElemColor(loginInput, "err");
                 showInfo("user not found");
                 break;
             default:
-                setInputStyle("err");
+                setElemColor(loginInput, "err");
                 showInfo("something went wrong");
                 break;
         }
@@ -73,7 +68,7 @@ function requestOTP() {
                 location.reload();
                 break;
             default:
-                setInputStyle("err");
+                setElemColor(loginInput, "err");
                 showInfo("wrong one-time password");
                 break;
         }
@@ -81,7 +76,7 @@ function requestOTP() {
 }
 function inputLoginData() {
     if (loginInput.value === "") {
-        setInputStyle("err");
+        setElemColor(loginInput, "err");
         return;
     }
     showInfo("...");
@@ -100,3 +95,17 @@ loginInput.addEventListener("keydown", (event) => {
 loginButton.addEventListener("click", () => {
     inputLoginData();
 });
+function setElemColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.border = `2px solid var(--${colorVar})`;
+}
+function setRemoveStyleOnFocus(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.addEventListener("focus", () => {
+        elem.removeAttribute("style");
+    });
+}

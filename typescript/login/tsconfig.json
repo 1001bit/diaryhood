@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"outFile": "../../storage/login/script.js"
 	},
-	"include": ["*.ts"]
+	"include": ["*.ts", "../misc/elemstyles.ts"]
 }
