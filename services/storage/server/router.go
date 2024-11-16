@@ -22,7 +22,7 @@ func CacheMiddleware(dur time.Duration) func(next http.Handler) http.Handler {
 	}
 }
 
-func newRouter() *chi.Mux {
+func (s *Server) newRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Timeout(time.Second * 10))
 	r.Use(middleware.CleanPath)

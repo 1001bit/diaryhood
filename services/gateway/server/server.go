@@ -4,16 +4,22 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/1001bit/pathgoer/services/gateway/httpproxy"
+	"github.com/1001bit/pathgoer/services/gateway/userclient"
 )
 
 type Server struct {
-	mux *chi.Mux
+	userclient *userclient.Client
+
+	storageproxy *httpproxy.Proxy
+	pathproxy    *httpproxy.Proxy
 }
 
-func New(userclient UserServiceClient, storageproxy HttpProxy, pathProxy HttpProxy) *Server {
+func New(userclient *userclient.Client, storageproxy, pathProxy *httpproxy.Proxy) *Server {
 	return &Server{
-		mux: newRouter(userclient, storageproxy, pathProxy),
+		userclient:   userclient,
+		storageproxy: storageproxy,
+		pathproxy:    pathProxy,
 	}
 }
 
@@ -21,5 +27,5 @@ func (s *Server) ListenAndServe(port string) error {
 	addr := ":" + port
 	slog.With("addr", addr).Info("Listening")
 
-	return http.ListenAndServe(addr, s.mux)
+	return http.ListenAndServe(addr, s.newRouter())
 }

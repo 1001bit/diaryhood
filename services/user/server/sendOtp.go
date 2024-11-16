@@ -34,7 +34,7 @@ func (s *Server) SendOtpEmail(ctx context.Context, req *userpb.SendOtpEmailReque
 	}
 
 	// send otp to rabbitmq queue
-	err = s.publisher.Publish("email", rabbitemail.NewBody(email, name, otp))
+	err = s.rabbitClient.Publish("email", rabbitemail.NewBody(email, name, otp))
 	if err != nil {
 		slog.With("err", err).Error("Failed to publish email to RabbitMQ")
 		return nil, status.Error(codes.Internal, "an error occurred")

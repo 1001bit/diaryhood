@@ -14,20 +14,7 @@ import (
 	slogchi "github.com/samber/slog-chi"
 )
 
-type HttpProxy interface {
-	ReverseProxy(stripPrefix string) http.HandlerFunc
-}
-
-type UserServiceClient interface {
-	HandleProfile(w http.ResponseWriter, r *http.Request)
-	HandleLogout(w http.ResponseWriter, r *http.Request)
-	HandleRefresh(w http.ResponseWriter, r *http.Request)
-	HandleLoginEmail(w http.ResponseWriter, r *http.Request)
-	HandleLoginOtp(w http.ResponseWriter, r *http.Request)
-	HandleChangeUsername(w http.ResponseWriter, r *http.Request)
-}
-
-func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) *chi.Mux {
+func (s *Server) newRouter() *chi.Mux {
 	// Router
 	r := chi.NewRouter()
 
@@ -56,34 +43,34 @@ func newRouter(userclient UserServiceClient, storageProxy, pathProxy HttpProxy) 
 		// Pseudo Profile
 		r.Get("/user", handler.HandleIDlessProfile)
 		// Profile
-		r.Get("/user/{name}", userclient.HandleProfile)
+		r.Get("/user/{name}", s.userclient.HandleProfile)
 	})
 
 	// Json API
 	r.Route("/api", func(r chi.Router) {
 		// Login
-		r.Post("/login/email", userclient.HandleLoginEmail)
-		r.Post("/login/otp", userclient.HandleLoginOtp)
+		r.Post("/login/email", s.userclient.HandleLoginEmail)
+		r.Post("/login/otp", s.userclient.HandleLoginOtp)
 
 		// Change username
-		r.Post("/change-name", middleware.JwtClaimsToContext(http.HandlerFunc(userclient.HandleChangeUsername)).ServeHTTP)
+		r.Post("/change-name", middleware.JwtClaimsToContext(http.HandlerFunc(s.userclient.HandleChangeUsername)).ServeHTTP)
 
 		// Path
-		r.Handle("/path", middleware.JwtToHeader(pathProxy.ReverseProxy("/api/path")))
-		r.Handle("/path/*", middleware.JwtToHeader(pathProxy.ReverseProxy("/api/path")))
+		r.Handle("/path", middleware.JwtToHeader(s.pathproxy.ReverseProxy("/api/path")))
+		r.Handle("/path/*", middleware.JwtToHeader(s.pathproxy.ReverseProxy("/api/path")))
 	})
 
 	// Routes that get refresh token
 	r.Route("/auth", func(r chi.Router) {
 		// Refresh
-		r.Get("/refresh", userclient.HandleRefresh)
+		r.Get("/refresh", s.userclient.HandleRefresh)
 		// Logout
-		r.Get("/logout", userclient.HandleLogout)
+		r.Get("/logout", s.userclient.HandleLogout)
 	})
 
 	// Storage
-	r.Get("/storage/*", storageProxy.ReverseProxy("/storage"))
-	r.Get("/favicon.ico", storageProxy.ReverseProxy("").ServeHTTP)
+	r.Get("/storage/*", s.storageproxy.ReverseProxy("/storage"))
+	r.Get("/favicon.ico", s.storageproxy.ReverseProxy("").ServeHTTP)
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

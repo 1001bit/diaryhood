@@ -4,17 +4,16 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1001bit/pathgoer/services/path/server/handler"
-	"github.com/go-chi/chi/v5"
+	"github.com/1001bit/pathgoer/services/path/pathmodel"
 )
 
 type Server struct {
-	mux *chi.Mux
+	pathstore *pathmodel.PathStore
 }
 
-func New(pathstore handler.PathStore) *Server {
+func New(pathstore *pathmodel.PathStore) *Server {
 	return &Server{
-		mux: newRouter(pathstore),
+		pathstore: pathstore,
 	}
 }
 
@@ -22,5 +21,5 @@ func (s *Server) ListenAndServe(port string) error {
 	addr := ":" + port
 	slog.With("addr", addr).Info("Listening")
 
-	return http.ListenAndServe(addr, s.mux)
+	return http.ListenAndServe(addr, s.newRouter())
 }

@@ -3,23 +3,18 @@ package server
 import (
 	"log/slog"
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 )
 
 type Server struct {
-	mux *chi.Mux
 }
 
 func New() *Server {
-	return &Server{
-		mux: newRouter(),
-	}
+	return &Server{}
 }
 
 func (s *Server) ListenAndServe(port string) error {
 	addr := ":" + port
 	slog.With("addr", addr).Info("Listening")
 
-	return http.ListenAndServe(addr, s.mux)
+	return http.ListenAndServe(addr, s.newRouter())
 }
