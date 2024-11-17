@@ -138,8 +138,40 @@ function createNewPath() {
 }
 newPathInit();
 const mainElem = document.getElementsByTagName("main")[0];
-const userId = mainElem.getAttribute("data-user-id");
 const pathsElem = document.getElementById("paths");
+const userStepsElem = document.getElementById("user-steps");
+let userSteps = 0;
+const userId = mainElem.getAttribute("data-user-id");
+function countSteps(stats) {
+    let count = 0;
+    if (stats) {
+        for (const stat of stats) {
+            count += stat.count * stat.stepEquivalent;
+        }
+    }
+    userSteps += count;
+    userStepsElem.innerText = `${userSteps} steps`;
+    return count;
+}
+function newPathElem(Path) {
+    const samplePathElem = document.getElementById("sample-path");
+    const pathElem = samplePathElem.cloneNode(true);
+    pathElem.removeAttribute("id");
+    pathElem.removeAttribute("style");
+    const pathNameElem = pathElem.getElementsByClassName("path-name")[0];
+    const pathLinkElem = pathElem.getElementsByClassName("path-link")[0];
+    const pathStepsElem = pathElem.getElementsByClassName("path-steps")[0];
+    pathNameElem.innerText = Path.name;
+    pathLinkElem.href = `/path/${Path.id}`;
+    pathStepsElem.innerText = `${countSteps(Path.stats)} steps`;
+    return pathElem;
+}
+function renderPaths(paths) {
+    for (const path of paths) {
+        const pathElem = newPathElem(path);
+        pathsElem.insertBefore(pathElem, pathsElem.firstChild);
+    }
+}
 fetch(`/api/path/user/${userId}`, {
     method: "GET",
 })
@@ -151,8 +183,8 @@ fetch(`/api/path/user/${userId}`, {
         return [];
     }
 })
-    .then((paths) => {
-    console.log(paths);
+    .then((data) => {
+    renderPaths(data);
 });
 function setElemColor(elem, colorVar) {
     if (!elem) {

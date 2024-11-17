@@ -104,7 +104,7 @@ func Profile(name, date string, id string, sameuser, authenticated bool) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"line-separator\"></div><p id=\"user-steps\">steps: ?</p></div><div id=\"paths\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"line-separator\"></div><p id=\"user-steps\">0 steps</p></div><div id=\"paths\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -158,7 +158,7 @@ func InvisiblePathCard() templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path\" id=\"sample-path\" style=\"display: none;\"><a href=\"/path/0\"><h3>path</h3></a><div class=\"line-separator\"></div><p class=\"path-steps\">steps: ?</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path\" id=\"sample-path\" style=\"display: none;\"><a href=\"/path/0\" class=\"path-link\"><h3 class=\"path-name\">path</h3></a><div class=\"line-separator\"></div><p class=\"path-steps\">steps: ?</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -26,7 +26,7 @@ templ Profile(name, date string, id string, sameuser, authenticated bool) {
 						{ date }
 					</p>
 					<div class="line-separator"></div>
-					<p id="user-steps">steps: ?</p>
+					<p id="user-steps">0 steps</p>
 				</div>
 				<div id="paths">
 					if sameuser {
@@ -57,7 +57,7 @@ templ Profile(name, date string, id string, sameuser, authenticated bool) {
 
 templ InvisiblePathCard() {
 	<div class="path" id="sample-path" style="display: none;">
-		<a href="/path/0"><h3>path</h3></a>
+		<a href="/path/0" class="path-link"><h3 class="path-name">path</h3></a>
 		<div class="line-separator"></div>
 		<p class="path-steps">steps: ?</p>
 	</div>

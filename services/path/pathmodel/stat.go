@@ -3,12 +3,14 @@ package pathmodel
 import (
 	"context"
 	"log/slog"
+
+	"github.com/lib/pq"
 )
 
 type Stat struct {
-	Name           string
-	Count          int32
-	StepEquivalent int32
+	Name           string `json:"name"`
+	Count          int32  `json:"count"`
+	StepEquivalent int32  `json:"stepEquivalent"`
 }
 
 func (ps *PathStore) UpdateStats(ctx context.Context, pathId int32, stats []Stat) error {
@@ -69,27 +71,36 @@ func (ps *PathStore) DeleteStats(ctx context.Context, pathId int32, names []stri
 	return tx.Commit()
 }
 
-func (ps *PathStore) GetStats(ctx context.Context, pathId int32) ([]Stat, error) {
-	rows, err := ps.postgresC.QueryContext(ctx, `
-		SELECT name, count, step_equivalent
-		FROM stats
-		WHERE path_id = $1
-	`, pathId)
-
+func (ps *PathStore) FetchStatsIntoPaths(ctx context.Context, pathMap map[int32]*Path) error {
+	// Fetch all stats in a single query
+	statsRows, err := ps.postgresC.QueryContext(ctx, `
+        SELECT path_id, name, count, step_equivalent
+        FROM stats
+        WHERE path_id = ANY($1)
+    `, pq.Array(getKeys(pathMap)))
 	if err != nil {
-		return nil, err
+		return err
 	}
+	defer statsRows.Close()
 
-	defer rows.Close()
-
-	var stats []Stat
-	for rows.Next() {
+	for statsRows.Next() {
 		var stat Stat
-		if err := rows.Scan(&stat.Name, &stat.Count, &stat.StepEquivalent); err != nil {
-			return nil, err
+		var pathId int32
+		if err := statsRows.Scan(&pathId, &stat.Name, &stat.Count, &stat.StepEquivalent); err != nil {
+			return err
 		}
-		stats = append(stats, stat)
+		if path, exists := pathMap[pathId]; exists {
+			path.Stats = append(path.Stats, stat)
+		}
 	}
 
-	return stats, nil
+	return nil
+}
+
+func getKeys(m map[int32]*Path) []int32 {
+	keys := make([]int32, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
