@@ -2,5 +2,6 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"outFile": "../../storage/path/script.js"
-	}
+	},
+	"include": ["*.ts", "../misc/elemstyles.ts", "../misc/path.ts"]
 }

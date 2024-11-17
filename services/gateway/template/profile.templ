@@ -1,6 +1,6 @@
 package template
 
-templ Profile(name, date string, id string, sameuser, authenticated bool) {
+templ Profile(name, date string, id string, sameuser bool) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -40,17 +40,7 @@ templ Profile(name, date string, id string, sameuser, authenticated bool) {
 			</main>
 			@SamplePath()
 			<script src="/storage/profile/script.js"></script>
-			if !authenticated {
-				<script>
-					fetch("/auth/refresh", {
-						method: "GET",
-					}).then((res) => {
-						if(res.status == 200) {
-							location.reload();
-						}
-					});
-				</script>
-			}
+			@RefreshOrNothingScript()
 		</body>
 	</html>
 }

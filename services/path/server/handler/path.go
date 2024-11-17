@@ -17,9 +17,12 @@ type PathResponse struct {
 
 func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 	pathId := r.PathValue("id")
-	claims, _ := accesstoken.GetClaimsFromContext(r.Context())
+	akserId := "0"
+	if claims, ok := accesstoken.GetClaimsFromContext(r.Context()); ok {
+		akserId = claims.Id
+	}
 
-	path, ownerId, err := h.pathstore.GetPathAndOwnerId(r.Context(), claims.Id, pathId)
+	path, ownerId, err := h.pathstore.GetPathAndOwnerId(r.Context(), akserId, pathId)
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -31,7 +34,7 @@ func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 
 	resp := PathResponse{
 		Path:      path,
-		EditRight: ownerId == claims.Id,
+		EditRight: ownerId == akserId,
 	}
 
 	pathJson, err := json.Marshal(resp)

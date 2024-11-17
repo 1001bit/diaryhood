@@ -6,18 +6,6 @@ let userSteps = 0;
 
 const userId = mainElem.getAttribute("data-user-id");
 
-interface Stat {
-	name: string;
-	count: number;
-	stepEquivalent: number;
-}
-
-interface Path {
-	id: string;
-	name: string;
-	stats: Stat[];
-}
-
 function countSteps(stats: Stat[]) {
 	let count = 0;
 

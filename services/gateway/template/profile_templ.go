@@ -8,7 +8,7 @@ package template
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Profile(name, date string, id string, sameuser, authenticated bool) templ.Component {
+func Profile(name, date string, id string, sameuser bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -126,11 +126,9 @@ func Profile(name, date string, id string, sameuser, authenticated bool) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if !authenticated {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\t\t\t\tfetch(\"/auth/refresh\", {\n\t\t\t\t\t\tmethod: \"GET\",\n\t\t\t\t\t}).then((res) => {\n\t\t\t\t\t\tif(res.status == 200) {\n\t\t\t\t\t\t\tlocation.reload();\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t</script>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
+		templ_7745c5c3_Err = RefreshOrNothingScript().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body></html>")
 		if templ_7745c5c3_Err != nil {
