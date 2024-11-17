@@ -22,6 +22,7 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Use(middleware.JwtClaimsToContext)
 
 		r.Post("/", handler.HandleCreatePath)
+		r.Get("/user/{id}", handler.HandleUserPaths)
 	})
 
 	return r

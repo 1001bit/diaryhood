@@ -31,7 +31,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		date = "unknown"
 	}
 
-	template.Profile(response.Name, date, response.Name == claims.Name, ok).Render(r.Context(), w)
+	template.Profile(response.Name, date, response.Id, response.Name == claims.Name, ok).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {

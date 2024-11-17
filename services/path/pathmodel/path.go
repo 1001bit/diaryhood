@@ -3,9 +3,10 @@ package pathmodel
 import "context"
 
 type Path struct {
-	UserId int32
-	Name   string
-	Public bool
+	Id     int32  `json:"id"`
+	Name   string `json:"name"`
+	Public bool   `json:"public"`
+	Stats  []Stat `json:"stats"`
 }
 
 func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (string, error) {
@@ -31,17 +32,33 @@ func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {
 	return err
 }
 
-func (ps *PathStore) GetPathId(ctx context.Context, pathName string, userId, askerId int32) (int32, error) {
-	var id int32
-	row, err := ps.postgresC.QueryRowContext(ctx, `
-		SELECT id FROM paths
-		WHERE name = $1 AND user_id = $2
-		AND (public = true OR user_id = $3)
-	`, pathName, userId, askerId)
+func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Path, error) {
+	rows, err := ps.postgresC.QueryContext(ctx, `
+		SELECT id, name, public
+		FROM paths
+		WHERE user_id = $1 
+		AND (public = true OR user_id = $2)
+	`, userId, askerId)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	err = row.Scan(&id)
 
-	return id, err
+	defer rows.Close()
+
+	var paths []Path
+	for rows.Next() {
+		var path Path
+		if err := rows.Scan(&path.Id, &path.Name, &path.Public); err != nil {
+			return nil, err
+		}
+
+		path.Stats, err = ps.GetStats(ctx, path.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		paths = append(paths, path)
+	}
+
+	return paths, nil
 }

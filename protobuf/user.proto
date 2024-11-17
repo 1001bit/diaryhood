@@ -33,6 +33,7 @@ message GetProfileRequest {
 message GetProfileResponse {
     string name = 1;
     string date = 2;
+    string id = 3;
 }
 
 // SendOTPEmail

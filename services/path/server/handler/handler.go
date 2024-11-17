@@ -1,16 +1,14 @@
 package handler
 
-import "context"
-
-type PathStore interface {
-	CreatePath(ctx context.Context, userId, pathName string) (string, error)
-}
+import (
+	"github.com/1001bit/pathgoer/services/path/pathmodel"
+)
 
 type Handler struct {
-	pathstore PathStore
+	pathstore *pathmodel.PathStore
 }
 
-func New(pathstore PathStore) *Handler {
+func New(pathstore *pathmodel.PathStore) *Handler {
 	return &Handler{
 		pathstore: pathstore,
 	}

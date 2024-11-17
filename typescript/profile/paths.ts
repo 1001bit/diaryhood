@@ -1,7 +1,18 @@
-// TODO: Fetch paths and use sample path for them
-const userStepsElem = document.getElementById(
-	"user-steps"
-) as HTMLParagraphElement;
-let totalSteps = 0;
+const mainElem = document.getElementsByTagName("main")[0] as HTMLDivElement;
+const userId = mainElem.getAttribute("data-user-id");
 
-userStepsElem.innerText = "steps: " + totalSteps.toString();
+const pathsElem = document.getElementById("paths") as HTMLDivElement;
+
+fetch(`/api/path/user/${userId}`, {
+	method: "GET",
+})
+	.then((res) => {
+		if (res.status == 200) {
+			return res.json();
+		} else {
+			return [];
+		}
+	})
+	.then((paths) => {
+		console.log(paths);
+	});

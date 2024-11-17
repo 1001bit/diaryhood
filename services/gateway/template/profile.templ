@@ -1,6 +1,6 @@
 package template
 
-templ Profile(name, date string, sameuser, authenticated bool) {
+templ Profile(name, date string, id string, sameuser, authenticated bool) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -8,7 +8,7 @@ templ Profile(name, date string, sameuser, authenticated bool) {
 		</head>
 		<body>
 			@nav(name)
-			<main>
+			<main data-user-id={ id }>
 				<div id="profile-box">
 					// TODO: Avatar
 					<img class="avatar" src="avatar.png"/>

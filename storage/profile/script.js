@@ -137,9 +137,23 @@ function createNewPath() {
     });
 }
 newPathInit();
-const userStepsElem = document.getElementById("user-steps");
-let totalSteps = 0;
-userStepsElem.innerText = "steps: " + totalSteps.toString();
+const mainElem = document.getElementsByTagName("main")[0];
+const userId = mainElem.getAttribute("data-user-id");
+const pathsElem = document.getElementById("paths");
+fetch(`/api/path/user/${userId}`, {
+    method: "GET",
+})
+    .then((res) => {
+    if (res.status == 200) {
+        return res.json();
+    }
+    else {
+        return [];
+    }
+})
+    .then((paths) => {
+    console.log(paths);
+});
 function setElemColor(elem, colorVar) {
     if (!elem) {
         return;

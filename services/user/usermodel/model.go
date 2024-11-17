@@ -12,6 +12,7 @@ var ErrNoDB = errors.New("no database connection")
 type Profile struct {
 	Name string
 	Date string
+	Id   string
 }
 
 type UserStore struct {
@@ -27,12 +28,12 @@ func NewUserStore(postrgesC *postgresclient.Client) *UserStore {
 func (us *UserStore) GetProfileByName(ctx context.Context, name string) (*Profile, error) {
 	profile := &Profile{}
 
-	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name, date FROM users WHERE LOWER(name) = LOWER($1)", name)
+	row, err := us.postgresC.QueryRowContext(ctx, "SELECT id, name, date FROM users WHERE LOWER(name) = LOWER($1)", name)
 	if err != nil {
 		return nil, err
 	}
 
-	err = row.Scan(&profile.Name, &profile.Date)
+	err = row.Scan(&profile.Id, &profile.Name, &profile.Date)
 	if err != nil {
 		return nil, err
 	}

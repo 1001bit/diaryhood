@@ -23,5 +23,6 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) 
 	return &userpb.GetProfileResponse{
 		Name: profile.Name,
 		Date: profile.Date,
+		Id:   profile.Id,
 	}, nil
 }
