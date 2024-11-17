@@ -71,6 +71,29 @@ func (ps *PathStore) DeleteStats(ctx context.Context, pathId int32, names []stri
 	return tx.Commit()
 }
 
+func (ps *PathStore) GetStats(ctx context.Context, pathId int32) ([]Stat, error) {
+	statsRows, err := ps.postgresC.QueryContext(ctx, `
+		SELECT name, count, step_equivalent
+		FROM stats
+		WHERE path_id = $1
+	`, pathId)
+	if err != nil {
+		return nil, err
+	}
+	defer statsRows.Close()
+
+	var stats []Stat
+	for statsRows.Next() {
+		var stat Stat
+		if err := statsRows.Scan(&stat.Name, &stat.Count, &stat.StepEquivalent); err != nil {
+			return nil, err
+		}
+		stats = append(stats, stat)
+	}
+
+	return stats, nil
+}
+
 func (ps *PathStore) FetchStatsIntoPaths(ctx context.Context, pathMap map[int32]*Path) error {
 	// Fetch all stats in a single query
 	statsRows, err := ps.postgresC.QueryContext(ctx, `

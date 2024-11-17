@@ -38,7 +38,7 @@ templ Profile(name, date string, id string, sameuser, authenticated bool) {
 					}
 				</div>
 			</main>
-			@InvisiblePathCard()
+			@SamplePath()
 			<script src="/storage/profile/script.js"></script>
 			if !authenticated {
 				<script>
@@ -55,7 +55,7 @@ templ Profile(name, date string, id string, sameuser, authenticated bool) {
 	</html>
 }
 
-templ InvisiblePathCard() {
+templ SamplePath() {
 	<div class="path" id="sample-path" style="display: none;">
 		<a href="/path/0" class="path-link"><h3 class="path-name">path</h3></a>
 		<div class="line-separator"></div>

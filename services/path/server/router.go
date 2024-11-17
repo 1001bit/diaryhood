@@ -23,6 +23,7 @@ func (s *Server) newRouter() *chi.Mux {
 
 		r.Post("/", handler.HandleCreatePath)
 		r.Get("/user/{id}", handler.HandleUserPaths)
+		r.Get("/{id}", handler.HandlePath)
 	})
 
 	return r

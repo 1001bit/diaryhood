@@ -10,12 +10,7 @@ import (
 )
 
 func (h *Handler) HandleUserPaths(w http.ResponseWriter, r *http.Request) {
-	claims, ok := accesstoken.GetClaimsFromContext(r.Context())
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
+	claims, _ := accesstoken.GetClaimsFromContext(r.Context())
 	userId := r.PathValue("id")
 
 	paths, err := h.pathstore.GetPaths(r.Context(), claims.Id, userId)

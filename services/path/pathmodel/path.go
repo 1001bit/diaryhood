@@ -34,6 +34,31 @@ func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {
 	return err
 }
 
+func (ps *PathStore) GetPathAndOwnerId(ctx context.Context, askerId, pathId string) (Path, string, error) {
+	row, err := ps.postgresC.QueryRowContext(ctx, `
+		SELECT id, name, public, user_id
+		FROM paths
+		WHERE id = $1
+		AND (public = true OR user_id = $2)
+	`, pathId, askerId)
+	if err != nil {
+		return Path{}, "", err
+	}
+
+	userId := ""
+	path := Path{
+		Stats: []Stat{},
+	}
+
+	if err := row.Scan(&path.Id, &path.Name, &path.Public, &userId); err != nil {
+		return Path{}, "", err
+	}
+
+	path.Stats, err = ps.GetStats(ctx, path.Id)
+
+	return path, userId, err
+}
+
 func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Path, error) {
 	rows, err := ps.postgresC.QueryContext(ctx, `
         SELECT id, name, public

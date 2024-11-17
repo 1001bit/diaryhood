@@ -47,15 +47,14 @@
 [X] Logs
     [X] PLG Stack
     [X] Slog
-    [X] More logs and levels
 
-[X] Profile page with paths
+[X] Profile page
     [X] Dummy layout
     [X] Use templ variables to fill the layout
     [X] Name change
     [X] Path creation
-    [ ] Real paths view
-    [ ] Other stats view
+    [X] Real paths view
+        [ ] Other stats view
 
 [ ] Path service
     [X] Database
@@ -73,11 +72,12 @@
     [ ] Stats deletion
 
 [ ] Path page
-    [ ] Path deletion
-    [ ] Path updating
-
-    [ ] Stats creation
-    [ ] Stats updating
-    [ ] Stats deletion
+    [ ] Path view
+    [ ] Edit mode
+        [ ] Path deletion
+        [ ] Path updating
+        [ ] Stats creation
+        [ ] Stats updating
+        [ ] Stats deletion
 
 [ ] Home page

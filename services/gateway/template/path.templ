@@ -8,9 +8,25 @@ templ Path() {
 		<body>
 			@nav("path")
 			<main>
-				<p>Path page</p>
+				<div id="stats"></div>
 			</main>
 		</body>
+		@SampleStat()
 		<script src="/storage/path/script.js"></script>
 	</html>
+}
+
+templ CreateStat() {
+	<div id="create-stat" style="display: none;">
+		<input type="text" placeholder="name" id="stat-name-input"/>
+		<input type="text" placeholder="value" id="stat-stepeq-input"/>
+		<a id="create-stat-button">create</a>
+	</div>
+}
+
+templ SampleStat() {
+	<div class="stat" id="sample-stat" style="display: none;">
+		<h3 class="stat-name">stat</h3>
+		<p class="stat-value">value</p>
+	</div>
 }
