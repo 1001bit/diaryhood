@@ -73,6 +73,8 @@
 
 [ ] Path page
     [ ] Path view
+        [X] Stats
+        [ ] Steps
     [ ] Edit mode
         [ ] Path deletion
         [ ] Path updating
