@@ -1,0 +1,31 @@
+.stat {
+	max-width: 130px;
+	min-width: 130px;
+	display: flex;
+	padding: 20px;
+	border: 2px solid var(--main1-dim);
+	border-radius: 4px;
+	flex-direction: column;
+	width: fit-content;
+	justify-content: center;
+	align-items: center;
+	overflow-wrap: break-word;
+}
+
+.stat input {
+	text-align: center;
+	width: 100%;
+}
+
+.stat-stepeq {
+	color: var(--main1-dim);
+}
+
+.stat-count-box {
+	margin-top: 16px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+}

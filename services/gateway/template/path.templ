@@ -4,6 +4,7 @@ templ Path() {
 	<html lang="en">
 		<head>
 			@baseHead("path")
+			<link rel="stylesheet" href="/storage/path/style.css"/>
 		</head>
 		<body>
 			@nav("path")
@@ -28,6 +29,11 @@ templ CreateStat() {
 templ SampleStat() {
 	<div class="stat" id="sample-stat" style="display: none;">
 		<h3 class="stat-name">stat</h3>
-		<p class="stat-value">value</p>
+		<p class="tiny stat-stepeq"></p>
+		<div class="stat-count-box">
+			<a>-</a>
+			<input type="text" placeholder="0" class="stat-count"/>
+			<a>+</a>
+		</div>
 	</div>
 }

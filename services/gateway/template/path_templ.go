@@ -34,7 +34,7 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</head><body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link rel=\"stylesheet\" href=\"/storage/path/style.css\"></head><body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -110,7 +110,7 @@ func SampleStat() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat\" id=\"sample-stat\" style=\"display: none;\"><h3 class=\"stat-name\">stat</h3><p class=\"stat-value\">value</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat\" id=\"sample-stat\" style=\"display: none;\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a>-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a>+</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

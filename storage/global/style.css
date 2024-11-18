@@ -44,35 +44,31 @@ a:hover {
 h1 {
 	margin: 0;
 	font-weight: 500;
-	font-size: 64px;
-	line-height: 52px;
+	font-size: 48px;
 }
 
 h2 {
 	margin: 0;
 	font-weight: 500;
 	font-size: 40px;
-	line-height: 52px;
 }
 
 h3 {
 	margin: 0;
 	font-weight: 500;
 	font-size: 32px;
-	line-height: 42px;
 }
 
-p {
+p,
+a {
 	font-weight: 400;
 	font-size: 24px;
-	line-height: 31px;
 	margin: 0;
 }
 
 .tiny {
 	font-weight: 400;
 	font-size: 16px;
-	line-height: 22px;
 }
 
 /* Navbar */
@@ -102,6 +98,7 @@ p {
 
 /* Input */
 input,
+button,
 textarea {
 	width: 100%;
 	border-radius: 4px;
@@ -109,48 +106,48 @@ textarea {
 	padding-block: 4px;
 	font-weight: 400;
 	font-size: 24px;
-	line-height: 31px;
 	font-family: inherit;
 }
 
-input .big {
+input.big,
+button.big {
 	padding-inline: 16px;
 	padding-block: 8px;
 }
 
 /* input text */
-input[type="text"],
+input,
 textarea {
 	background: var(--main2);
 	border: 2px solid var(--main1-dim);
 	color: var(--main1);
 }
 
-input[type="text"]:focus,
-input[type="text"]:hover,
+input:focus,
+input:hover,
 textarea:focus,
 textarea:hover {
 	outline: none;
 	border: 2px solid var(--main1);
 }
 
-input[type="text"]::placeholder,
+input::placeholder,
 textarea::placeholder {
 	color: var(--main1-dim);
 }
 
 /* input button */
-input[type="button"] {
+button {
 	background: var(--acc1);
 	color: var(--main2);
 	border: none;
 }
 
-input[type="button"]:hover {
+button:hover {
 	background: var(--acc1-dim);
 	cursor: pointer;
 }
 
-input[type="button"]:active {
+button:active {
 	transform: scale(0.98);
 }
