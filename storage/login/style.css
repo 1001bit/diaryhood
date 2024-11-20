@@ -16,8 +16,6 @@ main {
 	height: fit-content;
 
 	background: var(--main2);
-	border-radius: 4px;
-	border: 2px solid var(--main1-dim);
 }
 
 #login-info {

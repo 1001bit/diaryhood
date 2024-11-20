@@ -177,6 +177,10 @@ fetch(`/api/path/user/${userId}`, {
 })
     .then((res) => {
     if (res.status == 200) {
+        const noPathsElem = document.getElementById("no-paths");
+        if (noPathsElem) {
+            noPathsElem.style.display = "none";
+        }
         return res.json();
     }
     else {

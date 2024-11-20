@@ -109,7 +109,12 @@ func Profile(name, date string, id string, sameuser bool) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if sameuser {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create\"><input type=\"text\" id=\"path-name-input\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"#create-path\" id=\"create-path\"><h3>create</h3></a></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path-create box\"><input type=\"text\" id=\"path-name-input\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"#create-path\" id=\"create-path\"><h3>create</h3></a></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h3 class=\"dim\" id=\"no-paths\">no paths</h3>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -156,7 +161,7 @@ func SamplePath() templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path\" id=\"sample-path\" style=\"display: none;\"><a href=\"/path/0\" class=\"path-link\"><h3 class=\"path-name\">path</h3></a><div class=\"line-separator\"></div><p class=\"path-steps\">steps: ?</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path box\" id=\"sample-path\" style=\"display: none;\"><a href=\"/path/0\" class=\"path-link\"><h3 class=\"path-name\">path</h3></a><div class=\"line-separator\"></div><p class=\"path-steps\">steps: ?</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

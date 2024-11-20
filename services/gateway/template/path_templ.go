@@ -84,7 +84,7 @@ func CreateStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"create-stat\" style=\"display: none;\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" placeholder=\"value\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"box\" id=\"create-stat\" style=\"display: none;\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" placeholder=\"value\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -110,7 +110,7 @@ func SampleStat() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat\" id=\"sample-stat\" style=\"display: none;\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box\" id=\"sample-stat\" style=\"display: none;\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

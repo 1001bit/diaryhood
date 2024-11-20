@@ -30,11 +30,13 @@ templ Profile(name, date string, id string, sameuser bool) {
 				</div>
 				<div id="paths">
 					if sameuser {
-						<div class="path-create">
+						<div class="path-create box">
 							<input type="text" id="path-name-input" placeholder="name"/>
 							<div class="line-separator"></div>
 							<a href="#create-path" id="create-path"><h3>create</h3></a>
 						</div>
+					} else {
+						<h3 class="dim" id="no-paths">no paths</h3>
 					}
 				</div>
 			</main>
@@ -46,7 +48,7 @@ templ Profile(name, date string, id string, sameuser bool) {
 }
 
 templ SamplePath() {
-	<div class="path" id="sample-path" style="display: none;">
+	<div class="path box" id="sample-path" style="display: none;">
 		<a href="/path/0" class="path-link"><h3 class="path-name">path</h3></a>
 		<div class="line-separator"></div>
 		<p class="path-steps">steps: ?</p>

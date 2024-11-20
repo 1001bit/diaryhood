@@ -43,9 +43,6 @@ main {
 	gap: 20px;
 	width: 40%;
 	height: fit-content;
-	border: 1px solid var(--main1-dim);
-	border-radius: 4px;
-	padding: 12px;
 }
 
 .path,
@@ -54,8 +51,6 @@ main {
 	min-width: 130px;
 	display: flex;
 	padding: 20px;
-	border: 2px solid var(--main1-dim);
-	border-radius: 4px;
 	flex-direction: column;
 	width: fit-content;
 	justify-content: center;
@@ -65,7 +60,7 @@ main {
 
 .path-create {
 	white-space: pre-line;
-	border: 2px solid var(--acc1-dim);
+	border-color: var(--acc1-dim);
 	color: var(--acc1);
 }
 

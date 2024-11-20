@@ -3,8 +3,6 @@
 	min-width: 130px;
 	display: flex;
 	padding: 20px;
-	border: 2px solid var(--main1-dim);
-	border-radius: 4px;
 	flex-direction: column;
 	width: fit-content;
 	justify-content: center;

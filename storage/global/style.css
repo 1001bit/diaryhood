@@ -71,6 +71,10 @@ a {
 	font-size: 16px;
 }
 
+.dim {
+	color: var(--main1-dim);
+}
+
 /* Navbar */
 #navbar {
 	display: flex;
@@ -150,4 +154,15 @@ button:hover {
 
 button:active {
 	transform: scale(0.98);
+}
+
+/* box */
+.box {
+	border: 2px solid var(--main1-dim);
+	border-radius: 4px;
+}
+
+.thin-box {
+	border: 1px solid var(--main1-dim);
+	border-radius: 4px;
 }
