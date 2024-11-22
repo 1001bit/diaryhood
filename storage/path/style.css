@@ -1,3 +1,21 @@
+main {
+	display: flex;
+	padding-top: 20px;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	gap: 100px;
+}
+
+/* path edit */
+#path-data {
+	padding: 12px;
+	padding-inline: 24px;
+	display: flex;
+	gap: 40px;
+}
+
+/* stat */
 .stat {
 	max-width: 130px;
 	min-width: 130px;
@@ -26,12 +44,6 @@
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
-}
-
-main {
-	display: flex;
-	padding-top: 20px;
-	justify-content: center;
 }
 
 .plus,
