@@ -15,6 +15,12 @@ main {
 	gap: 40px;
 }
 
+/* stats */
+#stats {
+	display: flex;
+	gap: 40px;
+}
+
 /* stat */
 .stat {
 	max-width: 130px;
@@ -41,7 +47,6 @@ main {
 	margin-top: 16px;
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
 	align-items: center;
 	gap: 8px;
 }
@@ -49,4 +54,10 @@ main {
 .plus,
 .minus {
 	user-select: none;
+}
+
+/* create stat */
+#create-stat {
+	border-color: var(--acc1-dim);
+	gap: 8px;
 }

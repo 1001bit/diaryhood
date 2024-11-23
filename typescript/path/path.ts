@@ -45,7 +45,7 @@ function renderStats(stats: Stat[]) {
 
 	for (const stat of stats) {
 		const statElem = newStatCard(stat);
-		statsElem.appendChild(statElem);
+		statsElem.insertBefore(statElem, statsElem.firstChild);
 	}
 }
 
@@ -54,6 +54,13 @@ function editModeOn() {
 	const pathPublicElem = document.getElementById(
 		"path-public"
 	) as HTMLDivElement;
+	const createStatElem = document.getElementById(
+		"create-stat"
+	) as HTMLDivElement;
+
+	createStatElem.removeAttribute("style");
+
+	console.log("edit on");
 }
 
 function editModeOff() {
@@ -61,6 +68,13 @@ function editModeOff() {
 	const pathPublicElem = document.getElementById(
 		"path-public"
 	) as HTMLDivElement;
+	const createStatElem = document.getElementById(
+		"create-stat"
+	) as HTMLDivElement;
+
+	createStatElem.setAttribute("style", "display: none");
+
+	console.log("edit off");
 }
 
 function toggleEdit() {

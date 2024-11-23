@@ -42,7 +42,15 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"path-data\" class=\"thin-box\"><p>name: <b id=\"path-name\">path</b></p><p>public: <b id=\"path-public\">false</b></p><a id=\"path-edit\" style=\"display: none;\">edit</a></div><div id=\"stats\"></div></main></body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"path-data\" class=\"thin-box\"><p>name: <b id=\"path-name\">path</b></p><p>public: <b id=\"path-public\">false</b></p><a id=\"path-edit\" style=\"display: none;\">edit</a></div><div id=\"stats\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = CreateStat().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main></body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -84,7 +92,7 @@ func CreateStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"box\" id=\"create-stat\" style=\"display: none;\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" placeholder=\"value\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box\" id=\"create-stat\" style=\"display: none;\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" class=\"tiny\" placeholder=\"step equivalent\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

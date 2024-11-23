@@ -125,6 +125,12 @@ button.big {
 	padding-block: 8px;
 }
 
+input.tiny,
+button.tiny {
+	padding-inline: 4px;
+	padding-block: 2px;
+}
+
 /* input text */
 input,
 textarea {

@@ -23,16 +23,22 @@ function renderStats(stats) {
     const statsElem = document.getElementById("stats");
     for (const stat of stats) {
         const statElem = newStatCard(stat);
-        statsElem.appendChild(statElem);
+        statsElem.insertBefore(statElem, statsElem.firstChild);
     }
 }
 function editModeOn() {
     const pathNameElem = document.getElementById("path-name");
     const pathPublicElem = document.getElementById("path-public");
+    const createStatElem = document.getElementById("create-stat");
+    createStatElem.removeAttribute("style");
+    console.log("edit on");
 }
 function editModeOff() {
     const pathNameElem = document.getElementById("path-name");
     const pathPublicElem = document.getElementById("path-public");
+    const createStatElem = document.getElementById("create-stat");
+    createStatElem.setAttribute("style", "display: none");
+    console.log("edit off");
 }
 function toggleEdit() {
     switch (editMode) {

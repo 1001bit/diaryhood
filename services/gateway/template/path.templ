@@ -15,7 +15,9 @@ templ Path() {
 					// TODO: Path owner
 					<a id="path-edit" style="display: none;">edit</a>
 				</div>
-				<div id="stats"></div>
+				<div id="stats">
+					@CreateStat()
+				</div>
 			</main>
 		</body>
 		@SampleStat()
@@ -25,9 +27,9 @@ templ Path() {
 }
 
 templ CreateStat() {
-	<div class="box" id="create-stat" style="display: none;">
+	<div class="stat box" id="create-stat" style="display: none;">
 		<input type="text" placeholder="name" id="stat-name-input"/>
-		<input type="text" placeholder="value" id="stat-stepeq-input"/>
+		<input type="text" class="tiny" placeholder="step equivalent" id="stat-stepeq-input"/>
 		<a id="create-stat-button">create</a>
 	</div>
 }
