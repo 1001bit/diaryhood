@@ -1,8 +1,8 @@
 "use strict";
-const titleElem = document.getElementById("title");
-const statsElem = document.getElementById("stats");
 const pathId = window.location.pathname.split("/").pop();
+let editMode = false;
 function setPathTitle(title) {
+    const titleElem = document.getElementById("title");
     titleElem.innerText = title;
     document.title = title;
 }
@@ -20,14 +20,47 @@ function newStatCard(stat) {
     return newStatElem;
 }
 function renderStats(stats) {
+    const statsElem = document.getElementById("stats");
     for (const stat of stats) {
         const statElem = newStatCard(stat);
         statsElem.appendChild(statElem);
     }
 }
+function editModeOn() {
+    const pathNameElem = document.getElementById("path-name");
+    const pathPublicElem = document.getElementById("path-public");
+}
+function editModeOff() {
+    const pathNameElem = document.getElementById("path-name");
+    const pathPublicElem = document.getElementById("path-public");
+}
+function toggleEdit() {
+    switch (editMode) {
+        case false:
+            editModeOn();
+            editMode = true;
+            break;
+        case true:
+            editModeOff();
+            editMode = false;
+            break;
+    }
+}
+function renderStatsInfo(data) {
+    const pathNameElem = document.getElementById("path-name");
+    const pathPublicElem = document.getElementById("path-public");
+    const pathEditElem = document.getElementById("path-edit");
+    pathNameElem.innerText = data.path.name;
+    pathPublicElem.innerText = data.path.public ? "true" : "false";
+    if (data.editRight) {
+        pathEditElem.removeAttribute("style");
+        pathEditElem.addEventListener("click", toggleEdit);
+    }
+}
 function handlePathData(data) {
     setPathTitle(data.path.name);
     renderStats(data.path.stats);
+    renderStatsInfo(data);
 }
 fetch(`/api/path/${pathId}`, {
     method: "GET",

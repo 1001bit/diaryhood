@@ -7,5 +7,6 @@ interface Stat {
 interface Path {
 	id: string;
 	name: string;
+	public: boolean;
 	stats: Stat[];
 }
