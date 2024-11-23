@@ -1,36 +1,26 @@
-let editMode = false;
+/// <reference path="elems.ts"/>
 
-const pathEditElem = document.getElementById("path-edit") as HTMLAnchorElement;
-pathEditElem.addEventListener("click", () => {
-	switch (editMode) {
-		case false:
-			editModeOn();
-			editMode = true;
-			break;
-		case true:
-			editModeOff();
-			editMode = false;
-			break;
+editElem.addEventListener("click", () => {
+	edit();
+});
+
+saveElem.addEventListener("click", () => {
+	save();
+});
+
+cancelElem.addEventListener("click", () => {
+	cancel();
+});
+
+pathPublicToggleElem.addEventListener("click", () => {
+	if (pathPublicToggleElem.innerText == "true") {
+		pathPublicToggleElem.innerText = "false";
+	} else {
+		pathPublicToggleElem.innerText = "true";
 	}
 });
 
-const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
-const pathNameInputElem = document.getElementById(
-	"path-name-input"
-) as HTMLInputElement;
-
-const pathPublicElem = document.getElementById("path-public") as HTMLDivElement;
-const pathPublicToggleElem = document.getElementById(
-	"path-public-toggle"
-) as HTMLDivElement;
-pathPublicToggleElem.addEventListener("click", () => {
-	pathPublicToggleElem.innerText =
-		pathPublicToggleElem.innerText == "true" ? "false" : "true";
-});
-
-const createStatElem = document.getElementById("create-stat") as HTMLDivElement;
-
-function editModeOn() {
+function edit() {
 	createStatElem.removeAttribute("style");
 
 	pathNameElem.setAttribute("style", "display: none");
@@ -40,9 +30,13 @@ function editModeOn() {
 	pathPublicElem.setAttribute("style", "display: none");
 	pathPublicToggleElem.removeAttribute("style");
 	pathPublicToggleElem.innerText = pathPublicElem.innerText;
+
+	cancelElem.removeAttribute("style");
+	saveElem.removeAttribute("style");
+	editElem.setAttribute("style", "display: none");
 }
 
-function editModeOff() {
+function cancel() {
 	createStatElem.setAttribute("style", "display: none");
 
 	pathNameElem.removeAttribute("style");
@@ -50,4 +44,24 @@ function editModeOff() {
 
 	pathPublicElem.removeAttribute("style");
 	pathPublicToggleElem.setAttribute("style", "display: none");
+
+	cancelElem.setAttribute("style", "display: none");
+	saveElem.setAttribute("style", "display: none");
+	editElem.removeAttribute("style");
+}
+
+function save() {
+	const oldName = pathNameElem.innerText;
+	const oldPublic = pathPublicElem.innerText == "true";
+
+	const newName = pathNameInputElem.value;
+	const newPublic = pathPublicToggleElem.innerText == "true";
+
+	if (oldName == newName && oldPublic == newPublic) {
+		cancel();
+		return;
+	}
+
+	console.log(newName, newPublic);
+	cancel();
 }

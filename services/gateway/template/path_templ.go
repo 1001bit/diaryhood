@@ -42,7 +42,7 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"path-data\" class=\"thin box\"><p>name: <b id=\"path-name\">path</b> <input type=\"text\" id=\"path-name-input\" class=\"thin\" style=\"display: none;\" maxlength=\"31\"></p><p>public: <b id=\"path-public\">false</b> <a id=\"path-public-toggle\" style=\"display: none;\">false</a></p><a id=\"path-edit\" style=\"display: none;\">edit</a></div><div id=\"stats\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"path-data\" class=\"thin box\"><p>name: <b id=\"path-name\">path</b> <input type=\"text\" id=\"path-name-input\" class=\"thin\" style=\"display: none;\" maxlength=\"31\"></p><p>public: <b id=\"path-public\">false</b> <a id=\"path-public-toggle\" style=\"display: none;\">false</a></p><a id=\"edit\" style=\"display: none;\">edit</a> <a id=\"cancel\" style=\"display: none;\">cancel</a> <a id=\"save\" style=\"display: none;\">save</a></div><div id=\"stats\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

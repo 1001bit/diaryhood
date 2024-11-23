@@ -78,3 +78,12 @@ main {
 	border-color: var(--acc1-dim);
 	gap: 8px;
 }
+
+#create-stat input {
+	border-color: var(--acc1-dim);
+}
+
+#create-stat input:hover,
+#create-stat input:focus {
+	border-color: var(--acc1);
+}

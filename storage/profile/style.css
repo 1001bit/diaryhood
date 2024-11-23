@@ -68,12 +68,12 @@ main {
 	text-align: center;
 }
 
-#path-name-input {
+.path-create input {
 	text-align: center;
 	border-color: var(--acc1-dim);
 }
 
-#path-name-input:hover,
-#path-name-input:focus {
+.path-create input:hover,
+.path-create input:focus {
 	border-color: var(--acc1);
 }

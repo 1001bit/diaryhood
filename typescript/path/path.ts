@@ -6,17 +6,11 @@ interface PathResponse {
 }
 
 function setPathTitle(title: string) {
-	const titleElem = document.getElementById("title") as HTMLDivElement;
-
 	titleElem.innerText = title;
 	document.title = title;
 }
 
 function newStatCard(stat: Stat) {
-	const sampleStatElem = document.getElementById(
-		"sample-stat"
-	) as HTMLDivElement;
-
 	const newStatElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
 	newStatElem.removeAttribute("id");
 	newStatElem.removeAttribute("style");
@@ -40,8 +34,6 @@ function newStatCard(stat: Stat) {
 }
 
 function renderStats(stats: Stat[]) {
-	const statsElem = document.getElementById("stats") as HTMLDivElement;
-
 	for (const stat of stats) {
 		const statElem = newStatCard(stat);
 		statsElem.insertBefore(statElem, statsElem.firstChild);
@@ -49,19 +41,11 @@ function renderStats(stats: Stat[]) {
 }
 
 function renderStatsInfo(data: PathResponse) {
-	const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
-	const pathPublicElem = document.getElementById(
-		"path-public"
-	) as HTMLDivElement;
-	const pathEditElem = document.getElementById(
-		"path-edit"
-	) as HTMLAnchorElement;
-
 	pathNameElem.innerText = data.path.name;
 	pathPublicElem.innerText = data.path.public ? "true" : "false";
 
 	if (data.editRight) {
-		pathEditElem.removeAttribute("style");
+		editElem.removeAttribute("style");
 	}
 }
 
