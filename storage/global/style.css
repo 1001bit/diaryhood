@@ -174,7 +174,15 @@ button:active {
 	border-radius: 4px;
 }
 
-.thin-box {
-	border: 1px solid var(--main1-dim);
-	border-radius: 4px;
+/* thin */
+.thin {
+	border-width: 1px;
+}
+
+.thin:focus {
+	border-width: 1px;
+}
+
+.thin:hover {
+	border-width: 1px;
 }

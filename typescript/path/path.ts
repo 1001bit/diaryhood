@@ -1,5 +1,4 @@
 const pathId = window.location.pathname.split("/").pop();
-let editMode = false;
 
 interface PathResponse {
 	path: Path;

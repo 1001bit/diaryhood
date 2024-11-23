@@ -1,10 +1,7 @@
 "use strict";
+let editMode = false;
 const pathEditElem = document.getElementById("path-edit");
-const pathNameElem = document.getElementById("path-name");
-const pathPublicElem = document.getElementById("path-public");
-const createStatElem = document.getElementById("create-stat");
-pathEditElem.addEventListener("click", toggleEdit);
-function toggleEdit() {
+pathEditElem.addEventListener("click", () => {
     switch (editMode) {
         case false:
             editModeOn();
@@ -15,15 +12,33 @@ function toggleEdit() {
             editMode = false;
             break;
     }
-}
+});
+const pathNameElem = document.getElementById("path-name");
+const pathNameInputElem = document.getElementById("path-name-input");
+const pathPublicElem = document.getElementById("path-public");
+const pathPublicToggleElem = document.getElementById("path-public-toggle");
+pathPublicToggleElem.addEventListener("click", () => {
+    pathPublicToggleElem.innerText =
+        pathPublicToggleElem.innerText == "true" ? "false" : "true";
+});
+const createStatElem = document.getElementById("create-stat");
 function editModeOn() {
     createStatElem.removeAttribute("style");
+    pathNameElem.setAttribute("style", "display: none");
+    pathNameInputElem.removeAttribute("style");
+    pathNameInputElem.value = pathNameElem.innerText;
+    pathPublicElem.setAttribute("style", "display: none");
+    pathPublicToggleElem.removeAttribute("style");
+    pathPublicToggleElem.innerText = pathPublicElem.innerText;
 }
 function editModeOff() {
     createStatElem.setAttribute("style", "display: none");
+    pathNameElem.removeAttribute("style");
+    pathNameInputElem.setAttribute("style", "display: none");
+    pathPublicElem.removeAttribute("style");
+    pathPublicToggleElem.setAttribute("style", "display: none");
 }
 const pathId = window.location.pathname.split("/").pop();
-let editMode = false;
 function setPathTitle(title) {
     const titleElem = document.getElementById("title");
     titleElem.innerText = title;

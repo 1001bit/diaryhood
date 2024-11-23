@@ -9,9 +9,9 @@ templ Path() {
 		<body>
 			@nav("path")
 			<main>
-				<div id="path-data" class="thin-box">
-					<p>name: <b id="path-name">path</b></p>
-					<p>public: <b id="path-public">false</b></p>
+				<div id="path-data" class="thin box">
+					<p>name: <b id="path-name">path</b> <input type="text" id="path-name-input" class="thin" style="display: none;" maxlength="31"/></p>
+					<p>public: <b id="path-public">false</b> <a id="path-public-toggle" style="display: none;">false</a></p>
 					// TODO: Path owner
 					<a id="path-edit" style="display: none;">edit</a>
 				</div>

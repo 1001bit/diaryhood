@@ -15,6 +15,23 @@ main {
 	gap: 40px;
 }
 
+#path-data p {
+	display: flex;
+	gap: 8px;
+}
+
+#path-data * a,
+#path-data a {
+	cursor: pointer;
+	user-select: none;
+}
+
+#path-data p input {
+	padding-block: 0px;
+	height: fit-content;
+	width: 200px;
+}
+
 /* stats */
 #stats {
 	display: flex;
