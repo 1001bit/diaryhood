@@ -10,7 +10,7 @@ import (
 func HandleIDlessProfile(w http.ResponseWriter, r *http.Request) {
 	claims, ok := accesstoken.GetClaimsFromContext(r.Context())
 	if !ok {
-		template.RefreshOrLogin().Render(r.Context(), w)
+		template.RefreshOrLoginPage().Render(r.Context(), w)
 		return
 	}
 

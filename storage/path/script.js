@@ -1,4 +1,27 @@
 "use strict";
+const pathEditElem = document.getElementById("path-edit");
+const pathNameElem = document.getElementById("path-name");
+const pathPublicElem = document.getElementById("path-public");
+const createStatElem = document.getElementById("create-stat");
+pathEditElem.addEventListener("click", toggleEdit);
+function toggleEdit() {
+    switch (editMode) {
+        case false:
+            editModeOn();
+            editMode = true;
+            break;
+        case true:
+            editModeOff();
+            editMode = false;
+            break;
+    }
+}
+function editModeOn() {
+    createStatElem.removeAttribute("style");
+}
+function editModeOff() {
+    createStatElem.setAttribute("style", "display: none");
+}
 const pathId = window.location.pathname.split("/").pop();
 let editMode = false;
 function setPathTitle(title) {
@@ -26,32 +49,6 @@ function renderStats(stats) {
         statsElem.insertBefore(statElem, statsElem.firstChild);
     }
 }
-function editModeOn() {
-    const pathNameElem = document.getElementById("path-name");
-    const pathPublicElem = document.getElementById("path-public");
-    const createStatElem = document.getElementById("create-stat");
-    createStatElem.removeAttribute("style");
-    console.log("edit on");
-}
-function editModeOff() {
-    const pathNameElem = document.getElementById("path-name");
-    const pathPublicElem = document.getElementById("path-public");
-    const createStatElem = document.getElementById("create-stat");
-    createStatElem.setAttribute("style", "display: none");
-    console.log("edit off");
-}
-function toggleEdit() {
-    switch (editMode) {
-        case false:
-            editModeOn();
-            editMode = true;
-            break;
-        case true:
-            editModeOff();
-            editMode = false;
-            break;
-    }
-}
 function renderStatsInfo(data) {
     const pathNameElem = document.getElementById("path-name");
     const pathPublicElem = document.getElementById("path-public");
@@ -60,7 +57,6 @@ function renderStatsInfo(data) {
     pathPublicElem.innerText = data.path.public ? "true" : "false";
     if (data.editRight) {
         pathEditElem.removeAttribute("style");
-        pathEditElem.addEventListener("click", toggleEdit);
     }
 }
 function handlePathData(data) {
@@ -75,8 +71,14 @@ fetch(`/api/path/${pathId}`, {
     if (res.status == 200) {
         return res.json();
     }
-    location.replace("/404");
-    return [];
+    return {
+        path: {
+            name: "not found",
+            public: false,
+            stats: [],
+        },
+        editRight: false,
+    };
 })
     .then((data) => {
     handlePathData(data);

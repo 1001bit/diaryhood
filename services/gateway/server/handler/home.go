@@ -11,7 +11,7 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 	_, ok := accesstoken.GetClaimsFromContext(r.Context())
 
 	if !ok {
-		template.RefreshOrLogin().Render(r.Context(), w)
+		template.RefreshOrLoginPage().Render(r.Context(), w)
 		return
 	}
 

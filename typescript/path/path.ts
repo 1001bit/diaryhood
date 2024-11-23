@@ -49,47 +49,6 @@ function renderStats(stats: Stat[]) {
 	}
 }
 
-function editModeOn() {
-	const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
-	const pathPublicElem = document.getElementById(
-		"path-public"
-	) as HTMLDivElement;
-	const createStatElem = document.getElementById(
-		"create-stat"
-	) as HTMLDivElement;
-
-	createStatElem.removeAttribute("style");
-
-	console.log("edit on");
-}
-
-function editModeOff() {
-	const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
-	const pathPublicElem = document.getElementById(
-		"path-public"
-	) as HTMLDivElement;
-	const createStatElem = document.getElementById(
-		"create-stat"
-	) as HTMLDivElement;
-
-	createStatElem.setAttribute("style", "display: none");
-
-	console.log("edit off");
-}
-
-function toggleEdit() {
-	switch (editMode) {
-		case false:
-			editModeOn();
-			editMode = true;
-			break;
-		case true:
-			editModeOff();
-			editMode = false;
-			break;
-	}
-}
-
 function renderStatsInfo(data: PathResponse) {
 	const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
 	const pathPublicElem = document.getElementById(
@@ -104,7 +63,6 @@ function renderStatsInfo(data: PathResponse) {
 
 	if (data.editRight) {
 		pathEditElem.removeAttribute("style");
-		pathEditElem.addEventListener("click", toggleEdit);
 	}
 }
 
@@ -121,8 +79,14 @@ fetch(`/api/path/${pathId}`, {
 		if (res.status == 200) {
 			return res.json();
 		}
-		location.replace("/404");
-		return [];
+		return {
+			path: {
+				name: "not found",
+				public: false,
+				stats: [],
+			},
+			editRight: false,
+		};
 	})
 	.then((data) => {
 		handlePathData(data);

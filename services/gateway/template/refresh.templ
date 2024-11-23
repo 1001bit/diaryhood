@@ -1,9 +1,9 @@
 package template
 
-templ RefreshOrLogin() {
+templ RefreshOrLoginPage() {
 	<html lang="en">
 		<head>
-			@baseHead("Loading...")
+			@baseHead("pathgoer")
 			<script>
 				fetch("/auth/refresh", {
 					method: "GET",
