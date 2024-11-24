@@ -20,6 +20,12 @@ pathPublicToggleElem.addEventListener("click", () => {
 	}
 });
 
+pathNameInputElem.addEventListener("input", () => {
+	saveElem.innerText = "save";
+});
+
+setRemoveStyleOnFocus(pathNameInputElem);
+
 function edit() {
 	createStatElem.removeAttribute("style");
 
@@ -62,6 +68,35 @@ function save() {
 		return;
 	}
 
-	console.log(newName, newPublic);
-	cancel();
+	fetch(`/api/path/${pathId}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name: newName,
+			public: newPublic,
+		}),
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				pathNameElem.innerText = newName;
+				setPathTitle(newName);
+				pathPublicElem.innerText = newPublic ? "true" : "false";
+				cancel();
+				break;
+			case 400:
+				saveElem.innerText = "no special characters";
+				setElemColor(pathNameInputElem, "err");
+				break;
+			case 409:
+				saveElem.innerText = "path already exists";
+				setElemColor(pathNameInputElem, "err");
+				break;
+			default:
+				saveElem.innerText = "error";
+				setElemColor(pathNameInputElem, "err");
+				break;
+		}
+	});
 }

@@ -51,26 +51,27 @@ function newPathElem(Path: Path) {
 function renderPaths(paths: Path[]) {
 	for (const path of paths) {
 		const pathElem = newPathElem(path);
-		// append child in front of other elements
 		pathsElem.insertBefore(pathElem, pathsElem.firstChild);
 	}
 }
 
 fetch(`/api/path/user/${userId}`, {
 	method: "GET",
-})
-	.then((res) => {
-		if (res.status == 200) {
-			const noPathsElem = document.getElementById("no-paths");
-			if (noPathsElem) {
-				noPathsElem.style.display = "none";
-			}
+}).then((res) => {
+	if (res.status != 200) {
+		return;
+	}
 
-			return res.json();
-		} else {
-			return [];
+	const noPathsElem = document.getElementById("no-paths");
+	if (noPathsElem) {
+		noPathsElem.style.display = "none";
+	}
+
+	res.json().then((data) => {
+		if (data) {
+			renderPaths(data);
+		} else if (noPathsElem) {
+			noPathsElem.removeAttribute("style");
 		}
-	})
-	.then((data) => {
-		renderPaths(data);
 	});
+});

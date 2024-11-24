@@ -167,6 +167,9 @@ function newPathElem(Path) {
     return pathElem;
 }
 function renderPaths(paths) {
+    if (!paths) {
+        return;
+    }
     for (const path of paths) {
         const pathElem = newPathElem(path);
         pathsElem.insertBefore(pathElem, pathsElem.firstChild);
@@ -174,21 +177,22 @@ function renderPaths(paths) {
 }
 fetch(`/api/path/user/${userId}`, {
     method: "GET",
-})
-    .then((res) => {
-    if (res.status == 200) {
-        const noPathsElem = document.getElementById("no-paths");
-        if (noPathsElem) {
-            noPathsElem.style.display = "none";
+}).then((res) => {
+    if (res.status != 200) {
+        return;
+    }
+    const noPathsElem = document.getElementById("no-paths");
+    if (noPathsElem) {
+        noPathsElem.style.display = "none";
+    }
+    res.json().then((data) => {
+        if (data) {
+            renderPaths(data);
         }
-        return res.json();
-    }
-    else {
-        return [];
-    }
-})
-    .then((data) => {
-    renderPaths(data);
+        else if (noPathsElem) {
+            noPathsElem.removeAttribute("style");
+        }
+    });
 });
 function setElemColor(elem, colorVar) {
     if (!elem) {

@@ -25,6 +25,16 @@ func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (s
 	return id, err
 }
 
+func (ps *PathStore) UpdatePath(ctx context.Context, pathId string, name string, public bool, askerId string) error {
+	_, err := ps.postgresC.ExecContext(ctx, `
+		UPDATE paths
+		SET name = $1, public = $2
+		WHERE id = $3 AND user_id = $4
+	`, name, public, pathId, askerId)
+
+	return err
+}
+
 func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {
 	_, err := ps.postgresC.ExecContext(ctx, `
 		DELETE FROM paths
