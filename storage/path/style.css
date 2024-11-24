@@ -9,14 +9,16 @@ main {
 
 /* path edit */
 #path-data {
-	padding: 12px;
+	height: 50px;
 	padding-inline: 24px;
 	display: flex;
+	align-items: center;
 	gap: 40px;
 }
 
 #path-data p {
 	display: flex;
+	align-items: center;
 	gap: 8px;
 }
 

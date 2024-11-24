@@ -147,6 +147,12 @@ textarea:hover {
 	border: 2px solid var(--main1);
 }
 
+input,
+textarea,
+button {
+	transition: all 0.08s ease-in-out;
+}
+
 input::placeholder,
 textarea::placeholder {
 	color: var(--main1-dim);

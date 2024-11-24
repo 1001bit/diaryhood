@@ -8,8 +8,11 @@ const saveElem = document.getElementById("save");
 const pathNameInputElem = document.getElementById("path-name-input");
 const pathPublicToggleElem = document.getElementById("path-public-toggle");
 const statsElem = document.getElementById("stats");
-const createStatElem = document.getElementById("create-stat");
 const sampleStatElem = document.getElementById("sample-stat");
+const createStatElem = document.getElementById("create-stat");
+const statNameInputElem = document.getElementById("stat-name-input");
+const statStepEqInputElem = document.getElementById("stat-stepeq-input");
+const createStatButtonElem = document.getElementById("create-stat-button");
 editElem.addEventListener("click", () => {
     edit();
 });
@@ -61,6 +64,11 @@ function save() {
     console.log(newName, newPublic);
     cancel();
 }
+createStatButtonElem.addEventListener("click", () => {
+    const name = statNameInputElem.value;
+    const stepEq = statStepEqInputElem.value;
+    console.log(name, stepEq);
+});
 const pathId = window.location.pathname.split("/").pop();
 function setPathTitle(title) {
     titleElem.innerText = title;

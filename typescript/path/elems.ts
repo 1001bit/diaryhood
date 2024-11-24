@@ -19,5 +19,15 @@ const pathPublicToggleElem = document.getElementById(
 
 // stats
 const statsElem = document.getElementById("stats") as HTMLDivElement;
-const createStatElem = document.getElementById("create-stat") as HTMLDivElement;
 const sampleStatElem = document.getElementById("sample-stat") as HTMLDivElement;
+// create stat
+const createStatElem = document.getElementById("create-stat") as HTMLDivElement;
+const statNameInputElem = document.getElementById(
+	"stat-name-input"
+) as HTMLInputElement;
+const statStepEqInputElem = document.getElementById(
+	"stat-stepeq-input"
+) as HTMLInputElement;
+const createStatButtonElem = document.getElementById(
+	"create-stat-button"
+) as HTMLDivElement;
