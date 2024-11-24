@@ -19,17 +19,3 @@ templ RefreshOrLoginPage() {
 		<body></body>
 	</html>
 }
-
-templ RefreshOrNothingScript() {
-	if ctx.Value("claims") == nil {
-		<script>
-			fetch("/auth/refresh", {
-				method: "GET",
-			}).then((res) => {
-				if(res.status == 200) {
-					location.reload();
-				}
-			});
-		</script>
-	}
-}

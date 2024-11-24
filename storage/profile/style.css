@@ -46,7 +46,7 @@ main {
 }
 
 .path,
-.path-create {
+#path-create-box {
 	max-width: 130px;
 	min-width: 130px;
 	display: flex;
@@ -58,22 +58,22 @@ main {
 	overflow-wrap: break-word;
 }
 
-.path-create {
+#path-create-box {
 	white-space: pre-line;
 	border-color: var(--acc1-dim);
 	color: var(--acc1);
 }
 
-.path-create a {
+#path-create-box a {
 	text-align: center;
 }
 
-.path-create input {
+#path-create-box input {
 	text-align: center;
 	border-color: var(--acc1-dim);
 }
 
-.path-create input:hover,
-.path-create input:focus {
+#path-create-box input:hover,
+#path-create-box input:focus {
 	border-color: var(--acc1);
 }

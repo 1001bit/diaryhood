@@ -1,6 +1,6 @@
 package template
 
-templ Profile(name, date string, id string, sameuser bool) {
+templ Profile(name, date string, id string) {
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -14,10 +14,8 @@ templ Profile(name, date string, id string, sameuser bool) {
 					<img class="avatar" src="avatar.png"/>
 					<div id="name-box">
 						<p id="name">{ name }</p>
-						if sameuser {
-							<textarea id="name-input" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
-							<a class="tiny" id="change-name">change</a>
-						}
+						<textarea id="name-input" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
+						<a class="tiny" id="change-name" style="display: none;">change</a>
 					</div>
 					<div class="line-separator"></div>
 					<p>
@@ -29,22 +27,22 @@ templ Profile(name, date string, id string, sameuser bool) {
 					<p id="user-steps">0 steps</p>
 				</div>
 				<div id="paths">
-					if sameuser {
-						<div class="path-create box">
-							<input type="text" id="path-name-input" placeholder="name"/>
-							<div class="line-separator"></div>
-							<a href="#create-path" id="create-path"><h3>create</h3></a>
-						</div>
-					} else {
-						<h3 class="dim" id="no-paths">no paths</h3>
-					}
+					@CreatePath()
+					<h3 class="dim" id="no-paths" style="display: none;">no paths</h3>
 				</div>
 			</main>
 			@SamplePath()
-			@RefreshOrNothingScript()
 			<script src="/storage/profile/script.js"></script>
 		</body>
 	</html>
+}
+
+templ CreatePath() {
+	<div id="path-create-box" class="box" style="display: none;">
+		<input type="text" id="path-name-input" placeholder="name"/>
+		<div class="line-separator"></div>
+		<a href="#create-path" id="create-path"><h3>create</h3></a>
+	</div>
 }
 
 templ SamplePath() {

@@ -56,19 +56,11 @@ function cancel() {
 	editElem.removeAttribute("style");
 }
 
-function save() {
-	const oldName = pathNameElem.innerText;
-	const oldPublic = pathPublicElem.innerText == "true";
-
-	const newName = pathNameInputElem.value;
-	const newPublic = pathPublicToggleElem.innerText == "true";
-
-	if (oldName == newName && oldPublic == newPublic) {
-		cancel();
-		return;
-	}
-
-	fetch(`/api/path/${pathId}`, {
+async function updatePath(
+	newName: string,
+	newPublic: boolean
+): Promise<string> {
+	return fetch(`/api/path/${pathId}`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
@@ -84,19 +76,37 @@ function save() {
 				setPathTitle(newName);
 				pathPublicElem.innerText = newPublic ? "true" : "false";
 				cancel();
-				break;
+				return "";
 			case 400:
-				saveElem.innerText = "no special characters";
-				setElemColor(pathNameInputElem, "err");
-				break;
+				return "no special characters";
 			case 409:
-				saveElem.innerText = "path already exists";
-				setElemColor(pathNameInputElem, "err");
-				break;
+				return "path already exists";
+			case 401:
+				return "unauthorized";
 			default:
-				saveElem.innerText = "error";
-				setElemColor(pathNameInputElem, "err");
-				break;
+				return "error";
 		}
+	});
+}
+
+function save() {
+	const oldName = pathNameElem.innerText;
+	const oldPublic = pathPublicElem.innerText == "true";
+
+	const newName = pathNameInputElem.value;
+	const newPublic = pathPublicToggleElem.innerText == "true";
+
+	if (oldName == newName && oldPublic == newPublic) {
+		cancel();
+		return;
+	}
+
+	refreshIfNotAuthNd().then((_res) => {
+		updatePath(newName, newPublic).then((err) => {
+			if (err != "") {
+				saveElem.innerText = err;
+				setElemColor(pathNameInputElem, "err");
+			}
+		});
 	});
 }

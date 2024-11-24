@@ -3,5 +3,10 @@
 	"compilerOptions": {
 		"outFile": "../../storage/path/script.js"
 	},
-	"include": ["*.ts", "../misc/elemstyles.ts", "../misc/path.ts"]
+	"include": [
+		"*.ts",
+		"../misc/elemstyles.ts",
+		"../misc/path.ts",
+		"../misc/refresh.ts"
+	]
 }

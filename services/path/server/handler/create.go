@@ -17,10 +17,12 @@ type CreatePathRequest struct {
 }
 
 func (h *Handler) HandleCreatePath(w http.ResponseWriter, r *http.Request) {
-	claims, ok := accesstoken.GetClaimsFromContext(r.Context())
-	if !ok {
+	userId := "0"
+	if claims, ok := accesstoken.GetClaimsFromContext(r.Context()); !ok {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
+	} else {
+		userId = claims.Id
 	}
 
 	req := &CreatePathRequest{}
@@ -35,7 +37,7 @@ func (h *Handler) HandleCreatePath(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := h.pathstore.CreatePath(r.Context(), claims.Id, req.Name)
+	id, err := h.pathstore.CreatePath(r.Context(), userId, req.Name)
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return

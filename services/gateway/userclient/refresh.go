@@ -4,12 +4,18 @@ import (
 	"net/http"
 
 	"github.com/1001bit/pathgoer/services/gateway/cookiemanager"
+	"github.com/1001bit/pathgoer/services/gateway/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func (c *Client) HandleRefresh(w http.ResponseWriter, r *http.Request) {
+	if _, ok := accesstoken.GetClaimsFromContext(r.Context()); ok {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	cookie, err := r.Cookie("refresh")
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)

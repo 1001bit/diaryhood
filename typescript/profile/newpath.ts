@@ -1,31 +1,29 @@
-const pathNameInputElem = document.getElementById(
-	"path-name-input"
-) as HTMLTextAreaElement | null;
-const createPathElem = document.getElementById("create-path");
+// remove style on focus
+setRemoveStyleOnFocus(pathNameInputElem);
 
-function newPathInit() {
-	if (!(pathNameInputElem && createPathElem)) {
-		return;
-	}
+createPathButton.addEventListener("click", () => {
+	refreshIfNotAuthNd().then((_res) => {
+		createNewPath().then((err) => {
+			if (err != "") {
+				createPathButton.innerText = err;
+				setElemColor(pathNameInputElem, "err");
+			}
+		});
+	});
+});
 
-	createPathElem.addEventListener("click", createNewPath);
+pathNameInputElem.addEventListener("input", () => {
+	createPathButton.innerText = "create";
+});
 
-	// remove style on focus
-	setRemoveStyleOnFocus(pathNameInputElem);
-}
-
-function createNewPath() {
-	if (!(pathNameInputElem && createPathElem)) {
-		return;
-	}
-
+async function createNewPath(): Promise<string> {
 	const name = pathNameInputElem.value;
 	if (name == "") {
 		setElemColor(pathNameInputElem, "err");
-		return;
+		return "empty";
 	}
 
-	fetch("/api/path", {
+	return fetch("/api/path", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -33,30 +31,21 @@ function createNewPath() {
 		body: JSON.stringify({
 			name: name,
 		}),
-	})
-		.then((res) => {
-			switch (res.status) {
-				case 200:
-					break;
-				case 400:
-					createPathElem.innerText = "no special characters";
-					setElemColor(pathNameInputElem, "err");
-					break;
-				case 409:
-					createPathElem.innerText = "path already exists";
-					setElemColor(pathNameInputElem, "err");
-					break;
-				default:
-					setElemColor(pathNameInputElem, "err");
-					break;
-			}
-			return res.json();
-		})
-		.then((res) => {
-			if (res && res.id) {
-				location.replace(`/path/${res.id}`);
-			}
-		});
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				res.json().then((res) => {
+					location.replace(`/path/${res.id}`);
+				});
+				return "";
+			case 400:
+				return "no special characters";
+			case 409:
+				return "path already exists";
+			case 401:
+				return "unauthorized";
+			default:
+				return "error";
+		}
+	});
 }
-
-newPathInit();

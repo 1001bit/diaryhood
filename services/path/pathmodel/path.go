@@ -69,7 +69,7 @@ func (ps *PathStore) GetPathAndOwnerId(ctx context.Context, askerId, pathId stri
 	return path, userId, err
 }
 
-func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Path, error) {
+func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]*Path, error) {
 	rows, err := ps.postgresC.QueryContext(ctx, `
         SELECT id, name, public
         FROM paths
@@ -81,11 +81,11 @@ func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Pa
 	}
 	defer rows.Close()
 
-	var paths []Path
+	var paths []*Path
 	pathMap := make(map[int32]*Path)
 
 	for rows.Next() {
-		path := Path{
+		path := &Path{
 			Stats: []Stat{},
 		}
 
@@ -94,7 +94,7 @@ func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Pa
 		}
 
 		paths = append(paths, path)
-		pathMap[path.Id] = &paths[len(paths)-1]
+		pathMap[path.Id] = paths[len(paths)-1]
 	}
 
 	err = ps.FetchStatsIntoPaths(ctx, pathMap)

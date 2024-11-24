@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const titleElem = document.getElementById("title");
 const pathNameElem = document.getElementById("path-name");
 const pathPublicElem = document.getElementById("path-public");
@@ -56,6 +65,37 @@ function cancel() {
     saveElem.setAttribute("style", "display: none");
     editElem.removeAttribute("style");
 }
+function updatePath(newName, newPublic) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch(`/api/path/${pathId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: newName,
+                public: newPublic,
+            }),
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    pathNameElem.innerText = newName;
+                    setPathTitle(newName);
+                    pathPublicElem.innerText = newPublic ? "true" : "false";
+                    cancel();
+                    return "";
+                case 400:
+                    return "no special characters";
+                case 409:
+                    return "path already exists";
+                case 401:
+                    return "unauthorized";
+                default:
+                    return "error";
+            }
+        });
+    });
+}
 function save() {
     const oldName = pathNameElem.innerText;
     const oldPublic = pathPublicElem.innerText == "true";
@@ -65,36 +105,13 @@ function save() {
         cancel();
         return;
     }
-    fetch(`/api/path/${pathId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            name: newName,
-            public: newPublic,
-        }),
-    }).then((res) => {
-        switch (res.status) {
-            case 200:
-                pathNameElem.innerText = newName;
-                setPathTitle(newName);
-                pathPublicElem.innerText = newPublic ? "true" : "false";
-                cancel();
-                break;
-            case 400:
-                saveElem.innerText = "no special characters";
+    refreshIfNotAuthNd().then((_res) => {
+        updatePath(newName, newPublic).then((err) => {
+            if (err != "") {
+                saveElem.innerText = err;
                 setElemColor(pathNameInputElem, "err");
-                break;
-            case 409:
-                saveElem.innerText = "path already exists";
-                setElemColor(pathNameInputElem, "err");
-                break;
-            default:
-                saveElem.innerText = "error";
-                setElemColor(pathNameInputElem, "err");
-                break;
-        }
+            }
+        });
     });
 }
 createStatButtonElem.addEventListener("click", () => {
@@ -120,6 +137,8 @@ function newStatCard(stat) {
     return newStatElem;
 }
 function renderStats(stats) {
+    if (!stats)
+        return;
     for (const stat of stats) {
         const statElem = newStatCard(stat);
         statsElem.insertBefore(statElem, statsElem.firstChild);
@@ -137,24 +156,24 @@ function handlePathData(data) {
     renderStats(data.path.stats);
     renderStatsInfo(data);
 }
-fetch(`/api/path/${pathId}`, {
-    method: "GET",
-})
-    .then((res) => {
-    if (res.status == 200) {
-        return res.json();
-    }
-    return {
-        path: {
-            name: "not found",
-            public: false,
-            stats: [],
-        },
-        editRight: false,
-    };
-})
-    .then((data) => {
-    handlePathData(data);
+function renderPath() {
+    fetch(`/api/path/${pathId}`, {
+        method: "GET",
+    }).then((res) => {
+        switch (res.status) {
+            case 200:
+                res.json().then(handlePathData);
+                break;
+            case 404:
+                window.location.replace("/404");
+                break;
+            default:
+                break;
+        }
+    });
+}
+refreshIfNotAuthNd().then((_res) => {
+    renderPath();
 });
 function setElemColor(elem, colorVar) {
     if (!elem) {
@@ -168,5 +187,24 @@ function setRemoveStyleOnFocus(elem) {
     }
     elem.addEventListener("focus", () => {
         elem.removeAttribute("style");
+    });
+}
+function refreshIfNotAuthNd() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("/authenticated", {
+            method: "GET",
+        }).then((res) => {
+            if (res.status == 401) {
+                return fetch("/auth/refresh", {
+                    method: "GET",
+                }).then((res) => {
+                    if (res.status == 200) {
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            return true;
+        });
     });
 }

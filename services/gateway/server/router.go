@@ -32,6 +32,9 @@ func (s *Server) newRouter() *chi.Mux {
 	r.Use(chimw.CleanPath)
 
 	// Routes
+	// Path
+	r.Get("/path/{id}", handler.HandlePath)
+
 	// With JWT claims in context
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.JwtClaimsToContext)
@@ -44,8 +47,8 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Get("/user", handler.HandleIDlessProfile)
 		// Profile
 		r.Get("/user/{name}", s.userclient.HandleProfile)
-		// Path
-		r.Get("/path/{id}", handler.HandlePath)
+		// Check if authenticated
+		r.Get("/authenticated", handler.HandleAuthenticated)
 	})
 
 	// Json API
@@ -64,6 +67,8 @@ func (s *Server) newRouter() *chi.Mux {
 
 	// Routes that get refresh token
 	r.Route("/auth", func(r chi.Router) {
+		r.Use(middleware.JwtClaimsToContext)
+
 		// Refresh
 		r.Get("/refresh", s.userclient.HandleRefresh)
 		// Logout

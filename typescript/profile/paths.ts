@@ -1,9 +1,6 @@
-const mainElem = document.getElementsByTagName("main")[0] as HTMLDivElement;
-const pathsElem = document.getElementById("paths") as HTMLDivElement;
+/// <reference path="elems.ts" />
 
-const userStepsElem = document.getElementById("user-steps") as HTMLDivElement;
 let userSteps = 0;
-
 const userId = mainElem.getAttribute("data-user-id");
 
 function countSteps(stats: Stat[]) {
@@ -22,10 +19,6 @@ function countSteps(stats: Stat[]) {
 }
 
 function newPathElem(Path: Path) {
-	const samplePathElem = document.getElementById(
-		"sample-path"
-	) as HTMLDivElement;
-
 	const pathElem = samplePathElem.cloneNode(true) as HTMLDivElement;
 	pathElem.removeAttribute("id");
 	pathElem.removeAttribute("style");
@@ -49,29 +42,34 @@ function newPathElem(Path: Path) {
 }
 
 function renderPaths(paths: Path[]) {
+	if (!paths) {
+		noPathsElem.removeAttribute("style");
+		return;
+	}
+
 	for (const path of paths) {
 		const pathElem = newPathElem(path);
 		pathsElem.insertBefore(pathElem, pathsElem.firstChild);
 	}
 }
 
-fetch(`/api/path/user/${userId}`, {
-	method: "GET",
-}).then((res) => {
-	if (res.status != 200) {
-		return;
-	}
-
-	const noPathsElem = document.getElementById("no-paths");
-	if (noPathsElem) {
-		noPathsElem.style.display = "none";
-	}
-
-	res.json().then((data) => {
-		if (data) {
-			renderPaths(data);
-		} else if (noPathsElem) {
-			noPathsElem.removeAttribute("style");
+function fetchAndRenderPaths() {
+	fetch(`/api/path/user/${userId}`, {
+		method: "GET",
+	}).then((res) => {
+		if (res.status != 200) {
+			return;
 		}
+
+		res.json().then(renderPaths);
 	});
+}
+
+refreshIfNotAuthNd().then((res) => {
+	fetchAndRenderPaths();
+
+	if (res) {
+		changeNameElem.removeAttribute("style");
+		pathCreateBoxElem.removeAttribute("style");
+	}
 });

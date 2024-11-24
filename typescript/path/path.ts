@@ -34,6 +34,8 @@ function newStatCard(stat: Stat) {
 }
 
 function renderStats(stats: Stat[]) {
+	if (!stats) return;
+
 	for (const stat of stats) {
 		const statElem = newStatCard(stat);
 		statsElem.insertBefore(statElem, statsElem.firstChild);
@@ -55,22 +57,23 @@ function handlePathData(data: PathResponse) {
 	renderStatsInfo(data);
 }
 
-fetch(`/api/path/${pathId}`, {
-	method: "GET",
-})
-	.then((res) => {
-		if (res.status == 200) {
-			return res.json();
+function renderPath() {
+	fetch(`/api/path/${pathId}`, {
+		method: "GET",
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				res.json().then(handlePathData);
+				break;
+			case 404:
+				window.location.replace("/404");
+				break;
+			default:
+				break;
 		}
-		return {
-			path: {
-				name: "not found",
-				public: false,
-				stats: [],
-			},
-			editRight: false,
-		};
-	})
-	.then((data) => {
-		handlePathData(data);
 	});
+}
+
+refreshIfNotAuthNd().then((_res) => {
+	renderPath();
+});
