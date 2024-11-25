@@ -42,19 +42,14 @@ function renderStats(stats: Stat[]) {
 	}
 }
 
-function renderStatsInfo(data: PathResponse) {
-	pathNameElem.innerText = data.path.name;
-	pathPublicElem.innerText = data.path.public ? "true" : "false";
-
-	if (data.editRight) {
-		editElem.removeAttribute("style");
-	}
-}
-
 function handlePathData(data: PathResponse) {
 	setPathTitle(data.path.name);
 	renderStats(data.path.stats);
-	renderStatsInfo(data);
+
+	if (data.editRight) {
+		editButton.removeAttribute("style");
+		setPathData(data.path.name, data.path.public);
+	}
 }
 
 function renderPath() {

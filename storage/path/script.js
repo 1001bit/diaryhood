@@ -9,61 +9,68 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const titleElem = document.getElementById("title");
-const pathNameElem = document.getElementById("path-name");
-const pathPublicElem = document.getElementById("path-public");
-const editElem = document.getElementById("edit");
-const cancelElem = document.getElementById("cancel");
-const saveElem = document.getElementById("save");
-const pathNameInputElem = document.getElementById("path-name-input");
-const pathPublicToggleElem = document.getElementById("path-public-toggle");
+const editSectionElem = document.getElementById("edit-section");
+const pathDataElem = document.getElementById("path-data");
+const editButton = document.getElementById("edit");
+const pathNameInput = document.getElementById("path-name");
+const pathPublicButton = document.getElementById("path-public");
+const saveButton = document.getElementById("save");
 const statsElem = document.getElementById("stats");
 const sampleStatElem = document.getElementById("sample-stat");
 const createStatElem = document.getElementById("create-stat");
 const statNameInputElem = document.getElementById("stat-name-input");
 const statStepEqInputElem = document.getElementById("stat-stepeq-input");
 const createStatButtonElem = document.getElementById("create-stat-button");
-editElem.addEventListener("click", () => {
-    edit();
+setRemoveStyleOnFocus(pathNameInput);
+let pathData = {
+    name: "",
+    isPublic: false,
+};
+function setPathData(name, isPublic) {
+    pathData.name = name;
+    pathData.isPublic = isPublic;
+    pathNameInput.value = name;
+    pathPublicButton.innerText = isPublic ? "true" : "false";
+}
+let editing = false;
+editButton.addEventListener("click", () => {
+    editing ? cancel() : edit();
 });
-saveElem.addEventListener("click", () => {
-    save();
-});
-cancelElem.addEventListener("click", () => {
-    cancel();
-});
-pathPublicToggleElem.addEventListener("click", () => {
-    if (pathPublicToggleElem.innerText == "true") {
-        pathPublicToggleElem.innerText = "false";
-    }
-    else {
-        pathPublicToggleElem.innerText = "true";
-    }
-});
-pathNameInputElem.addEventListener("input", () => {
-    saveElem.innerText = "save";
-});
-setRemoveStyleOnFocus(pathNameInputElem);
 function edit() {
+    editing = true;
+    editButton.innerText = "cancel";
+    pathDataElem.removeAttribute("style");
     createStatElem.removeAttribute("style");
-    pathNameElem.setAttribute("style", "display: none");
-    pathNameInputElem.removeAttribute("style");
-    pathNameInputElem.value = pathNameElem.innerText;
-    pathPublicElem.setAttribute("style", "display: none");
-    pathPublicToggleElem.removeAttribute("style");
-    pathPublicToggleElem.innerText = pathPublicElem.innerText;
-    cancelElem.removeAttribute("style");
-    saveElem.removeAttribute("style");
-    editElem.setAttribute("style", "display: none");
 }
 function cancel() {
+    editing = false;
+    editButton.innerText = "edit";
+    pathDataElem.setAttribute("style", "display: none");
     createStatElem.setAttribute("style", "display: none");
-    pathNameElem.removeAttribute("style");
-    pathNameInputElem.setAttribute("style", "display: none");
-    pathPublicElem.removeAttribute("style");
-    pathPublicToggleElem.setAttribute("style", "display: none");
-    cancelElem.setAttribute("style", "display: none");
-    saveElem.setAttribute("style", "display: none");
-    editElem.removeAttribute("style");
+}
+pathPublicButton.addEventListener("click", () => {
+    pathPublicButton.innerText =
+        pathPublicButton.innerText == "true" ? "false" : "true";
+});
+pathNameInput.addEventListener("input", () => {
+    saveButton.innerText = "save";
+});
+saveButton.addEventListener("click", save);
+function save() {
+    const newName = pathNameInput.value;
+    const newPublic = pathPublicButton.innerText == "true";
+    if (pathData.name == newName && pathData.isPublic == newPublic) {
+        cancel();
+        return;
+    }
+    refreshIfNotAuthNd().then((_res) => {
+        updatePath(newName, newPublic).then((err) => {
+            if (err != "") {
+                saveButton.innerText = err;
+                setElemColor(pathNameInput, "err");
+            }
+        });
+    });
 }
 function updatePath(newName, newPublic) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -79,9 +86,8 @@ function updatePath(newName, newPublic) {
         }).then((res) => {
             switch (res.status) {
                 case 200:
-                    pathNameElem.innerText = newName;
+                    setPathData(newName, newPublic);
                     setPathTitle(newName);
-                    pathPublicElem.innerText = newPublic ? "true" : "false";
                     cancel();
                     return "";
                 case 400:
@@ -92,24 +98,6 @@ function updatePath(newName, newPublic) {
                     return "unauthorized";
                 default:
                     return "error";
-            }
-        });
-    });
-}
-function save() {
-    const oldName = pathNameElem.innerText;
-    const oldPublic = pathPublicElem.innerText == "true";
-    const newName = pathNameInputElem.value;
-    const newPublic = pathPublicToggleElem.innerText == "true";
-    if (oldName == newName && oldPublic == newPublic) {
-        cancel();
-        return;
-    }
-    refreshIfNotAuthNd().then((_res) => {
-        updatePath(newName, newPublic).then((err) => {
-            if (err != "") {
-                saveElem.innerText = err;
-                setElemColor(pathNameInputElem, "err");
             }
         });
     });
@@ -144,17 +132,13 @@ function renderStats(stats) {
         statsElem.insertBefore(statElem, statsElem.firstChild);
     }
 }
-function renderStatsInfo(data) {
-    pathNameElem.innerText = data.path.name;
-    pathPublicElem.innerText = data.path.public ? "true" : "false";
-    if (data.editRight) {
-        editElem.removeAttribute("style");
-    }
-}
 function handlePathData(data) {
     setPathTitle(data.path.name);
     renderStats(data.path.stats);
-    renderStatsInfo(data);
+    if (data.editRight) {
+        editButton.removeAttribute("style");
+        setPathData(data.path.name, data.path.public);
+    }
 }
 function renderPath() {
     fetch(`/api/path/${pathId}`, {

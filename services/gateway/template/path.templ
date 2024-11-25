@@ -9,14 +9,15 @@ templ Path() {
 		<body>
 			@nav("path")
 			<main>
-				<div id="path-data" class="thin box">
-					<p>name: <b id="path-name">path</b> <input type="text" id="path-name-input" class="thin" style="display: none;" maxlength="31"/></p>
-					<p>public: <b id="path-public">false</b> <a id="path-public-toggle" style="display: none;">false</a></p>
-					// TODO: Path owner
+				<div id="edit-section">
 					<a id="edit" style="display: none;">edit</a>
-					<a id="cancel" style="display: none;">cancel</a>
-					<a id="save" style="display: none;">save</a>
+					<div id="path-data" class="thin box" style="display: none;">
+						<p>name: <input type="text" id="path-name" class="thin" maxlength="31"/></p>
+						<p>public: <a id="path-public">false</a></p>
+						<a id="save">save</a>
+					</div>
 				</div>
+				// TODO: See path owner
 				<div id="stats">
 					@CreateStat()
 				</div>

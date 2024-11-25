@@ -8,6 +8,13 @@ main {
 }
 
 /* path edit */
+#edit-section {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	flex-direction: column;
+}
+
 #path-data {
 	height: 50px;
 	padding-inline: 24px;

@@ -2,20 +2,16 @@
 const titleElem = document.getElementById("title") as HTMLDivElement;
 
 // edit
-// path data
-const pathNameElem = document.getElementById("path-name") as HTMLDivElement;
-const pathPublicElem = document.getElementById("path-public") as HTMLDivElement;
-// edit buttons
-const editElem = document.getElementById("edit") as HTMLAnchorElement;
-const cancelElem = document.getElementById("cancel") as HTMLDivElement;
-const saveElem = document.getElementById("save") as HTMLDivElement;
-// inputs
-const pathNameInputElem = document.getElementById(
-	"path-name-input"
-) as HTMLInputElement;
-const pathPublicToggleElem = document.getElementById(
-	"path-public-toggle"
+const editSectionElem = document.getElementById(
+	"edit-section"
 ) as HTMLDivElement;
+const pathDataElem = document.getElementById("path-data") as HTMLDivElement;
+const editButton = document.getElementById("edit") as HTMLDivElement;
+const pathNameInput = document.getElementById("path-name") as HTMLInputElement;
+const pathPublicButton = document.getElementById(
+	"path-public"
+) as HTMLDivElement;
+const saveButton = document.getElementById("save") as HTMLDivElement;
 
 // stats
 const statsElem = document.getElementById("stats") as HTMLDivElement;

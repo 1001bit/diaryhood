@@ -1,59 +1,71 @@
 /// <reference path="elems.ts"/>
 
-editElem.addEventListener("click", () => {
-	edit();
+// init
+setRemoveStyleOnFocus(pathNameInput);
+
+let pathData = {
+	name: "",
+	isPublic: false,
+};
+
+function setPathData(name: string, isPublic: boolean) {
+	pathData.name = name;
+	pathData.isPublic = isPublic;
+
+	pathNameInput.value = name;
+	pathPublicButton.innerText = isPublic ? "true" : "false";
+}
+
+let editing = false;
+editButton.addEventListener("click", () => {
+	editing ? cancel() : edit();
 });
 
-saveElem.addEventListener("click", () => {
-	save();
-});
-
-cancelElem.addEventListener("click", () => {
-	cancel();
-});
-
-pathPublicToggleElem.addEventListener("click", () => {
-	if (pathPublicToggleElem.innerText == "true") {
-		pathPublicToggleElem.innerText = "false";
-	} else {
-		pathPublicToggleElem.innerText = "true";
-	}
-});
-
-pathNameInputElem.addEventListener("input", () => {
-	saveElem.innerText = "save";
-});
-
-setRemoveStyleOnFocus(pathNameInputElem);
-
+// edit/cancel
 function edit() {
+	editing = true;
+	editButton.innerText = "cancel";
+	pathDataElem.removeAttribute("style");
 	createStatElem.removeAttribute("style");
-
-	pathNameElem.setAttribute("style", "display: none");
-	pathNameInputElem.removeAttribute("style");
-	pathNameInputElem.value = pathNameElem.innerText;
-
-	pathPublicElem.setAttribute("style", "display: none");
-	pathPublicToggleElem.removeAttribute("style");
-	pathPublicToggleElem.innerText = pathPublicElem.innerText;
-
-	cancelElem.removeAttribute("style");
-	saveElem.removeAttribute("style");
-	editElem.setAttribute("style", "display: none");
 }
 
 function cancel() {
+	editing = false;
+	editButton.innerText = "edit";
+	pathDataElem.setAttribute("style", "display: none");
 	createStatElem.setAttribute("style", "display: none");
+}
 
-	pathNameElem.removeAttribute("style");
-	pathNameInputElem.setAttribute("style", "display: none");
+// on change
+pathPublicButton.addEventListener("click", () => {
+	pathPublicButton.innerText =
+		pathPublicButton.innerText == "true" ? "false" : "true";
+});
 
-	pathPublicElem.removeAttribute("style");
-	pathPublicToggleElem.setAttribute("style", "display: none");
+pathNameInput.addEventListener("input", () => {
+	saveButton.innerText = "save";
+});
 
-	cancelElem.setAttribute("style", "display: none");
-	saveElem.setAttribute("style", "display: none");
-	editElem.removeAttribute("style");
+// save
+saveButton.addEventListener("click", save);
+
+function save() {
+	const newName = pathNameInput.value;
+	const newPublic = pathPublicButton.innerText == "true";
+
+	if (pathData.name == newName && pathData.isPublic == newPublic) {
+		cancel();
+		return;
+	}
+
+	refreshIfNotAuthNd().then((_res) => {
+		updatePath(newName, newPublic).then((err) => {
+			if (err != "") {
+				saveButton.innerText = err;
+				setElemColor(pathNameInput, "err");
+			}
+		});
+	});
 }
 
 async function updatePath(
@@ -72,9 +84,8 @@ async function updatePath(
 	}).then((res) => {
 		switch (res.status) {
 			case 200:
-				pathNameElem.innerText = newName;
+				setPathData(newName, newPublic);
 				setPathTitle(newName);
-				pathPublicElem.innerText = newPublic ? "true" : "false";
 				cancel();
 				return "";
 			case 400:
@@ -86,27 +97,5 @@ async function updatePath(
 			default:
 				return "error";
 		}
-	});
-}
-
-function save() {
-	const oldName = pathNameElem.innerText;
-	const oldPublic = pathPublicElem.innerText == "true";
-
-	const newName = pathNameInputElem.value;
-	const newPublic = pathPublicToggleElem.innerText == "true";
-
-	if (oldName == newName && oldPublic == newPublic) {
-		cancel();
-		return;
-	}
-
-	refreshIfNotAuthNd().then((_res) => {
-		updatePath(newName, newPublic).then((err) => {
-			if (err != "") {
-				saveElem.innerText = err;
-				setElemColor(pathNameInputElem, "err");
-			}
-		});
 	});
 }
