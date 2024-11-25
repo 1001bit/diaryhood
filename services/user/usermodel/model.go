@@ -12,7 +12,6 @@ var ErrNoDB = errors.New("no database connection")
 type Profile struct {
 	Name string
 	Date string
-	Id   string
 }
 
 type UserStore struct {
@@ -25,15 +24,15 @@ func NewUserStore(postrgesC *postgresclient.Client) *UserStore {
 	}
 }
 
-func (us *UserStore) GetProfileByName(ctx context.Context, name string) (*Profile, error) {
+func (us *UserStore) GetProfileById(ctx context.Context, id string) (*Profile, error) {
 	profile := &Profile{}
 
-	row, err := us.postgresC.QueryRowContext(ctx, "SELECT id, name, date FROM users WHERE LOWER(name) = LOWER($1)", name)
+	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name, date FROM users WHERE id = $1", id)
 	if err != nil {
 		return nil, err
 	}
 
-	err = row.Scan(&profile.Id, &profile.Name, &profile.Date)
+	err = row.Scan(&profile.Name, &profile.Date)
 	if err != nil {
 		return nil, err
 	}
@@ -57,36 +56,34 @@ func (us *UserStore) GetNameAndEmailByLogin(ctx context.Context, login string) (
 	return name, email, nil
 }
 
-func (us *UserStore) GetNameAndIdByEmail(ctx context.Context, email string) (string, string, error) {
-	name := ""
+func (us *UserStore) GetIdByEmail(ctx context.Context, email string) (string, error) {
 	id := ""
 
-	row, err := us.postgresC.QueryRowContext(ctx, "SELECT name, id FROM users WHERE LOWER(email) = LOWER($1)", email)
+	row, err := us.postgresC.QueryRowContext(ctx, "SELECT id FROM users WHERE LOWER(email) = LOWER($1)", email)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
-	err = row.Scan(&name, &id)
+	err = row.Scan(&id)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
-	return name, id, err
+	return id, err
 }
 
-func (us *UserStore) CreateUserGetNameAndId(ctx context.Context, email string) (string, string, error) {
-	name := ""
+func (us *UserStore) CreateUserGetId(ctx context.Context, email string) (string, error) {
 	id := ""
 
-	row, err := us.postgresC.QueryRowContext(ctx, "INSERT INTO users (email) VALUES ($1) RETURNING name, id", email)
+	row, err := us.postgresC.QueryRowContext(ctx, "INSERT INTO users (email) VALUES ($1) RETURNING id", email)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
-	err = row.Scan(&name, &id)
+	err = row.Scan(&id)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
-	return name, id, err
+	return id, err
 }
 
 func (us *UserStore) GetNameById(ctx context.Context, id string) (string, error) {

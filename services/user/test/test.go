@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"strings"
 	"testing"
 
 	"github.com/1001bit/pathgoer/services/user/server"
@@ -64,31 +63,37 @@ func testServer(t *testing.T, ctx context.Context, server *server.Server, emailC
 	if !ok {
 		t.Fatal("expected OK, but not OK")
 	}
-	profile, err := server.GetProfile(ctx, &userpb.GetProfileRequest{Name: strings.ToUpper(claims.Name)})
+	profile, err := server.GetProfile(ctx, &userpb.GetProfileRequest{Id: claims.Id})
 	if err != nil {
 		t.Fatal("expected OK, but got:", err)
-	}
-
-	if profile.Name != claims.Name {
-		t.Fatal("expected another name:", claims.Name, profile.Name)
 	}
 
 	t.Log("date:", profile.Date)
 
 	// Rename user
-	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "bad name"})
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, NewName: "bad name"})
 	if status.Code(err) != codes.InvalidArgument {
 		t.Fatal("expected InvalidArgument, but got:", err)
 	}
 
-	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "toolongname111111111111111111111111111111"})
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, NewName: "toolongname111111111111111111111111111111"})
 	if status.Code(err) != codes.InvalidArgument {
 		t.Fatal("expected InvalidArgument, but got:", err)
 	}
 
-	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, OldName: claims.Name, NewName: "newname"})
+	_, err = server.ChangeUsername(ctx, &userpb.ChangeUsernameRequest{Id: claims.Id, NewName: "newname"})
 	if err != nil {
 		t.Fatal("expected OK, but got:", err)
+	}
+
+	// get profile again
+	profile, err = server.GetProfile(ctx, &userpb.GetProfileRequest{Id: claims.Id})
+	if err != nil {
+		t.Fatal("expected OK, but got:", err)
+	}
+
+	if profile.Name != "newname" {
+		t.Fatal("expected newname, but got:", profile.Name)
 	}
 
 	// Refresh the tokens

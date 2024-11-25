@@ -29,7 +29,7 @@ type UserServiceClient interface {
 	VerifyOtp(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 	RefreshTokens(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*TokensResponse, error)
 	Logout(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*Empty, error)
-	ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*ChangeUsernameResponse, error)
+	ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type userServiceClient struct {
@@ -85,8 +85,8 @@ func (c *userServiceClient) Logout(ctx context.Context, in *RefreshTokenRequest,
 	return out, nil
 }
 
-func (c *userServiceClient) ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*ChangeUsernameResponse, error) {
-	out := new(ChangeUsernameResponse)
+func (c *userServiceClient) ChangeUsername(ctx context.Context, in *ChangeUsernameRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/userpb.UserService/ChangeUsername", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -105,7 +105,7 @@ type UserServiceServer interface {
 	VerifyOtp(context.Context, *VerifyOtpRequest) (*TokensResponse, error)
 	RefreshTokens(context.Context, *RefreshTokenRequest) (*TokensResponse, error)
 	Logout(context.Context, *RefreshTokenRequest) (*Empty, error)
-	ChangeUsername(context.Context, *ChangeUsernameRequest) (*ChangeUsernameResponse, error)
+	ChangeUsername(context.Context, *ChangeUsernameRequest) (*Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -128,7 +128,7 @@ func (UnimplementedUserServiceServer) RefreshTokens(context.Context, *RefreshTok
 func (UnimplementedUserServiceServer) Logout(context.Context, *RefreshTokenRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedUserServiceServer) ChangeUsername(context.Context, *ChangeUsernameRequest) (*ChangeUsernameResponse, error) {
+func (UnimplementedUserServiceServer) ChangeUsername(context.Context, *ChangeUsernameRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeUsername not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}

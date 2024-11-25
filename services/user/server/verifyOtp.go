@@ -17,10 +17,10 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 	}
 
 	// Ask userservice for name and id by email
-	name, id, err := s.userStore.GetNameAndIdByEmail(ctx, req.Email)
+	id, err := s.userStore.GetIdByEmail(ctx, req.Email)
 	if err == sql.ErrNoRows {
 		// Create new user if doesn't exist
-		name, id, err = s.userStore.CreateUserGetNameAndId(ctx, req.Email)
+		id, err = s.userStore.CreateUserGetId(ctx, req.Email)
 		if err != nil {
 			slog.With("err", err).Error("Failed to create user")
 			return nil, status.Error(codes.Internal, "an error occurred")
@@ -31,7 +31,7 @@ func (s *Server) VerifyOtp(ctx context.Context, req *userpb.VerifyOtpRequest) (*
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	access, err := accesstoken.Generate(name, id)
+	access, err := accesstoken.Generate(id)
 	if err != nil {
 		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")

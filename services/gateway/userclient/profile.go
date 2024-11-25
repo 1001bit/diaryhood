@@ -11,9 +11,9 @@ import (
 )
 
 func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
-	name := r.PathValue("name")
+	id := r.PathValue("id")
 
-	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Name: name})
+	response, err := c.serviceClient.GetProfile(r.Context(), &userpb.GetProfileRequest{Id: id})
 	if status.Code(err) == codes.NotFound {
 		template.ErrorNotFound().Render(r.Context(), w)
 		w.WriteHeader(http.StatusNotFound)
@@ -29,7 +29,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		date = "unknown"
 	}
 
-	template.Profile(response.Name, date, response.Id).Render(r.Context(), w)
+	template.Profile(response.Name, date, id).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {

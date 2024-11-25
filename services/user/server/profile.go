@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"strconv"
 
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"google.golang.org/grpc/codes"
@@ -11,7 +12,11 @@ import (
 )
 
 func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) (*userpb.GetProfileResponse, error) {
-	profile, err := s.userStore.GetProfileByName(ctx, req.Name)
+	if !idValid(req.Id) {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	profile, err := s.userStore.GetProfileById(ctx, req.Id)
 
 	if err == sql.ErrNoRows {
 		return nil, status.Error(codes.NotFound, "not found")
@@ -23,6 +28,10 @@ func (s *Server) GetProfile(ctx context.Context, req *userpb.GetProfileRequest) 
 	return &userpb.GetProfileResponse{
 		Name: profile.Name,
 		Date: profile.Date,
-		Id:   profile.Id,
 	}, nil
+}
+
+func idValid(id string) bool {
+	_, err := strconv.Atoi(id)
+	return err == nil || id == ""
 }

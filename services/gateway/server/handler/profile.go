@@ -14,5 +14,5 @@ func HandleIDlessProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/user/"+claims.Name, http.StatusSeeOther)
+	http.Redirect(w, r, "/user/"+claims.Id, http.StatusSeeOther)
 }

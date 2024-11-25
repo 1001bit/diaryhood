@@ -20,15 +20,8 @@ func (s *Server) RefreshTokens(ctx context.Context, req *userpb.RefreshTokenRequ
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	// Get username by userID
-	username, err := s.userStore.GetNameById(ctx, userID)
-	if err != nil {
-		slog.With("err", err).Error("Failed to get username by id")
-		return nil, status.Error(codes.Internal, "an error occurred")
-	}
-
 	// Generate access token with username
-	access, err := accesstoken.Generate(username, userID)
+	access, err := accesstoken.Generate(userID)
 	if err != nil {
 		slog.With("err", err).Error("Failed to generate access token")
 		return nil, status.Error(codes.Internal, "an error occurred")

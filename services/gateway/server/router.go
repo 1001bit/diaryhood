@@ -46,7 +46,7 @@ func (s *Server) newRouter() *chi.Mux {
 		// Pseudo Profile
 		r.Get("/user", handler.HandleIDlessProfile)
 		// Profile
-		r.Get("/user/{name}", s.userclient.HandleProfile)
+		r.Get("/user/{id}", s.userclient.HandleProfile)
 		// Check if authenticated
 		r.Get("/authenticated", handler.HandleAuthenticated)
 	})

@@ -6,14 +6,13 @@ import (
 	"log/slog"
 	"regexp"
 
-	"github.com/1001bit/pathgoer/services/user/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/user/shared/userpb"
 	"github.com/lib/pq"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) ChangeUsername(ctx context.Context, req *userpb.ChangeUsernameRequest) (*userpb.ChangeUsernameResponse, error) {
+func (s *Server) ChangeUsername(ctx context.Context, req *userpb.ChangeUsernameRequest) (*userpb.Empty, error) {
 	if !nameValid(req.NewName) {
 		return nil, status.Error(codes.InvalidArgument, "invalid username")
 	}
@@ -28,15 +27,7 @@ func (s *Server) ChangeUsername(ctx context.Context, req *userpb.ChangeUsernameR
 		return nil, status.Error(codes.Internal, "an error occurred")
 	}
 
-	access, err := accesstoken.Generate(req.NewName, req.Id)
-	if err != nil {
-		slog.With("err", err).Error("Failed to generate access token")
-		return nil, status.Error(codes.Internal, "an error occurred")
-	}
-
-	return &userpb.ChangeUsernameResponse{
-		AccessJWT: access,
-	}, nil
+	return &userpb.Empty{}, nil
 }
 
 func nameValid(s string) bool {

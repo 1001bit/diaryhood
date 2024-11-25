@@ -23,7 +23,6 @@ func ExtractClaims(tokenString string) (Claims, bool) {
 	}
 
 	return Claims{
-		Name: mapClaims["user"].(map[string]interface{})["name"].(string),
-		Id:   mapClaims["user"].(map[string]interface{})["id"].(string),
+		Id: mapClaims["user"].(map[string]interface{})["id"].(string),
 	}, true
 }

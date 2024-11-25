@@ -3,8 +3,7 @@ package accesstoken
 import "context"
 
 type Claims struct {
-	Name string `json:"name"`
-	Id   string `json:"id"`
+	Id string `json:"id"`
 }
 
 func GetClaimsFromContext(ctx context.Context) (Claims, bool) {

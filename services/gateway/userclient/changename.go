@@ -28,10 +28,9 @@ func (c *Client) HandleChangeUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := c.serviceClient.ChangeUsername(r.Context(), &userpb.ChangeUsernameRequest{
+	_, err = c.serviceClient.ChangeUsername(r.Context(), &userpb.ChangeUsernameRequest{
 		Id:      claims.Id,
 		NewName: req.NewName,
-		OldName: claims.Name,
 	})
 
 	if status.Code(err) == codes.NotFound {
@@ -47,8 +46,6 @@ func (c *Client) HandleChangeUsername(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	setAccessCookie(w, resp.AccessJWT)
 
 	w.WriteHeader(http.StatusOK)
 }

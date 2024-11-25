@@ -13,7 +13,7 @@ service UserService {
     rpc VerifyOtp(VerifyOtpRequest) returns (TokensResponse) {}
     rpc RefreshTokens(RefreshTokenRequest) returns (TokensResponse) {}
     rpc Logout(RefreshTokenRequest) returns (Empty) {}
-    rpc ChangeUsername(ChangeUsernameRequest) returns (ChangeUsernameResponse) {}
+    rpc ChangeUsername(ChangeUsernameRequest) returns (Empty) {}
 }
 
 // Tokens
@@ -27,13 +27,12 @@ message Empty {}
 
 // GetProfile
 message GetProfileRequest {
-    string name = 1;
+    string id = 1;
 }
 
 message GetProfileResponse {
     string name = 1;
     string date = 2;
-    string id = 3;
 }
 
 // SendOTPEmail
@@ -59,10 +58,5 @@ message RefreshTokenRequest {
 // ChangeUsername
 message ChangeUsernameRequest {
     string id = 1;
-    string oldName = 2;
-    string newName = 3;
-}
-
-message ChangeUsernameResponse {
-    string accessJWT = 1;
+    string newName = 2;
 }
