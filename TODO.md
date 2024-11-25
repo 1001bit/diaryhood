@@ -66,7 +66,7 @@
         [X] Dummy path creation api
         [X] Real path creation
     [X] Path updating
-    [ ] Path deletion
+    [X] Path deletion
     [ ] Stats creation
     [ ] Stats updating
     [ ] Stats deletion
@@ -77,7 +77,7 @@
         [ ] Overall steps
     [ ] Edit mode
         [X] Path updating
-        [ ] Path deletion
+        [X] Path deletion
         [ ] Stats creation
         [ ] Stats updating
         [ ] Stats deletion

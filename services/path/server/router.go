@@ -25,6 +25,7 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Get("/user/{id}", handler.HandleUserPaths)
 		r.Get("/{id}", handler.HandlePath)
 		r.Put("/{id}", handler.HandleUpdatePath)
+		r.Delete("/{id}", handler.HandleDeletePath)
 	})
 
 	return r

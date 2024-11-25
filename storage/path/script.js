@@ -15,6 +15,7 @@ const editButton = document.getElementById("edit");
 const pathNameInput = document.getElementById("path-name");
 const pathPublicButton = document.getElementById("path-public");
 const saveButton = document.getElementById("save");
+const deleteButton = document.getElementById("delete");
 const statsElem = document.getElementById("stats");
 const sampleStatElem = document.getElementById("sample-stat");
 const createStatElem = document.getElementById("create-stat");
@@ -47,6 +48,8 @@ function cancel() {
     editButton.innerText = "edit";
     pathDataElem.setAttribute("style", "display: none");
     createStatElem.setAttribute("style", "display: none");
+    deleteButton.innerText = "delete";
+    askedIfSure = false;
 }
 pathPublicButton.addEventListener("click", () => {
     pathPublicButton.innerText =
@@ -94,6 +97,40 @@ function updatePath(newName, newPublic) {
                     return "no special characters";
                 case 409:
                     return "path already exists";
+                case 401:
+                    return "unauthorized";
+                default:
+                    return "error";
+            }
+        });
+    });
+}
+let askedIfSure = false;
+deleteButton.addEventListener("click", () => {
+    if (!askedIfSure) {
+        deleteButton.innerText = "sure?";
+        askedIfSure = true;
+        return;
+    }
+    refreshIfNotAuthNd().then((_res) => {
+        deletePath().then((err) => {
+            if (err != "") {
+                deleteButton.innerText = err;
+                setElemColor(deleteButton, "err");
+                return;
+            }
+            window.location.replace("/user");
+        });
+    });
+});
+function deletePath() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch(`/api/path/${pathId}`, {
+            method: "DELETE",
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    return "";
                 case 401:
                     return "unauthorized";
                 default:

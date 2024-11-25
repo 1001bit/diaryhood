@@ -34,6 +34,9 @@ function cancel() {
 	editButton.innerText = "edit";
 	pathDataElem.setAttribute("style", "display: none");
 	createStatElem.setAttribute("style", "display: none");
+
+	deleteButton.innerText = "delete";
+	askedIfSure = false;
 }
 
 // on change
@@ -92,6 +95,43 @@ async function updatePath(
 				return "no special characters";
 			case 409:
 				return "path already exists";
+			case 401:
+				return "unauthorized";
+			default:
+				return "error";
+		}
+	});
+}
+
+// delete
+let askedIfSure = false;
+deleteButton.addEventListener("click", () => {
+	if (!askedIfSure) {
+		deleteButton.innerText = "sure?";
+		askedIfSure = true;
+		return;
+	}
+
+	refreshIfNotAuthNd().then((_res) => {
+		deletePath().then((err) => {
+			if (err != "") {
+				deleteButton.innerText = err;
+				setElemColor(deleteButton, "err");
+				return;
+			}
+
+			window.location.replace("/user");
+		});
+	});
+});
+
+async function deletePath(): Promise<string> {
+	return fetch(`/api/path/${pathId}`, {
+		method: "DELETE",
+	}).then((res) => {
+		switch (res.status) {
+			case 200:
+				return "";
 			case 401:
 				return "unauthorized";
 			default:

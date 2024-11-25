@@ -15,6 +15,11 @@ main {
 	flex-direction: column;
 }
 
+#edit-section * a,
+#edit-section a {
+	user-select: none;
+}
+
 #path-data {
 	height: 50px;
 	padding-inline: 24px;
@@ -27,12 +32,6 @@ main {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-
-#path-data * a,
-#path-data a {
-	cursor: pointer;
-	user-select: none;
 }
 
 #path-data p input {

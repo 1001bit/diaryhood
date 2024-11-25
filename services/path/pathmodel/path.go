@@ -35,11 +35,11 @@ func (ps *PathStore) UpdatePath(ctx context.Context, pathId string, name string,
 	return err
 }
 
-func (ps *PathStore) DeletePath(ctx context.Context, pathId int32) error {
+func (ps *PathStore) DeletePath(ctx context.Context, pathId string, askerId string) error {
 	_, err := ps.postgresC.ExecContext(ctx, `
 		DELETE FROM paths
-		WHERE id = $1
-	`, pathId)
+		WHERE id = $1 AND user_id = $2
+	`, pathId, askerId)
 
 	return err
 }
