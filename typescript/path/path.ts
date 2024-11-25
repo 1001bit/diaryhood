@@ -5,11 +5,6 @@ interface PathResponse {
 	editRight: boolean;
 }
 
-function setPathTitle(title: string) {
-	titleElem.innerText = title;
-	document.title = title;
-}
-
 function newStatCard(stat: Stat) {
 	const newStatElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
 	newStatElem.removeAttribute("id");
@@ -43,7 +38,7 @@ function renderStats(stats: Stat[]) {
 }
 
 function handlePathData(data: PathResponse) {
-	setPathTitle(data.path.name);
+	setPageTitle(data.path.name);
 	renderStats(data.path.stats);
 
 	if (data.editRight) {

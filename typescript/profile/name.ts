@@ -55,7 +55,9 @@ async function postNewName(name: string): Promise<string> {
 	}).then((res) => {
 		switch (res.status) {
 			case 200:
-				location.replace(`/user/${name}`);
+				setPageTitle(name);
+				nameElem.innerText = name;
+				cancelEdit();
 				return "";
 			case 400:
 				return "no special characters";

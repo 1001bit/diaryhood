@@ -1,6 +1,3 @@
-// navbar
-const titleElem = document.getElementById("title") as HTMLDivElement;
-
 // edit
 const editSectionElem = document.getElementById(
 	"edit-section"

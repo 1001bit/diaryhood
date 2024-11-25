@@ -88,7 +88,7 @@ async function updatePath(
 		switch (res.status) {
 			case 200:
 				setPathData(newName, newPublic);
-				setPathTitle(newName);
+				setPageTitle(newName);
 				cancel();
 				return "";
 			case 400:

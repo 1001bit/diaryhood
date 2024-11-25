@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const titleElem = document.getElementById("title");
 const editSectionElem = document.getElementById("edit-section");
 const pathDataElem = document.getElementById("path-data");
 const editButton = document.getElementById("edit");
@@ -90,7 +89,7 @@ function updatePath(newName, newPublic) {
             switch (res.status) {
                 case 200:
                     setPathData(newName, newPublic);
-                    setPathTitle(newName);
+                    setPageTitle(newName);
                     cancel();
                     return "";
                 case 400:
@@ -145,10 +144,6 @@ createStatButtonElem.addEventListener("click", () => {
     console.log(name, stepEq);
 });
 const pathId = window.location.pathname.split("/").pop();
-function setPathTitle(title) {
-    titleElem.innerText = title;
-    document.title = title;
-}
 function newStatCard(stat) {
     const newStatElem = sampleStatElem.cloneNode(true);
     newStatElem.removeAttribute("id");
@@ -170,7 +165,7 @@ function renderStats(stats) {
     }
 }
 function handlePathData(data) {
-    setPathTitle(data.path.name);
+    setPageTitle(data.path.name);
     renderStats(data.path.stats);
     if (data.editRight) {
         editButton.removeAttribute("style");
@@ -228,4 +223,9 @@ function refreshIfNotAuthNd() {
             return true;
         });
     });
+}
+const titleElem = document.getElementById("title");
+function setPageTitle(title) {
+    titleElem.innerText = title;
+    document.title = title;
 }

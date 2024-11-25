@@ -66,7 +66,9 @@ function postNewName(name) {
         }).then((res) => {
             switch (res.status) {
                 case 200:
-                    location.replace(`/user/${name}`);
+                    setPageTitle(name);
+                    nameElem.innerText = name;
+                    cancelEdit();
                     return "";
                 case 400:
                     return "no special characters";
@@ -224,4 +226,9 @@ function refreshIfNotAuthNd() {
             return true;
         });
     });
+}
+const titleElem = document.getElementById("title");
+function setPageTitle(title) {
+    titleElem.innerText = title;
+    document.title = title;
 }
