@@ -1,7 +1,7 @@
 /// <reference path="elems.ts" />
 
 let userSteps = 0;
-const userId = mainElem.getAttribute("data-user-id");
+const userId = window.location.pathname.split("/").pop();
 
 function countSteps(stats: Stat[]) {
 	let count = 0;
@@ -21,7 +21,7 @@ function countSteps(stats: Stat[]) {
 function newPathElem(Path: Path) {
 	const pathElem = samplePathElem.cloneNode(true) as HTMLDivElement;
 	pathElem.removeAttribute("id");
-	pathElem.removeAttribute("style");
+	setVisibility(pathElem, true);
 
 	const pathNameElem = pathElem.getElementsByClassName(
 		"path-name"
@@ -43,9 +43,10 @@ function newPathElem(Path: Path) {
 
 function renderPaths(paths: Path[]) {
 	if (!paths) {
-		noPathsElem.removeAttribute("style");
 		return;
 	}
+
+	setVisibility(noPathsElem, false);
 
 	for (const path of paths) {
 		const pathElem = newPathElem(path);
@@ -65,11 +66,6 @@ function fetchAndRenderPaths() {
 	});
 }
 
-refreshIfNotAuthNd().then((res) => {
+refreshIfNotAuthNd().then((_res) => {
 	fetchAndRenderPaths();
-
-	if (res) {
-		changeNameElem.removeAttribute("style");
-		pathCreateBoxElem.removeAttribute("style");
-	}
 });

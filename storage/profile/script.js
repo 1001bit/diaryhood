@@ -43,14 +43,14 @@ changeNameElem.addEventListener("click", () => {
 setRemoveStyleOnFocus(nameInputElem);
 function startEdit() {
     isEditing = true;
-    nameInputElem.removeAttribute("style");
-    nameElem.style.display = "none";
+    setVisibility(nameInputElem, true);
+    setVisibility(nameElem, false);
     changeNameElem.innerText = "cancel";
 }
 function cancelEdit() {
     isEditing = false;
-    nameElem.removeAttribute("style");
-    nameInputElem.style.display = "none";
+    setVisibility(nameElem, true);
+    setVisibility(nameInputElem, false);
     changeNameElem.innerText = "change";
 }
 function postNewName(name) {
@@ -143,7 +143,7 @@ function createNewPath() {
     });
 }
 let userSteps = 0;
-const userId = mainElem.getAttribute("data-user-id");
+const userId = window.location.pathname.split("/").pop();
 function countSteps(stats) {
     let count = 0;
     if (stats) {
@@ -158,7 +158,7 @@ function countSteps(stats) {
 function newPathElem(Path) {
     const pathElem = samplePathElem.cloneNode(true);
     pathElem.removeAttribute("id");
-    pathElem.removeAttribute("style");
+    setVisibility(pathElem, true);
     const pathNameElem = pathElem.getElementsByClassName("path-name")[0];
     const pathLinkElem = pathElem.getElementsByClassName("path-link")[0];
     const pathStepsElem = pathElem.getElementsByClassName("path-steps")[0];
@@ -169,9 +169,9 @@ function newPathElem(Path) {
 }
 function renderPaths(paths) {
     if (!paths) {
-        noPathsElem.removeAttribute("style");
         return;
     }
+    setVisibility(noPathsElem, false);
     for (const path of paths) {
         const pathElem = newPathElem(path);
         pathsElem.insertBefore(pathElem, pathsElem.firstChild);
@@ -187,12 +187,8 @@ function fetchAndRenderPaths() {
         res.json().then(renderPaths);
     });
 }
-refreshIfNotAuthNd().then((res) => {
+refreshIfNotAuthNd().then((_res) => {
     fetchAndRenderPaths();
-    if (res) {
-        changeNameElem.removeAttribute("style");
-        pathCreateBoxElem.removeAttribute("style");
-    }
 });
 function setElemColor(elem, colorVar) {
     if (!elem) {
@@ -205,7 +201,7 @@ function setRemoveStyleOnFocus(elem) {
         return;
     }
     elem.addEventListener("focus", () => {
-        elem.removeAttribute("style");
+        setVisibility(elem, true);
     });
 }
 function refreshIfNotAuthNd() {
@@ -231,4 +227,9 @@ const titleElem = document.getElementById("title");
 function setPageTitle(title) {
     titleElem.innerText = title;
     document.title = title;
+}
+function setVisibility(elem, visible) {
+    if (elem) {
+        elem.classList.toggle("hidden", !visible);
+    }
 }

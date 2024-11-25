@@ -30,16 +30,16 @@ setRemoveStyleOnFocus(nameInputElem);
 // start chaning name
 function startEdit() {
 	isEditing = true;
-	nameInputElem.removeAttribute("style");
-	nameElem.style.display = "none";
+	setVisibility(nameInputElem, true);
+	setVisibility(nameElem, false);
 	changeNameElem.innerText = "cancel";
 }
 
 // cancel changing name
 function cancelEdit() {
 	isEditing = false;
-	nameElem.removeAttribute("style");
-	nameInputElem.style.display = "none";
+	setVisibility(nameElem, true);
+	setVisibility(nameInputElem, false);
 	changeNameElem.innerText = "change";
 }
 

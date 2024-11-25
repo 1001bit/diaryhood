@@ -81,6 +81,10 @@ a {
 	color: var(--main1-dim);
 }
 
+.hidden {
+	display: none !important;
+}
+
 /* Navbar */
 #navbar {
 	display: flex;
@@ -111,6 +115,7 @@ input,
 button,
 textarea {
 	width: 100%;
+	box-sizing: border-box;
 	border-radius: 4px;
 	padding-inline: 8px;
 	padding-block: 4px;

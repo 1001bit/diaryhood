@@ -1,6 +1,7 @@
 package template
 
-templ Profile(name, date, id string) {
+templ Profile(name, date string, profileOwner bool) {
+	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			@baseHead(name)
@@ -8,14 +9,14 @@ templ Profile(name, date, id string) {
 		</head>
 		<body>
 			@nav(name)
-			<main data-user-id={ id }>
+			<main>
 				<div id="profile-box">
 					// TODO: Avatar
 					<img class="avatar" src="avatar.png"/>
 					<div id="name-box">
 						<p id="name">{ name }</p>
-						<textarea id="name-input" style="display: none;" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
-						<a class="tiny" id="change-name" style="display: none;">change</a>
+						<textarea id="name-input" class="hidden" maxlength="31" spellcheck="false" rows="3">{ name }</textarea>
+						<a class={ "tiny", templ.KV("hidden", !profileOwner) } id="change-name">change</a>
 					</div>
 					<div class="line-separator"></div>
 					<p>
@@ -27,8 +28,8 @@ templ Profile(name, date, id string) {
 					<p id="user-steps">0 steps</p>
 				</div>
 				<div id="paths">
-					@CreatePath()
-					<h3 class="dim" id="no-paths" style="display: none;">no paths</h3>
+					@CreatePath(!profileOwner)
+					<h3 class={ "dim", templ.KV("hidden", profileOwner) } id="no-paths">no paths</h3>
 				</div>
 			</main>
 			@SamplePath()
@@ -37,8 +38,8 @@ templ Profile(name, date, id string) {
 	</html>
 }
 
-templ CreatePath() {
-	<div id="path-create-box" class="box" style="display: none;">
+templ CreatePath(hidden bool) {
+	<div id="path-create-box" class={ "box", templ.KV("hidden", hidden) }>
 		<input type="text" id="path-name-input" placeholder="name"/>
 		<div class="line-separator"></div>
 		<a href="#create-path" id="create-path"><h3>create</h3></a>
@@ -46,7 +47,7 @@ templ CreatePath() {
 }
 
 templ SamplePath() {
-	<div class="path box" id="sample-path" style="display: none;">
+	<div class="path box hidden" id="sample-path">
 		<a href="/path/0" class="path-link"><h3 class="path-name">path</h3></a>
 		<div class="line-separator"></div>
 		<p class="path-steps">steps: ?</p>

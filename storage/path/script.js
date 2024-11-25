@@ -39,14 +39,14 @@ editButton.addEventListener("click", () => {
 function edit() {
     editing = true;
     editButton.innerText = "cancel";
-    pathDataElem.removeAttribute("style");
-    createStatElem.removeAttribute("style");
+    setVisibility(pathDataElem, true);
+    setVisibility(createStatElem, true);
 }
 function cancel() {
     editing = false;
     editButton.innerText = "edit";
-    pathDataElem.setAttribute("style", "display: none");
-    createStatElem.setAttribute("style", "display: none");
+    setVisibility(pathDataElem, false);
+    setVisibility(createStatElem, false);
     deleteButton.innerText = "delete";
     askedIfSure = false;
 }
@@ -147,7 +147,7 @@ const pathId = window.location.pathname.split("/").pop();
 function newStatCard(stat) {
     const newStatElem = sampleStatElem.cloneNode(true);
     newStatElem.removeAttribute("id");
-    newStatElem.removeAttribute("style");
+    setVisibility(newStatElem, true);
     const statNameElem = newStatElem.getElementsByClassName("stat-name")[0];
     const statStepEqElem = newStatElem.getElementsByClassName("stat-stepeq")[0];
     const statCountElem = newStatElem.getElementsByClassName("stat-count")[0];
@@ -168,7 +168,7 @@ function handlePathData(data) {
     setPageTitle(data.path.name);
     renderStats(data.path.stats);
     if (data.editRight) {
-        editButton.removeAttribute("style");
+        setVisibility(editButton, true);
         setPathData(data.path.name, data.path.public);
     }
 }
@@ -202,7 +202,7 @@ function setRemoveStyleOnFocus(elem) {
         return;
     }
     elem.addEventListener("focus", () => {
-        elem.removeAttribute("style");
+        setVisibility(elem, true);
     });
 }
 function refreshIfNotAuthNd() {
@@ -228,4 +228,9 @@ const titleElem = document.getElementById("title");
 function setPageTitle(title) {
     titleElem.innerText = title;
     document.title = title;
+}
+function setVisibility(elem, visible) {
+    if (elem) {
+        elem.classList.toggle("hidden", !visible);
+    }
 }

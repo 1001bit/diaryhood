@@ -1,29 +1,24 @@
 package template
 
-templ ErrorNotFound() {
+templ Error(code, message string) {
+	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@baseHead("404")
+			@baseHead(code)
 		</head>
 		<body>
-			@nav("404")
+			@nav(code)
 			<main>
-				<p>This page cannot be found or is unavailable</p>
+				<p>{ message }</p>
 			</main>
 		</body>
 	</html>
 }
 
+templ ErrorNotFound() {
+	@Error("404", "not found")
+}
+
 templ ErrorInternal() {
-	<html lang="en">
-		<head>
-			@baseHead("500")
-		</head>
-		<body>
-			@nav("500")
-			<main>
-				<p>Something went wrong!</p>
-			</main>
-		</body>
-	</html>
+	@Error("500", "something went wrong")
 }

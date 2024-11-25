@@ -10,10 +10,8 @@ const loginButton = document.getElementById(
 const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 
 // move to home page is refresh token is ok
-fetch("/auth/refresh", {
-	method: "GET",
-}).then((res) => {
-	if (res.status == 200) {
+refreshIfNotAuthNd().then((res) => {
+	if (res) {
 		location.replace("/");
 	}
 });
@@ -86,7 +84,7 @@ function requestOTP() {
 		switch (res.status) {
 			case 200:
 				// Success
-				location.reload();
+				location.replace("/");
 				break;
 			default:
 				// Error

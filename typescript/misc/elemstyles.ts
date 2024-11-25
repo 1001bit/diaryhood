@@ -11,6 +11,6 @@ function setRemoveStyleOnFocus(elem: HTMLElement | null) {
 		return;
 	}
 	elem.addEventListener("focus", () => {
-		elem.removeAttribute("style");
+		setVisibility(elem, true);
 	});
 }

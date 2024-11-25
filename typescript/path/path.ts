@@ -8,7 +8,7 @@ interface PathResponse {
 function newStatCard(stat: Stat) {
 	const newStatElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
 	newStatElem.removeAttribute("id");
-	newStatElem.removeAttribute("style");
+	setVisibility(newStatElem, true);
 
 	const statNameElem = newStatElem.getElementsByClassName(
 		"stat-name"
@@ -42,7 +42,7 @@ function handlePathData(data: PathResponse) {
 	renderStats(data.path.stats);
 
 	if (data.editRight) {
-		editButton.removeAttribute("style");
+		setVisibility(editButton, true);
 		setPathData(data.path.name, data.path.public);
 	}
 }

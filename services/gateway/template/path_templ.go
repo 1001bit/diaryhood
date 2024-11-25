@@ -26,7 +26,7 @@ func Path() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\"><head>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,7 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><a id=\"edit\" style=\"display: none;\">edit</a><div id=\"path-data\" class=\"thin box\" style=\"display: none;\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"save\">save</a> <a id=\"delete\">delete</a></div></div><div id=\"stats\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><a id=\"edit\" class=\"hidden\">edit</a><div id=\"path-data\" class=\"thin box hidden\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"save\">save</a> <a id=\"delete\">delete</a></div></div><div id=\"stats\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -84,7 +84,7 @@ func CreateStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box\" id=\"create-stat\" style=\"display: none;\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" class=\"tiny\" placeholder=\"step equivalent\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"create-stat\"><input type=\"text\" placeholder=\"name\" id=\"stat-name-input\"> <input type=\"text\" class=\"tiny\" placeholder=\"step equivalent\" id=\"stat-stepeq-input\"> <a id=\"create-stat-button\">create</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -110,7 +110,7 @@ func SampleStat() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box\" id=\"sample-stat\" style=\"display: none;\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

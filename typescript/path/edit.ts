@@ -25,15 +25,15 @@ editButton.addEventListener("click", () => {
 function edit() {
 	editing = true;
 	editButton.innerText = "cancel";
-	pathDataElem.removeAttribute("style");
-	createStatElem.removeAttribute("style");
+	setVisibility(pathDataElem, true);
+	setVisibility(createStatElem, true);
 }
 
 function cancel() {
 	editing = false;
 	editButton.innerText = "edit";
-	pathDataElem.setAttribute("style", "display: none");
-	createStatElem.setAttribute("style", "display: none");
+	setVisibility(pathDataElem, false);
+	setVisibility(createStatElem, false);
 
 	deleteButton.innerText = "delete";
 	askedIfSure = false;

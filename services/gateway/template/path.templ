@@ -1,6 +1,7 @@
 package template
 
 templ Path() {
+	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			@baseHead("path")
@@ -10,8 +11,8 @@ templ Path() {
 			@nav("path")
 			<main>
 				<div id="edit-section">
-					<a id="edit" style="display: none;">edit</a>
-					<div id="path-data" class="thin box" style="display: none;">
+					<a id="edit" class="hidden">edit</a>
+					<div id="path-data" class="thin box hidden">
 						<p>name: <input type="text" id="path-name" class="thin" maxlength="31"/></p>
 						<p>public: <a id="path-public">false</a></p>
 						<a id="save">save</a>
@@ -30,7 +31,7 @@ templ Path() {
 }
 
 templ CreateStat() {
-	<div class="stat box" id="create-stat" style="display: none;">
+	<div class="stat box hidden" id="create-stat">
 		<input type="text" placeholder="name" id="stat-name-input"/>
 		<input type="text" class="tiny" placeholder="step equivalent" id="stat-stepeq-input"/>
 		<a id="create-stat-button">create</a>
@@ -38,7 +39,7 @@ templ CreateStat() {
 }
 
 templ SampleStat() {
-	<div class="stat box" id="sample-stat" style="display: none;">
+	<div class="stat box hidden" id="sample-stat">
 		<h3 class="stat-name">stat</h3>
 		<p class="tiny stat-stepeq"></p>
 		<div class="stat-count-box">
