@@ -43,7 +43,13 @@ main {
 /* stats */
 #stats {
 	display: flex;
-	gap: 40px;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 2%;
+	row-gap: 20px;
+	justify-content: center;
+	padding-inline: auto;
+	width: fit-content;
 }
 
 /* stat */
@@ -85,6 +91,8 @@ main {
 #create-stat {
 	border-color: var(--acc1-dim);
 	gap: 8px;
+	/* center text */
+	text-align: center;
 }
 
 #create-stat input {

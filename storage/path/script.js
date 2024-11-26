@@ -21,7 +21,7 @@ const createStatElem = document.getElementById("create-stat");
 const statNameInputElem = document.getElementById("stat-name-input");
 const statStepEqInputElem = document.getElementById("stat-stepeq-input");
 const createStatButtonElem = document.getElementById("create-stat-button");
-setRemoveStyleOnFocus(pathNameInput);
+removeBorderColorOnFocus(pathNameInput);
 let pathData = {
     name: "",
     isPublic: false,
@@ -69,7 +69,7 @@ function save() {
         updatePath(newName, newPublic).then((err) => {
             if (err != "") {
                 saveButton.innerText = err;
-                setElemColor(pathNameInput, "err");
+                setBorderColor(pathNameInput, "err");
             }
         });
     });
@@ -115,7 +115,7 @@ deleteButton.addEventListener("click", () => {
         deletePath().then((err) => {
             if (err != "") {
                 deleteButton.innerText = err;
-                setElemColor(deleteButton, "err");
+                setBorderColor(deleteButton, "err");
                 return;
             }
             window.location.replace("/user");
@@ -138,10 +138,69 @@ function deletePath() {
         });
     });
 }
+function postPath(name, stepEq) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(name, stepEq, pathId);
+        return fetch(`/api/path/${pathId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name,
+                stepEq: stepEq,
+            }),
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    return "";
+                case 400:
+                    return "special characters";
+                case 409:
+                    return "already exists";
+                case 401:
+                    return "unauthorized";
+                default:
+                    return "error";
+            }
+        });
+    });
+}
+function renderNewStat(name, stepEq) {
+    const newStatElem = newStatCard({
+        name: name,
+        count: 0,
+        stepEquivalent: stepEq,
+    });
+    statsElem.insertBefore(newStatElem, statsElem.firstChild);
+}
+removeBorderColorOnFocus(statNameInputElem);
+removeBorderColorOnFocus(statStepEqInputElem);
+statNameInputElem.addEventListener("input", () => {
+    createStatButtonElem.innerText = "create";
+});
+statStepEqInputElem.addEventListener("input", () => {
+    createStatButtonElem.innerText = "create";
+});
 createStatButtonElem.addEventListener("click", () => {
     const name = statNameInputElem.value;
-    const stepEq = statStepEqInputElem.value;
-    console.log(name, stepEq);
+    const stepEq = Number(statStepEqInputElem.value);
+    if (!stepEq) {
+        createStatButtonElem.innerText = "wrong step eq.";
+        setBorderColor(statStepEqInputElem, "err");
+        return;
+    }
+    postPath(name, Number(stepEq)).then((res) => {
+        if (res == "") {
+            statNameInputElem.value = "";
+            statStepEqInputElem.value = "";
+            renderNewStat(name, stepEq);
+        }
+        else {
+            createStatButtonElem.innerText = res;
+            setBorderColor(statNameInputElem, "err");
+        }
+    });
 });
 const pathId = window.location.pathname.split("/").pop();
 function newStatCard(stat) {
@@ -191,18 +250,18 @@ function renderPath() {
 refreshIfNotAuthNd().then((_res) => {
     renderPath();
 });
-function setElemColor(elem, colorVar) {
+function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;
     }
-    elem.style.border = `2px solid var(--${colorVar})`;
+    elem.style.borderColor = `var(--${colorVar})`;
 }
-function setRemoveStyleOnFocus(elem) {
+function removeBorderColorOnFocus(elem) {
     if (!elem) {
         return;
     }
     elem.addEventListener("focus", () => {
-        setVisibility(elem, true);
+        elem.style.borderColor = "";
     });
 }
 function refreshIfNotAuthNd() {

@@ -25,7 +25,7 @@ changeNameElem.addEventListener("click", () => {
 });
 
 // remove input style on focus
-setRemoveStyleOnFocus(nameInputElem);
+removeBorderColorOnFocus(nameInputElem);
 
 // start chaning name
 function startEdit() {
@@ -72,7 +72,7 @@ async function postNewName(name: string): Promise<string> {
 // save new name
 function save() {
 	if (nameInputElem.value == "") {
-		setElemColor(nameInputElem, "err");
+		setBorderColor(nameInputElem, "err");
 		return;
 	}
 
@@ -80,7 +80,7 @@ function save() {
 		postNewName(nameInputElem.value).then((err) => {
 			if (err != "") {
 				changeNameElem.innerText = err;
-				setElemColor(nameInputElem, "err");
+				setBorderColor(nameInputElem, "err");
 			}
 		});
 	});

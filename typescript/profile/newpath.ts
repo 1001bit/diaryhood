@@ -1,12 +1,12 @@
 // remove style on focus
-setRemoveStyleOnFocus(pathNameInputElem);
+removeBorderColorOnFocus(pathNameInputElem);
 
 createPathButton.addEventListener("click", () => {
 	refreshIfNotAuthNd().then((_res) => {
 		createNewPath().then((err) => {
 			if (err != "") {
 				createPathButton.innerText = err;
-				setElemColor(pathNameInputElem, "err");
+				setBorderColor(pathNameInputElem, "err");
 			}
 		});
 	});
@@ -19,7 +19,7 @@ pathNameInputElem.addEventListener("input", () => {
 async function createNewPath(): Promise<string> {
 	const name = pathNameInputElem.value;
 	if (name == "") {
-		setElemColor(pathNameInputElem, "err");
+		setBorderColor(pathNameInputElem, "err");
 		return "empty";
 	}
 

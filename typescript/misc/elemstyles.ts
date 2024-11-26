@@ -1,16 +1,16 @@
-function setElemColor(elem: HTMLElement | null, colorVar: string) {
+function setBorderColor(elem: HTMLElement | null, colorVar: string) {
 	if (!elem) {
 		return;
 	}
 
-	elem.style.border = `2px solid var(--${colorVar})`;
+	elem.style.borderColor = `var(--${colorVar})`;
 }
 
-function setRemoveStyleOnFocus(elem: HTMLElement | null) {
+function removeBorderColorOnFocus(elem: HTMLElement | null) {
 	if (!elem) {
 		return;
 	}
 	elem.addEventListener("focus", () => {
-		setVisibility(elem, true);
+		elem.style.borderColor = "";
 	});
 }

@@ -20,7 +20,7 @@ refreshIfNotAuthNd().then((res) => {
 let email = "";
 
 // remove loginInput style on focus
-setRemoveStyleOnFocus(loginInput);
+removeBorderColorOnFocus(loginInput);
 
 // set loginInput placeholder
 function setInputPlaceholder(text: string) {
@@ -52,11 +52,11 @@ function requestEmail() {
 					showInfo("check your email");
 					break;
 				case 404:
-					setElemColor(loginInput, "err");
+					setBorderColor(loginInput, "err");
 					showInfo("user not found");
 					break;
 				default:
-					setElemColor(loginInput, "err");
+					setBorderColor(loginInput, "err");
 					showInfo("something went wrong");
 					break;
 			}
@@ -88,7 +88,7 @@ function requestOTP() {
 				break;
 			default:
 				// Error
-				setElemColor(loginInput, "err");
+				setBorderColor(loginInput, "err");
 				showInfo("wrong one-time password");
 				break;
 		}
@@ -98,7 +98,7 @@ function requestOTP() {
 // Enter data
 function inputLoginData() {
 	if (loginInput.value === "") {
-		setElemColor(loginInput, "err");
+		setBorderColor(loginInput, "err");
 		return;
 	}
 

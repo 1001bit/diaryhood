@@ -1,7 +1,7 @@
 /// <reference path="elems.ts"/>
 
 // init
-setRemoveStyleOnFocus(pathNameInput);
+removeBorderColorOnFocus(pathNameInput);
 
 let pathData = {
 	name: "",
@@ -65,7 +65,7 @@ function save() {
 		updatePath(newName, newPublic).then((err) => {
 			if (err != "") {
 				saveButton.innerText = err;
-				setElemColor(pathNameInput, "err");
+				setBorderColor(pathNameInput, "err");
 			}
 		});
 	});
@@ -116,7 +116,7 @@ deleteButton.addEventListener("click", () => {
 		deletePath().then((err) => {
 			if (err != "") {
 				deleteButton.innerText = err;
-				setElemColor(deleteButton, "err");
+				setBorderColor(deleteButton, "err");
 				return;
 			}
 

@@ -40,7 +40,7 @@ changeNameElem.addEventListener("click", () => {
         save();
     }
 });
-setRemoveStyleOnFocus(nameInputElem);
+removeBorderColorOnFocus(nameInputElem);
 function startEdit() {
     isEditing = true;
     setVisibility(nameInputElem, true);
@@ -82,25 +82,25 @@ function postNewName(name) {
 }
 function save() {
     if (nameInputElem.value == "") {
-        setElemColor(nameInputElem, "err");
+        setBorderColor(nameInputElem, "err");
         return;
     }
     refreshIfNotAuthNd().then((_res) => {
         postNewName(nameInputElem.value).then((err) => {
             if (err != "") {
                 changeNameElem.innerText = err;
-                setElemColor(nameInputElem, "err");
+                setBorderColor(nameInputElem, "err");
             }
         });
     });
 }
-setRemoveStyleOnFocus(pathNameInputElem);
+removeBorderColorOnFocus(pathNameInputElem);
 createPathButton.addEventListener("click", () => {
     refreshIfNotAuthNd().then((_res) => {
         createNewPath().then((err) => {
             if (err != "") {
                 createPathButton.innerText = err;
-                setElemColor(pathNameInputElem, "err");
+                setBorderColor(pathNameInputElem, "err");
             }
         });
     });
@@ -112,7 +112,7 @@ function createNewPath() {
     return __awaiter(this, void 0, void 0, function* () {
         const name = pathNameInputElem.value;
         if (name == "") {
-            setElemColor(pathNameInputElem, "err");
+            setBorderColor(pathNameInputElem, "err");
             return "empty";
         }
         return fetch("/api/path", {
@@ -190,18 +190,18 @@ function fetchAndRenderPaths() {
 refreshIfNotAuthNd().then((_res) => {
     fetchAndRenderPaths();
 });
-function setElemColor(elem, colorVar) {
+function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;
     }
-    elem.style.border = `2px solid var(--${colorVar})`;
+    elem.style.borderColor = `var(--${colorVar})`;
 }
-function setRemoveStyleOnFocus(elem) {
+function removeBorderColorOnFocus(elem) {
     if (!elem) {
         return;
     }
     elem.addEventListener("focus", () => {
-        setVisibility(elem, true);
+        elem.style.borderColor = "";
     });
 }
 function refreshIfNotAuthNd() {

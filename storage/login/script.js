@@ -18,7 +18,7 @@ refreshIfNotAuthNd().then((res) => {
     }
 });
 let email = "";
-setRemoveStyleOnFocus(loginInput);
+removeBorderColorOnFocus(loginInput);
 function setInputPlaceholder(text) {
     loginInput.value = "";
     loginInput.placeholder = text;
@@ -43,11 +43,11 @@ function requestEmail() {
                 showInfo("check your email");
                 break;
             case 404:
-                setElemColor(loginInput, "err");
+                setBorderColor(loginInput, "err");
                 showInfo("user not found");
                 break;
             default:
-                setElemColor(loginInput, "err");
+                setBorderColor(loginInput, "err");
                 showInfo("something went wrong");
                 break;
         }
@@ -75,7 +75,7 @@ function requestOTP() {
                 location.replace("/");
                 break;
             default:
-                setElemColor(loginInput, "err");
+                setBorderColor(loginInput, "err");
                 showInfo("wrong one-time password");
                 break;
         }
@@ -83,7 +83,7 @@ function requestOTP() {
 }
 function inputLoginData() {
     if (loginInput.value === "") {
-        setElemColor(loginInput, "err");
+        setBorderColor(loginInput, "err");
         return;
     }
     showInfo("...");
@@ -102,18 +102,18 @@ loginInput.addEventListener("keydown", (event) => {
 loginButton.addEventListener("click", () => {
     inputLoginData();
 });
-function setElemColor(elem, colorVar) {
+function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;
     }
-    elem.style.border = `2px solid var(--${colorVar})`;
+    elem.style.borderColor = `var(--${colorVar})`;
 }
-function setRemoveStyleOnFocus(elem) {
+function removeBorderColorOnFocus(elem) {
     if (!elem) {
         return;
     }
     elem.addEventListener("focus", () => {
-        setVisibility(elem, true);
+        elem.style.borderColor = "";
     });
 }
 function refreshIfNotAuthNd() {

@@ -13,34 +13,18 @@ type Stat struct {
 	StepEquivalent int32  `json:"stepEquivalent"`
 }
 
-func (ps *PathStore) UpdateStats(ctx context.Context, pathId int32, stats []Stat) error {
-	if len(stats) == 0 {
-		return nil
-	}
+func (ps *PathStore) CreateStat(ctx context.Context, stat Stat, pathId string, askerId string) error {
+	_, err := ps.postgresC.ExecContext(ctx, `
+		INSERT INTO stats (path_id, name, count, step_equivalent)
+		SELECT $1, $2, $3, $4
+		WHERE EXISTS (
+			SELECT 1 
+			FROM paths 
+			WHERE id = $1 AND user_id = $5
+		);
+	`, pathId, stat.Name, stat.Count, stat.StepEquivalent, askerId)
 
-	// Start transaction
-	tx, err := ps.postgresC.BeginTx(ctx)
-	if err != nil {
-		return err
-	}
-
-	for _, stat := range stats {
-		_, err = tx.ExecContext(ctx, `
-			INSERT INTO stats (path_id, name, count, step_equivalent)
-			VALUES ($1, $2, $3, $4)
-			ON CONFLICT (path_id, name) 
-			DO UPDATE SET count = $3, step_equivalent = $4
-		`, pathId, stat.Name, stat.Count, stat.StepEquivalent)
-
-		if err != nil {
-			if rollbackErr := tx.Rollback(); rollbackErr != nil {
-				slog.With("err", rollbackErr).Error("Failed to rollback")
-			}
-			return err
-		}
-	}
-
-	return tx.Commit()
+	return err
 }
 
 func (ps *PathStore) DeleteStats(ctx context.Context, pathId int32, names []string) error {

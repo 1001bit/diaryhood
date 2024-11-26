@@ -67,7 +67,7 @@
         [X] Real path creation
     [X] Path updating
     [X] Path deletion
-    [ ] Stats creation
+    [X] Stats creation
     [ ] Stats updating
     [ ] Stats deletion
 
@@ -78,7 +78,7 @@
     [ ] Edit mode
         [X] Path updating
         [X] Path deletion
-        [ ] Stats creation
+        [X] Stats creation
         [ ] Stats updating
         [ ] Stats deletion
 
