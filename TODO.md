@@ -76,10 +76,14 @@
         [X] Stats
         [ ] Overall steps
     [ ] Edit mode
-        [X] Path updating
         [X] Path deletion
-        [X] Stats creation
-        [ ] Stats updating
+        [X] Path data updating
+            [X] Frontend and server side
+            [ ] Highlight stuff that was changed
+        [ ] Hide save button if no changes
+        [ ] Stats creation and updating
+            [X] One by one stats creation
+            [ ] All at once stats creation and updating on save button press
         [ ] Stats deletion
 
 [ ] Home page
