@@ -65,11 +65,11 @@
     [X] Path creation
         [X] Dummy path creation api
         [X] Real path creation
-    [X] Path updating
+    [ ] Path updating
+        [X] Path data update
+        [ ] Stats update
+        [ ] Stats delete
     [X] Path deletion
-    [X] Stats creation
-    [ ] Stats updating
-    [ ] Stats deletion
 
 [ ] Path page
     [ ] Path view
@@ -77,13 +77,13 @@
         [ ] Overall steps
     [ ] Edit mode
         [X] Path deletion
-        [X] Path data updating
-            [X] Frontend and server side
-            [ ] Highlight stuff that was changed
-        [ ] Hide save button if no changes
-        [ ] Stats creation and updating
-            [X] One by one stats creation
-            [ ] All at once stats creation and updating on save button press
-        [ ] Stats deletion
+        [ ] Path updating
+            [X] Path data
+                [ ] Highlight stuff that was changed
+            [ ] Stats updating
+                [X] One by one stats creation
+                [ ] All at once stats creation and updating on save button press
+            [ ] Hide save button if no changes
+            [ ] Stats deletion
 
 [ ] Home page
