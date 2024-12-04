@@ -77,13 +77,8 @@
         [ ] Overall steps
     [ ] Edit mode
         [X] Path deletion
-        [ ] Path updating
-            [X] Path data
-                [ ] Highlight stuff that was changed
-            [ ] Stats updating
-                [X] One by one stats creation
-                [ ] All at once stats creation and updating on save button press
-            [ ] Hide save button if no changes
-            [ ] Stats deletion
+        [X] Path data update
+        [ ] Stats updating
+        [ ] Stats deletion
 
 [ ] Home page

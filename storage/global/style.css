@@ -85,6 +85,10 @@ a {
 	display: none !important;
 }
 
+.underline {
+	text-decoration: underline;
+}
+
 /* Navbar */
 #navbar {
 	display: flex;

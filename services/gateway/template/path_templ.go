@@ -42,7 +42,7 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><a id=\"edit\" class=\"hidden\">edit</a><div id=\"path-data\" class=\"thin box hidden\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"save\">save</a> <a id=\"delete\">delete</a></div></div><div id=\"stats\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><div id=\"edit-buttons\"><a id=\"edit\" class=\"hidden\">edit</a> <a id=\"save\" class=\"hidden\">save</a></div><div id=\"path-data\" class=\"thin box hidden\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"delete\">delete</a></div></div><div id=\"stats\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -110,7 +110,7 @@ func SampleStat() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><p class=\"tiny stat-stepeq\"></p><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><input type=\"text\" class=\"hidden\" class=\"stat-name-input\"><p class=\"tiny stat-stepeq\"></p><input type=\"text\" class=\"tiny stat-stepeq-input hidden\" placeholder=\"step equivalent\"><div class=\"stat-count-box\"><a class=\"plus\">-</a> <input type=\"text\" placeholder=\"0\" class=\"stat-count\"> <a class=\"minus\">+</a></div><a id=\"delete-stat-button\" class=\"hidden\">delete</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"outFile": "../../storage/login/script.js"
 	},
-	"include": ["*.ts", "../misc/elemstyles.ts", "../misc/refresh.ts"]
+	"include": ["*.ts", "../misc/bordercolor.ts", "../misc/refresh.ts"]
 }

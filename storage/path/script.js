@@ -8,6 +8,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+class PathDeletor {
+    constructor(path) {
+        this.path = path;
+        this.askedIfSure = false;
+        this.initEvents();
+    }
+    initEvents() {
+        deleteButton.addEventListener("click", () => {
+            if (!this.askedIfSure) {
+                deleteButton.innerText = "sure?";
+                this.askedIfSure = true;
+                return;
+            }
+            refreshIfNotAuthNd().then((_res) => {
+                this.deletePath().then((err) => {
+                    if (err != "") {
+                        deleteButton.innerText = err;
+                        setBorderColor(deleteButton, "err");
+                        return;
+                    }
+                    window.location.replace("/user");
+                });
+            });
+        });
+        editButton.addEventListener("click", () => {
+            this.cancelDelete();
+        });
+        saveButton.addEventListener("click", () => {
+            this.cancelDelete();
+        });
+    }
+    cancelDelete() {
+        this.askedIfSure = false;
+        deleteButton.innerText = "delete";
+    }
+    deletePath() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return fetch(`/api/path/${this.path.id}`, {
+                method: "DELETE",
+            }).then((res) => {
+                switch (res.status) {
+                    case 200:
+                        return "";
+                    case 401:
+                        return "unauthorized";
+                    default:
+                        return "error";
+                }
+            });
+        });
+    }
+}
 const editSectionElem = document.getElementById("edit-section");
 const pathDataElem = document.getElementById("path-data");
 const editButton = document.getElementById("edit");
@@ -21,235 +73,178 @@ const createStatElem = document.getElementById("create-stat");
 const statNameInputElem = document.getElementById("stat-name-input");
 const statStepEqInputElem = document.getElementById("stat-stepeq-input");
 const createStatButtonElem = document.getElementById("create-stat-button");
-removeBorderColorOnFocus(pathNameInput);
-let pathData = {
-    name: "",
-    isPublic: false,
-};
-function setPathData(name, isPublic) {
-    pathData.name = name;
-    pathData.isPublic = isPublic;
-    pathNameInput.value = name;
-    pathPublicButton.innerText = isPublic ? "true" : "false";
-}
 let editing = false;
 editButton.addEventListener("click", () => {
-    editing ? cancel() : edit();
+    editing ? cancelEdit() : startEdit();
 });
-function edit() {
+function startEdit() {
     editing = true;
     editButton.innerText = "cancel";
     setVisibility(pathDataElem, true);
     setVisibility(createStatElem, true);
 }
-function cancel() {
+function cancelEdit() {
     editing = false;
     editButton.innerText = "edit";
     setVisibility(pathDataElem, false);
     setVisibility(createStatElem, false);
-    deleteButton.innerText = "delete";
-    askedIfSure = false;
 }
-pathPublicButton.addEventListener("click", () => {
-    pathPublicButton.innerText =
-        pathPublicButton.innerText == "true" ? "false" : "true";
-});
-pathNameInput.addEventListener("input", () => {
-    saveButton.innerText = "save";
-});
-saveButton.addEventListener("click", save);
-function save() {
-    const newName = pathNameInput.value;
-    const newPublic = pathPublicButton.innerText == "true";
-    if (pathData.name == newName && pathData.isPublic == newPublic) {
-        cancel();
-        return;
+removeBorderColorOnFocus(pathNameInput);
+class PathEditor {
+    constructor(path) {
+        this.path = path;
+        this.newName = "";
+        this.newPublic = false;
+        this.initEvents();
     }
-    refreshIfNotAuthNd().then((_res) => {
-        updatePath(newName, newPublic).then((err) => {
-            if (err != "") {
-                saveButton.innerText = err;
-                setBorderColor(pathNameInput, "err");
-            }
+    initEvents() {
+        editButton.addEventListener("click", () => {
+            this.initNewData();
         });
-    });
-}
-function updatePath(newName, newPublic) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return fetch(`/api/path/${pathId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: newName,
-                public: newPublic,
-            }),
-        }).then((res) => {
-            switch (res.status) {
-                case 200:
-                    setPathData(newName, newPublic);
-                    setPageTitle(newName);
-                    cancel();
-                    return "";
-                case 400:
-                    return "no special characters";
-                case 409:
-                    return "path already exists";
-                case 401:
-                    return "unauthorized";
-                default:
-                    return "error";
-            }
+        pathPublicButton.addEventListener("click", () => {
+            this.newPublic = !this.newPublic;
+            pathPublicButton.innerText = this.newPublic ? "true" : "false";
+            this.updateNewData();
         });
-    });
-}
-let askedIfSure = false;
-deleteButton.addEventListener("click", () => {
-    if (!askedIfSure) {
-        deleteButton.innerText = "sure?";
-        askedIfSure = true;
-        return;
+        pathNameInput.addEventListener("input", () => {
+            this.newName = pathNameInput.value;
+            this.updateNewData();
+        });
+        saveButton.addEventListener("click", () => {
+            this.save();
+        });
     }
-    refreshIfNotAuthNd().then((_res) => {
-        deletePath().then((err) => {
-            if (err != "") {
-                deleteButton.innerText = err;
-                setBorderColor(deleteButton, "err");
-                return;
-            }
-            window.location.replace("/user");
-        });
-    });
-});
-function deletePath() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return fetch(`/api/path/${pathId}`, {
-            method: "DELETE",
-        }).then((res) => {
-            switch (res.status) {
-                case 200:
-                    return "";
-                case 401:
-                    return "unauthorized";
-                default:
-                    return "error";
-            }
-        });
-    });
-}
-function postPath(name, stepEq) {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log(name, stepEq, pathId);
-        return fetch(`/api/path/${pathId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name: name,
-                stepEq: stepEq,
-            }),
-        }).then((res) => {
-            switch (res.status) {
-                case 200:
-                    return "";
-                case 400:
-                    return "special characters";
-                case 409:
-                    return "already exists";
-                case 401:
-                    return "unauthorized";
-                default:
-                    return "error";
-            }
-        });
-    });
-}
-function renderNewStat(name, stepEq) {
-    const newStatElem = newStatCard({
-        name: name,
-        count: 0,
-        stepEquivalent: stepEq,
-    });
-    statsElem.insertBefore(newStatElem, statsElem.firstChild);
-}
-removeBorderColorOnFocus(statNameInputElem);
-removeBorderColorOnFocus(statStepEqInputElem);
-statNameInputElem.addEventListener("input", () => {
-    createStatButtonElem.innerText = "create";
-});
-statStepEqInputElem.addEventListener("input", () => {
-    createStatButtonElem.innerText = "create";
-});
-createStatButtonElem.addEventListener("click", () => {
-    const name = statNameInputElem.value;
-    const stepEq = Number(statStepEqInputElem.value);
-    if (!stepEq) {
-        createStatButtonElem.innerText = "wrong step eq.";
-        setBorderColor(statStepEqInputElem, "err");
-        return;
+    initNewData() {
+        this.newName = this.path.name;
+        pathNameInput.value = this.newName;
+        this.newPublic = this.path.isPublic;
+        pathPublicButton.innerText = this.newPublic ? "true" : "false";
+        this.updateNewData();
     }
-    postPath(name, Number(stepEq)).then((res) => {
-        if (res == "") {
-            statNameInputElem.value = "";
-            statStepEqInputElem.value = "";
-            renderNewStat(name, stepEq);
+    updateNewData() {
+        saveButton.innerText = "save";
+        if (this.newName == this.path.name &&
+            this.newPublic == this.path.isPublic) {
+            setVisibility(saveButton, false);
         }
         else {
-            createStatButtonElem.innerText = res;
-            setBorderColor(statNameInputElem, "err");
+            setVisibility(saveButton, true);
         }
-    });
-});
+    }
+    save() {
+        this.newName = pathNameInput.value;
+        this.newPublic = pathPublicButton.innerText == "true";
+        if (this.newName == "") {
+            setBorderColor(pathNameInput, "err");
+            saveButton.innerText = "empty name";
+            return;
+        }
+        refreshIfNotAuthNd().then((_res) => {
+            this.postNewData().then((err) => {
+                if (err != "") {
+                    saveButton.innerText = err;
+                    setBorderColor(pathNameInput, "err");
+                }
+                else {
+                    this.updateNewData();
+                }
+            });
+        });
+    }
+    postNewData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return fetch(`/api/path/${pathId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: this.newName,
+                    public: this.newPublic,
+                }),
+            }).then((res) => {
+                switch (res.status) {
+                    case 200:
+                        this.path.name = this.newName;
+                        this.path.isPublic = this.newPublic;
+                        setPageTitle(this.newName);
+                        return "";
+                    case 400:
+                        return "special characters";
+                    case 409:
+                        return "path already exists";
+                    case 401:
+                        return "unauthorized";
+                    default:
+                        return "error";
+                }
+            });
+        });
+    }
+}
+class Path {
+    constructor(id) {
+        this.id = id;
+        this.name = "";
+        this.isPublic = false;
+        this.stats = [];
+        this.fetchPath();
+    }
+    newStatCard(stat) {
+        const newStatElem = sampleStatElem.cloneNode(true);
+        newStatElem.removeAttribute("id");
+        setVisibility(newStatElem, true);
+        const statNameElem = newStatElem.getElementsByClassName("stat-name")[0];
+        const statStepEqElem = newStatElem.getElementsByClassName("stat-stepeq")[0];
+        const statCountElem = newStatElem.getElementsByClassName("stat-count")[0];
+        statNameElem.innerText = stat.name;
+        statStepEqElem.innerText =
+            "= " + stat.stepEquivalent.toString() + " steps";
+        statCountElem.value = stat.count.toString();
+        return newStatElem;
+    }
+    renderStats(stats) {
+        if (!stats)
+            return;
+        for (const stat of stats) {
+            const statElem = this.newStatCard(stat);
+            statsElem.insertBefore(statElem, statsElem.firstChild);
+        }
+    }
+    handleFetchedData(data) {
+        setPageTitle(data.path.name);
+        this.renderStats(data.path.stats);
+        if (data.editRight) {
+            setVisibility(editButton, true);
+            this.isPublic = data.path.public;
+            this.name = data.path.name;
+        }
+    }
+    fetchPath() {
+        refreshIfNotAuthNd().then((_res) => {
+            fetch(`/api/path/${pathId}`, {
+                method: "GET",
+            }).then((res) => {
+                switch (res.status) {
+                    case 200:
+                        res.json().then((res) => {
+                            this.handleFetchedData(res);
+                        });
+                        break;
+                    case 404:
+                        window.location.replace("/404");
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
+    }
+}
 const pathId = window.location.pathname.split("/").pop();
-function newStatCard(stat) {
-    const newStatElem = sampleStatElem.cloneNode(true);
-    newStatElem.removeAttribute("id");
-    setVisibility(newStatElem, true);
-    const statNameElem = newStatElem.getElementsByClassName("stat-name")[0];
-    const statStepEqElem = newStatElem.getElementsByClassName("stat-stepeq")[0];
-    const statCountElem = newStatElem.getElementsByClassName("stat-count")[0];
-    statNameElem.innerText = stat.name;
-    statStepEqElem.innerText = "= " + stat.stepEquivalent.toString() + " steps";
-    statCountElem.value = stat.count.toString();
-    return newStatElem;
-}
-function renderStats(stats) {
-    if (!stats)
-        return;
-    for (const stat of stats) {
-        const statElem = newStatCard(stat);
-        statsElem.insertBefore(statElem, statsElem.firstChild);
-    }
-}
-function handlePathData(data) {
-    setPageTitle(data.path.name);
-    renderStats(data.path.stats);
-    if (data.editRight) {
-        setVisibility(editButton, true);
-        setPathData(data.path.name, data.path.public);
-    }
-}
-function renderPath() {
-    fetch(`/api/path/${pathId}`, {
-        method: "GET",
-    }).then((res) => {
-        switch (res.status) {
-            case 200:
-                res.json().then(handlePathData);
-                break;
-            case 404:
-                window.location.replace("/404");
-                break;
-            default:
-                break;
-        }
-    });
-}
-refreshIfNotAuthNd().then((_res) => {
-    renderPath();
-});
+const path = new Path(pathId || "");
+const deletor = new PathDeletor(path);
+const editor = new PathEditor(path);
 function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;

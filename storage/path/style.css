@@ -20,6 +20,12 @@ main {
 	user-select: none;
 }
 
+#edit-buttons {
+	display: flex;
+	gap: 48px;
+	flex-direction: row;
+}
+
 #path-data {
 	height: 50px;
 	padding-inline: 24px;
@@ -51,7 +57,7 @@ main {
 	row-gap: 20px;
 	justify-content: center;
 	padding-inline: auto;
-	width: fit-content;
+	width: 100%;
 }
 
 /* stat */

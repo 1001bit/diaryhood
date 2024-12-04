@@ -25,3 +25,23 @@ const statStepEqInputElem = document.getElementById(
 const createStatButtonElem = document.getElementById(
 	"create-stat-button"
 ) as HTMLDivElement;
+
+// edit button click
+let editing = false;
+editButton.addEventListener("click", () => {
+	editing ? cancelEdit() : startEdit();
+});
+
+function startEdit() {
+	editing = true;
+	editButton.innerText = "cancel";
+	setVisibility(pathDataElem, true);
+	setVisibility(createStatElem, true);
+}
+
+function cancelEdit() {
+	editing = false;
+	editButton.innerText = "edit";
+	setVisibility(pathDataElem, false);
+	setVisibility(createStatElem, false);
+}
