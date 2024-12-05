@@ -67,7 +67,7 @@ class Path {
 
 	fetchPath() {
 		refreshIfNotAuthNd().then((_res) => {
-			fetch(`/api/path/${pathId}`, {
+			fetch(`/api/path/${this.id}`, {
 				method: "GET",
 			}).then((res) => {
 				switch (res.status) {
@@ -86,9 +86,3 @@ class Path {
 		});
 	}
 }
-
-const pathId = window.location.pathname.split("/").pop();
-
-const path = new Path(pathId || "");
-const deletor = new PathDeletor(path);
-const editor = new PathEditor(path);

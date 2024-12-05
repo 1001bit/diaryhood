@@ -65,11 +65,11 @@
     [X] Path creation
         [X] Dummy path creation api
         [X] Real path creation
+    [X] Path deletion
     [ ] Path updating
         [X] Path data update
         [ ] Stats update
         [ ] Stats delete
-    [X] Path deletion
 
 [ ] Path page
     [ ] Path view

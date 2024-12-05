@@ -1,9 +1,9 @@
 class PathDeletor {
-	path: Path;
+	pathId: string;
 	askedIfSure: boolean;
 
-	constructor(path: Path) {
-		this.path = path;
+	constructor(pathId: string) {
+		this.pathId = pathId;
 		this.askedIfSure = false;
 
 		this.initEvents();
@@ -47,7 +47,7 @@ class PathDeletor {
 	}
 
 	async deletePath(): Promise<string> {
-		return fetch(`/api/path/${this.path.id}`, {
+		return fetch(`/api/path/${this.pathId}`, {
 			method: "DELETE",
 		}).then((res) => {
 			switch (res.status) {

@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 class PathDeletor {
-    constructor(path) {
-        this.path = path;
+    constructor(pathId) {
+        this.pathId = pathId;
         this.askedIfSure = false;
         this.initEvents();
     }
@@ -45,7 +45,7 @@ class PathDeletor {
     }
     deletePath() {
         return __awaiter(this, void 0, void 0, function* () {
-            return fetch(`/api/path/${this.path.id}`, {
+            return fetch(`/api/path/${this.pathId}`, {
                 method: "DELETE",
             }).then((res) => {
                 switch (res.status) {
@@ -73,29 +73,13 @@ const createStatElem = document.getElementById("create-stat");
 const statNameInputElem = document.getElementById("stat-name-input");
 const statStepEqInputElem = document.getElementById("stat-stepeq-input");
 const createStatButtonElem = document.getElementById("create-stat-button");
-let editing = false;
-editButton.addEventListener("click", () => {
-    editing ? cancelEdit() : startEdit();
-});
-function startEdit() {
-    editing = true;
-    editButton.innerText = "cancel";
-    setVisibility(pathDataElem, true);
-    setVisibility(createStatElem, true);
-}
-function cancelEdit() {
-    editing = false;
-    editButton.innerText = "edit";
-    setVisibility(pathDataElem, false);
-    setVisibility(createStatElem, false);
-}
-removeBorderColorOnFocus(pathNameInput);
 class PathEditor {
     constructor(path) {
         this.path = path;
         this.newName = "";
         this.newPublic = false;
         this.initEvents();
+        removeBorderColorOnFocus(pathNameInput);
     }
     initEvents() {
         editButton.addEventListener("click", () => {
@@ -153,7 +137,7 @@ class PathEditor {
     }
     postNewData() {
         return __awaiter(this, void 0, void 0, function* () {
-            return fetch(`/api/path/${pathId}`, {
+            return fetch(`/api/path/${this.path.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -222,7 +206,7 @@ class Path {
     }
     fetchPath() {
         refreshIfNotAuthNd().then((_res) => {
-            fetch(`/api/path/${pathId}`, {
+            fetch(`/api/path/${this.id}`, {
                 method: "GET",
             }).then((res) => {
                 switch (res.status) {
@@ -241,10 +225,25 @@ class Path {
         });
     }
 }
-const pathId = window.location.pathname.split("/").pop();
-const path = new Path(pathId || "");
-const deletor = new PathDeletor(path);
+const path = new Path(window.location.pathname.split("/").pop() || "0");
+const deletor = new PathDeletor(path.id);
 const editor = new PathEditor(path);
+let editing = false;
+editButton.addEventListener("click", () => {
+    editing ? cancelEdit() : startEdit();
+});
+function startEdit() {
+    editing = true;
+    editButton.innerText = "cancel";
+    setVisibility(pathDataElem, true);
+    setVisibility(createStatElem, true);
+}
+function cancelEdit() {
+    editing = false;
+    editButton.innerText = "edit";
+    setVisibility(pathDataElem, false);
+    setVisibility(createStatElem, false);
+}
 function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;

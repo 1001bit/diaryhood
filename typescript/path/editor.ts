@@ -1,8 +1,5 @@
 /// <reference path="elems.ts"/>
 
-// init
-removeBorderColorOnFocus(pathNameInput);
-
 class PathEditor {
 	path: Path;
 
@@ -16,6 +13,7 @@ class PathEditor {
 		this.newPublic = false;
 
 		this.initEvents();
+		removeBorderColorOnFocus(pathNameInput);
 	}
 
 	initEvents() {
@@ -89,7 +87,7 @@ class PathEditor {
 	}
 
 	async postNewData(): Promise<string> {
-		return fetch(`/api/path/${pathId}`, {
+		return fetch(`/api/path/${this.path.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
