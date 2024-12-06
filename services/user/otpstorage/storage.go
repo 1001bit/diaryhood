@@ -23,14 +23,19 @@ func New(connStr string) *Storage {
 	}
 }
 
-func (s *Storage) VerifyOTP(ctx context.Context, email, otp string) bool {
-	resOtp, err := s.redisClient.Get(ctx, "email:"+email).Result()
+func (s *Storage) VerifyOTP(ctx context.Context, email, otp string) (bool, error) {
+	resOtp, err := s.redisClient.Get(ctx, emailKey(email)).Result()
+
 	if err != nil || resOtp != otp {
-		return false
+		return false, err
 	}
 
-	s.redisClient.Del(ctx, email).Err()
-	return true
+	err = s.redisClient.Del(ctx, emailKey(email)).Err()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func (s *Storage) GenerateOTP(ctx context.Context, email string) (string, error) {
@@ -39,7 +44,7 @@ func (s *Storage) GenerateOTP(ctx context.Context, email string) (string, error)
 		return "", err
 	}
 
-	return otp, s.redisClient.Set(ctx, "email:"+email, otp, expiration).Err()
+	return otp, s.redisClient.Set(ctx, emailKey(email), otp, expiration).Err()
 }
 
 func generateOTP() (string, error) {
@@ -48,4 +53,8 @@ func generateOTP() (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf("%06d", n), nil
+}
+
+func emailKey(email string) string {
+	return "email:" + email
 }

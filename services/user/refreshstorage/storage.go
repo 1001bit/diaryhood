@@ -22,12 +22,12 @@ func New(connStr string) *Storage {
 }
 
 func (r *Storage) GetUserIDAndRefresh(ctx context.Context, uuid string) (string, string, error) {
-	userID, err := r.redisClient.Get(ctx, "uuid:"+uuid).Result()
+	userID, err := r.redisClient.Get(ctx, uuidKey(uuid)).Result()
 	if err != nil {
 		return "", "", err
 	}
 	// rotate token
-	err = r.redisClient.Del(ctx, "uuid:"+uuid).Err()
+	err = r.DeleteUUID(ctx, uuid)
 	if err != nil {
 		return "", "", err
 	}
@@ -39,9 +39,13 @@ func (r *Storage) GetUserIDAndRefresh(ctx context.Context, uuid string) (string,
 func (r *Storage) GenerateUUID(ctx context.Context, userID string) (string, error) {
 	uuid := uuid.NewString()
 
-	return uuid, r.redisClient.Set(ctx, "uuid:"+uuid, userID, expiration).Err()
+	return uuid, r.redisClient.Set(ctx, uuidKey(uuid), userID, expiration).Err()
 }
 
 func (r *Storage) DeleteUUID(ctx context.Context, uuid string) error {
-	return r.redisClient.Del(ctx, "uuid:"+uuid).Err()
+	return r.redisClient.Del(ctx, uuidKey(uuid)).Err()
+}
+
+func uuidKey(uuid string) string {
+	return "uuid:" + uuid
 }
