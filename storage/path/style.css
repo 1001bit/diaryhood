@@ -82,8 +82,8 @@ main {
 	color: var(--main1-dim);
 }
 
-.stat-count-box {
-	margin-top: 16px;
+/* number input */
+.number-input-box {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -99,7 +99,6 @@ main {
 #create-stat {
 	border-color: var(--acc1-dim);
 	gap: 8px;
-	/* center text */
 	text-align: center;
 }
 

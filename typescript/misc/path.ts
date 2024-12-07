@@ -4,6 +4,11 @@ interface Stat {
 	stepEquivalent: number;
 }
 
+interface CountlessStat {
+	name: string;
+	stepEquivalent: number;
+}
+
 interface Path {
 	id: string;
 	name: string;

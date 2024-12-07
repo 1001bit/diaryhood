@@ -204,6 +204,28 @@ function removeBorderColorOnFocus(elem) {
         elem.style.borderColor = "";
     });
 }
+class NumberInput {
+    constructor(elem) {
+        this.inputElem = elem.getElementsByTagName("input")[0];
+        this.plus = elem.getElementsByClassName("plus")[0];
+        this.minus = elem.getElementsByClassName("minus")[0];
+        this.initEvents();
+    }
+    initEvents() {
+        this.plus.addEventListener("click", () => {
+            this.inputElem.value = (Number(this.inputElem.value) + 1).toString();
+        });
+        this.minus.addEventListener("click", () => {
+            this.inputElem.value = (Number(this.inputElem.value) - 1).toString();
+        });
+        this.inputElem.addEventListener("input", () => {
+            this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+        });
+    }
+    setValue(value) {
+        this.inputElem.value = value.toString();
+    }
+}
 function refreshIfNotAuthNd() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {

@@ -55,24 +55,24 @@ func Profile(name, date string, profileOwner bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><textarea id=\"name-input\" class=\"hidden\" maxlength=\"31\" spellcheck=\"false\" rows=\"3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p><textarea id=\"name-input\" class=\"hidden\" maxlength=\"31\" spellcheck=\"false\" rows=\"3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/profile.templ`, Line: 18, Col: 96}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `services/gateway/template/profile.templ`, Line: 18, Col: 99}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 = []any{"tiny", templ.KV("hidden", !profileOwner)}
+		var templ_7745c5c3_Var4 = []any{"tiny", "no-padding", templ.KV("hidden", !profileOwner)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -181,7 +181,7 @@ func CreatePath(hidden bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><input type=\"text\" id=\"path-name-input\" placeholder=\"name\"><div class=\"line-separator\"></div><a href=\"#create-path\" id=\"create-path\"><h3>create</h3></a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3><input type=\"text\" id=\"path-name-input\" class=\"no-padding\" placeholder=\"name\"></h3><div class=\"line-separator\"></div><a id=\"create-path\">create</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

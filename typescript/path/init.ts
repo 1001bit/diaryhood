@@ -8,18 +8,17 @@ const editor = new PathEditor(path);
 let editing = false;
 editButton.addEventListener("click", () => {
 	editing ? cancelEdit() : startEdit();
+	path.statsManager.setEditMode(editing);
 });
 
 function startEdit() {
 	editing = true;
 	editButton.innerText = "cancel";
 	setVisibility(pathDataElem, true);
-	setVisibility(createStatElem, true);
 }
 
 function cancelEdit() {
 	editing = false;
 	editButton.innerText = "edit";
 	setVisibility(pathDataElem, false);
-	setVisibility(createStatElem, false);
 }

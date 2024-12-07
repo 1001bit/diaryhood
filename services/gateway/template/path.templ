@@ -10,6 +10,7 @@ templ Path() {
 		<body>
 			@nav("path")
 			<main>
+				// TODO: See path owner
 				<div id="edit-section">
 					<div id="edit-buttons">
 						<a id="edit" class="hidden">edit</a>
@@ -21,40 +22,36 @@ templ Path() {
 						<a id="delete">delete</a>
 					</div>
 				</div>
-				// TODO: See path owner
-				<div id="stats">
-					@CreateStat()
-				</div>
+				<div id="stats"></div>
 			</main>
 		</body>
 		@SampleStat()
+		@SampleEditStat()
 		<script src="/storage/path/script.js"></script>
 	</html>
 }
 
-templ CreateStat() {
-	<div class="stat box hidden" id="create-stat">
-		<input type="text" placeholder="name" id="stat-name-input"/>
-		<input type="text" class="tiny" placeholder="step equivalent" id="stat-stepeq-input"/>
-		<a id="create-stat-button">create</a>
+templ SampleEditStat() {
+	<div class="stat box hidden" id="sample-edit-stat">
+		<h3><input type="text" placeholder="name" class="stat-name-input no-padding"/></h3>
+		<div class="number-input-box stat-stepeq-input">
+			<a class="minus">-</a>
+			<p class="tiny"><input type="text" placeholder="= steps" class="no-padding"/></p>
+			<a class="plus">+</a>
+		</div>
+		<a class="save-stat-button hidden">save</a>
+		<a class="delete-stat-button hidden">delete</a>
 	</div>
 }
 
 templ SampleStat() {
 	<div class="stat box hidden" id="sample-stat">
-		// Name
 		<h3 class="stat-name">stat</h3>
-		<input type="text" class="hidden" class="stat-name-input"/>
-		// step equivalent
 		<p class="tiny stat-stepeq"></p>
-		<input type="text" class="tiny stat-stepeq-input hidden" placeholder="step equivalent"/>
-		// count
-		<div class="stat-count-box">
-			<a class="plus">-</a>
-			<input type="text" placeholder="0" class="stat-count"/>
-			<a class="minus">+</a>
+		<div class="number-input-box stat-count-input">
+			<a class="minus">-</a>
+			<p><input type="text" placeholder="0" class="no-padding"/></p>
+			<a class="plus">+</a>
 		</div>
-		// delete
-		<a id="delete-stat-button" class="hidden">delete</a>
 	</div>
 }

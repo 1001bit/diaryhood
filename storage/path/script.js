@@ -69,10 +69,7 @@ const saveButton = document.getElementById("save");
 const deleteButton = document.getElementById("delete");
 const statsElem = document.getElementById("stats");
 const sampleStatElem = document.getElementById("sample-stat");
-const createStatElem = document.getElementById("create-stat");
-const statNameInputElem = document.getElementById("stat-name-input");
-const statStepEqInputElem = document.getElementById("stat-stepeq-input");
-const createStatButtonElem = document.getElementById("create-stat-button");
+const sampleEditStatElem = document.getElementById("sample-edit-stat");
 class PathEditor {
     constructor(path) {
         this.path = path;
@@ -166,38 +163,82 @@ class PathEditor {
         });
     }
 }
+class PageStat {
+    constructor(stat, editRight) {
+        this.stat = stat;
+        this.statElem = null;
+        this.countInput = null;
+        this.initStatElem(stat);
+        this.editStatElem = null;
+        this.stepEqInput = null;
+        if (editRight)
+            this.initStatEditElem(stat);
+    }
+    initStatElem(stat) {
+        this.statElem = sampleStatElem.cloneNode(true);
+        this.statElem.removeAttribute("id");
+        setVisibility(this.statElem, true);
+        const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
+        const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
+        this.countInput = new NumberInput(this.statElem.getElementsByClassName("stat-count-input")[0]);
+        statNameElem.innerText = stat.name;
+        statStepEqElem.innerText =
+            "= " + stat.stepEquivalent.toString() + " steps";
+        this.countInput.setValue(stat.count);
+    }
+    initStatEditElem(stat) {
+        this.editStatElem = sampleEditStatElem.cloneNode(true);
+        this.editStatElem.removeAttribute("id");
+        const deleteButton = this.editStatElem.getElementsByClassName("delete-stat-button")[0];
+        setVisibility(deleteButton, true);
+        const statNameInput = this.editStatElem.getElementsByClassName("stat-name-input")[0];
+        this.stepEqInput = new NumberInput(this.editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
+        statNameInput.value = stat.name;
+        this.stepEqInput.setValue(stat.stepEquivalent);
+    }
+    initEvents() {
+        if (!this.statElem || !this.editStatElem)
+            return;
+        const statNameInput = this.editStatElem.getElementsByClassName("stat-name-input")[0];
+        const statStepEqInput = this.editStatElem.getElementsByClassName("stat-stepeq-input")[0];
+    }
+}
+class StatsManager {
+    constructor() {
+        this.stats = [];
+    }
+    renderStats(stats, editRight) {
+        if (!stats)
+            return;
+        for (const stat of stats) {
+            const pageStat = new PageStat(stat, editRight);
+            this.stats.push(pageStat);
+            if (pageStat.statElem) {
+                statsElem.insertBefore(pageStat.statElem, statsElem.firstChild);
+            }
+            if (pageStat.editStatElem) {
+                statsElem.insertBefore(pageStat.editStatElem, statsElem.firstChild);
+            }
+        }
+    }
+    setEditMode(mode) {
+        for (const stat of this.stats) {
+            setVisibility(stat.statElem, !mode);
+            setVisibility(stat.editStatElem, mode);
+        }
+    }
+}
 class Path {
     constructor(id) {
         this.id = id;
         this.name = "";
         this.isPublic = false;
-        this.stats = [];
+        this.statsManager = new StatsManager();
         this.fetchPath();
-    }
-    newStatCard(stat) {
-        const newStatElem = sampleStatElem.cloneNode(true);
-        newStatElem.removeAttribute("id");
-        setVisibility(newStatElem, true);
-        const statNameElem = newStatElem.getElementsByClassName("stat-name")[0];
-        const statStepEqElem = newStatElem.getElementsByClassName("stat-stepeq")[0];
-        const statCountElem = newStatElem.getElementsByClassName("stat-count")[0];
-        statNameElem.innerText = stat.name;
-        statStepEqElem.innerText =
-            "= " + stat.stepEquivalent.toString() + " steps";
-        statCountElem.value = stat.count.toString();
-        return newStatElem;
-    }
-    renderStats(stats) {
-        if (!stats)
-            return;
-        for (const stat of stats) {
-            const statElem = this.newStatCard(stat);
-            statsElem.insertBefore(statElem, statsElem.firstChild);
-        }
     }
     handleFetchedData(data) {
         setPageTitle(data.path.name);
-        this.renderStats(data.path.stats);
+        this.statsManager.renderStats(data.path.stats, data.editRight);
         if (data.editRight) {
             setVisibility(editButton, true);
             this.isPublic = data.path.public;
@@ -231,18 +272,17 @@ const editor = new PathEditor(path);
 let editing = false;
 editButton.addEventListener("click", () => {
     editing ? cancelEdit() : startEdit();
+    path.statsManager.setEditMode(editing);
 });
 function startEdit() {
     editing = true;
     editButton.innerText = "cancel";
     setVisibility(pathDataElem, true);
-    setVisibility(createStatElem, true);
 }
 function cancelEdit() {
     editing = false;
     editButton.innerText = "edit";
     setVisibility(pathDataElem, false);
-    setVisibility(createStatElem, false);
 }
 function setBorderColor(elem, colorVar) {
     if (!elem) {
@@ -257,6 +297,28 @@ function removeBorderColorOnFocus(elem) {
     elem.addEventListener("focus", () => {
         elem.style.borderColor = "";
     });
+}
+class NumberInput {
+    constructor(elem) {
+        this.inputElem = elem.getElementsByTagName("input")[0];
+        this.plus = elem.getElementsByClassName("plus")[0];
+        this.minus = elem.getElementsByClassName("minus")[0];
+        this.initEvents();
+    }
+    initEvents() {
+        this.plus.addEventListener("click", () => {
+            this.inputElem.value = (Number(this.inputElem.value) + 1).toString();
+        });
+        this.minus.addEventListener("click", () => {
+            this.inputElem.value = (Number(this.inputElem.value) - 1).toString();
+        });
+        this.inputElem.addEventListener("input", () => {
+            this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+        });
+    }
+    setValue(value) {
+        this.inputElem.value = value.toString();
+    }
 }
 function refreshIfNotAuthNd() {
     return __awaiter(this, void 0, void 0, function* () {

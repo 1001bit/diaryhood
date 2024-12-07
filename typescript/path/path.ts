@@ -1,5 +1,6 @@
 /// <reference path="deletor.ts"/>
 /// <reference path="editor.ts"/>
+/// <reference path="statsmanager.ts"/>
 
 interface PathResponse {
 	path: Path;
@@ -10,53 +11,21 @@ class Path {
 	id: string;
 	name: string;
 	isPublic: boolean;
-	stats: Stat[];
+
+	statsManager: StatsManager;
 
 	constructor(id: string) {
 		this.id = id;
 		this.name = "";
 		this.isPublic = false;
-		this.stats = [];
+		this.statsManager = new StatsManager();
 
 		this.fetchPath();
 	}
 
-	newStatCard(stat: Stat) {
-		const newStatElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
-		newStatElem.removeAttribute("id");
-		setVisibility(newStatElem, true);
-
-		const statNameElem = newStatElem.getElementsByClassName(
-			"stat-name"
-		)[0] as HTMLDivElement;
-
-		const statStepEqElem = newStatElem.getElementsByClassName(
-			"stat-stepeq"
-		)[0] as HTMLDivElement;
-
-		const statCountElem = newStatElem.getElementsByClassName(
-			"stat-count"
-		)[0] as HTMLInputElement;
-
-		statNameElem.innerText = stat.name;
-		statStepEqElem.innerText =
-			"= " + stat.stepEquivalent.toString() + " steps";
-		statCountElem.value = stat.count.toString();
-		return newStatElem;
-	}
-
-	renderStats(stats: Stat[]) {
-		if (!stats) return;
-
-		for (const stat of stats) {
-			const statElem = this.newStatCard(stat);
-			statsElem.insertBefore(statElem, statsElem.firstChild);
-		}
-	}
-
 	handleFetchedData(data: PathResponse) {
 		setPageTitle(data.path.name);
-		this.renderStats(data.path.stats);
+		this.statsManager.renderStats(data.path.stats, data.editRight);
 
 		if (data.editRight) {
 			setVisibility(editButton, true);
