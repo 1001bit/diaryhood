@@ -15,17 +15,17 @@ class PathDeletor {
         this.initEvents();
     }
     initEvents() {
-        deleteButton.addEventListener("click", () => {
+        pathDeleteButton.addEventListener("click", () => {
             if (!this.askedIfSure) {
-                deleteButton.innerText = "sure?";
+                pathDeleteButton.innerText = "sure?";
                 this.askedIfSure = true;
                 return;
             }
             refreshIfNotAuthNd().then((_res) => {
                 this.deletePath().then((err) => {
                     if (err != "") {
-                        deleteButton.innerText = err;
-                        setBorderColor(deleteButton, "err");
+                        pathDeleteButton.innerText = err;
+                        setBorderColor(pathDeleteButton, "err");
                         return;
                     }
                     window.location.replace("/user");
@@ -35,13 +35,13 @@ class PathDeletor {
         editButton.addEventListener("click", () => {
             this.cancelDelete();
         });
-        saveButton.addEventListener("click", () => {
+        pathSaveButton.addEventListener("click", () => {
             this.cancelDelete();
         });
     }
     cancelDelete() {
         this.askedIfSure = false;
-        deleteButton.innerText = "delete";
+        pathDeleteButton.innerText = "delete";
     }
     deletePath() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,90 +65,82 @@ const pathDataElem = document.getElementById("path-data");
 const editButton = document.getElementById("edit");
 const pathNameInput = document.getElementById("path-name");
 const pathPublicButton = document.getElementById("path-public");
-const saveButton = document.getElementById("save");
-const deleteButton = document.getElementById("delete");
+const pathSaveButton = document.getElementById("save");
+const pathDeleteButton = document.getElementById("delete");
 const statsElem = document.getElementById("stats");
 const sampleStatElem = document.getElementById("sample-stat");
 const sampleEditStatElem = document.getElementById("sample-edit-stat");
 class PathEditor {
     constructor(path) {
         this.path = path;
-        this.newName = "";
-        this.newPublic = false;
         this.initEvents();
         removeBorderColorOnFocus(pathNameInput);
     }
     initEvents() {
         editButton.addEventListener("click", () => {
-            this.initNewData();
+            pathNameInput.value = this.path.name;
+            pathPublicButton.innerText = this.path.isPublic ? "true" : "false";
+            this.showSaveButtonIfChanged();
         });
         pathPublicButton.addEventListener("click", () => {
-            this.newPublic = !this.newPublic;
-            pathPublicButton.innerText = this.newPublic ? "true" : "false";
-            this.updateNewData();
+            const newPublic = pathPublicButton.innerText != "true";
+            pathPublicButton.innerText = newPublic ? "true" : "false";
+            this.showSaveButtonIfChanged();
         });
         pathNameInput.addEventListener("input", () => {
-            this.newName = pathNameInput.value;
-            this.updateNewData();
+            this.showSaveButtonIfChanged();
         });
-        saveButton.addEventListener("click", () => {
+        pathSaveButton.addEventListener("click", () => {
             this.save();
         });
     }
-    initNewData() {
-        this.newName = this.path.name;
-        pathNameInput.value = this.newName;
-        this.newPublic = this.path.isPublic;
-        pathPublicButton.innerText = this.newPublic ? "true" : "false";
-        this.updateNewData();
-    }
-    updateNewData() {
-        saveButton.innerText = "save";
-        if (this.newName == this.path.name &&
-            this.newPublic == this.path.isPublic) {
-            setVisibility(saveButton, false);
+    showSaveButtonIfChanged() {
+        pathSaveButton.innerText = "save";
+        const newName = pathNameInput.value;
+        const newPublic = pathPublicButton.innerText == "true";
+        if (newName == this.path.name && newPublic == this.path.isPublic) {
+            setVisibility(pathSaveButton, false);
         }
         else {
-            setVisibility(saveButton, true);
+            setVisibility(pathSaveButton, true);
         }
     }
     save() {
-        this.newName = pathNameInput.value;
-        this.newPublic = pathPublicButton.innerText == "true";
-        if (this.newName == "") {
+        if (pathNameInput.value == "") {
             setBorderColor(pathNameInput, "err");
-            saveButton.innerText = "empty name";
+            pathSaveButton.innerText = "empty name";
             return;
         }
         refreshIfNotAuthNd().then((_res) => {
             this.postNewData().then((err) => {
                 if (err != "") {
-                    saveButton.innerText = err;
+                    pathSaveButton.innerText = err;
                     setBorderColor(pathNameInput, "err");
+                    return;
                 }
-                else {
-                    this.updateNewData();
-                }
+                this.showSaveButtonIfChanged();
             });
         });
     }
     postNewData() {
         return __awaiter(this, void 0, void 0, function* () {
+            const newName = pathNameInput.value;
+            const newPublic = pathPublicButton.innerText == "true";
             return fetch(`/api/path/${this.path.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name: this.newName,
-                    public: this.newPublic,
+                    name: newName,
+                    public: newPublic,
                 }),
             }).then((res) => {
                 switch (res.status) {
                     case 200:
-                        this.path.name = this.newName;
-                        this.path.isPublic = this.newPublic;
-                        setPageTitle(this.newName);
+                        this.path.name = newName;
+                        this.path.isPublic = newPublic;
+                        setPageTitle(newName);
                         return "";
                     case 400:
                         return "special characters";
@@ -167,10 +159,8 @@ class PageStat {
     constructor(stat, editRight) {
         this.stat = stat;
         this.statElem = null;
-        this.countInput = null;
         this.initStatElem(stat);
         this.editStatElem = null;
-        this.stepEqInput = null;
         if (editRight)
             this.initStatEditElem(stat);
     }
@@ -180,48 +170,98 @@ class PageStat {
         setVisibility(this.statElem, true);
         const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
-        this.countInput = new NumberInput(this.statElem.getElementsByClassName("stat-count-input")[0]);
+        const countInput = new NumberInput(this.statElem.getElementsByClassName("stat-count-input")[0]);
         statNameElem.innerText = stat.name;
         statStepEqElem.innerText =
             "= " + stat.stepEquivalent.toString() + " steps";
-        this.countInput.setValue(stat.count);
+        countInput.setValue(stat.count);
     }
     initStatEditElem(stat) {
         this.editStatElem = sampleEditStatElem.cloneNode(true);
         this.editStatElem.removeAttribute("id");
         const deleteButton = this.editStatElem.getElementsByClassName("delete-stat-button")[0];
-        setVisibility(deleteButton, true);
-        const statNameInput = this.editStatElem.getElementsByClassName("stat-name-input")[0];
-        this.stepEqInput = new NumberInput(this.editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
-        statNameInput.value = stat.name;
-        this.stepEqInput.setValue(stat.stepEquivalent);
+        const saveButton = this.editStatElem.getElementsByClassName("save-stat-button")[0];
+        const nameInput = this.editStatElem.getElementsByClassName("stat-name-input")[0];
+        const stepEqInput = new NumberInput(this.editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
+        nameInput.value = stat.name;
+        stepEqInput.setValue(stat.stepEquivalent);
+        const elems = {
+            deleteButton,
+            saveButton,
+            nameInput,
+            stepEqInput,
+        };
+        this.showSaveButtonIfChanged(elems);
+        this.initEditEvents(elems);
     }
-    initEvents() {
-        if (!this.statElem || !this.editStatElem)
-            return;
-        const statNameInput = this.editStatElem.getElementsByClassName("stat-name-input")[0];
-        const statStepEqInput = this.editStatElem.getElementsByClassName("stat-stepeq-input")[0];
+    initEditEvents(elems) {
+        editButton.addEventListener("click", () => {
+            elems.nameInput.value = this.stat.name;
+            elems.stepEqInput.setValue(this.stat.stepEquivalent);
+            this.showSaveButtonIfChanged(elems);
+        });
+        elems.deleteButton.addEventListener("click", () => {
+            const message = {
+                name: this.stat.name,
+            };
+            console.log("delete", message);
+        });
+        elems.saveButton.addEventListener("click", () => {
+            const message = {
+                name: this.stat.name,
+                stat: {
+                    name: elems.nameInput.value,
+                    stepEquivalent: elems.stepEqInput.getValue(),
+                },
+            };
+            console.log("save", message);
+        });
+        elems.nameInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged(elems);
+        });
+        elems.stepEqInput.addInputListener(() => {
+            this.showSaveButtonIfChanged(elems);
+        });
+    }
+    showSaveButtonIfChanged(elems) {
+        const changed = !(elems.nameInput.value == this.stat.name &&
+            elems.stepEqInput.getValue() == this.stat.stepEquivalent) || this.stat.name == "";
+        setVisibility(elems.saveButton, changed);
+        setVisibility(elems.deleteButton, !changed);
     }
 }
 class StatsManager {
     constructor() {
         this.stats = [];
+        this.newStat = null;
+    }
+    renderPageStat(pageStat) {
+        if (pageStat.statElem) {
+            statsElem.insertBefore(pageStat.statElem, statsElem.firstChild);
+        }
+        if (pageStat.editStatElem) {
+            statsElem.insertBefore(pageStat.editStatElem, statsElem.firstChild);
+        }
     }
     renderStats(stats, editRight) {
+        if (editRight) {
+            const stat = { name: "", count: 0, stepEquivalent: 0 };
+            this.newStat = new PageStat(stat, editRight);
+            this.renderPageStat(this.newStat);
+            setVisibility(this.newStat.statElem, false);
+        }
         if (!stats)
             return;
         for (const stat of stats) {
             const pageStat = new PageStat(stat, editRight);
             this.stats.push(pageStat);
-            if (pageStat.statElem) {
-                statsElem.insertBefore(pageStat.statElem, statsElem.firstChild);
-            }
-            if (pageStat.editStatElem) {
-                statsElem.insertBefore(pageStat.editStatElem, statsElem.firstChild);
-            }
+            this.renderPageStat(pageStat);
         }
     }
     setEditMode(mode) {
+        if (this.newStat) {
+            setVisibility(this.newStat.editStatElem, mode);
+        }
         for (const stat of this.stats) {
             setVisibility(stat.statElem, !mode);
             setVisibility(stat.editStatElem, mode);
@@ -303,21 +343,31 @@ class NumberInput {
         this.inputElem = elem.getElementsByTagName("input")[0];
         this.plus = elem.getElementsByClassName("plus")[0];
         this.minus = elem.getElementsByClassName("minus")[0];
+        this.callback = (_num) => { };
         this.initEvents();
     }
     initEvents() {
         this.plus.addEventListener("click", () => {
             this.inputElem.value = (Number(this.inputElem.value) + 1).toString();
+            this.callback(Number(this.inputElem.value));
         });
         this.minus.addEventListener("click", () => {
             this.inputElem.value = (Number(this.inputElem.value) - 1).toString();
+            this.callback(Number(this.inputElem.value));
         });
         this.inputElem.addEventListener("input", () => {
             this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+            this.callback(Number(this.inputElem.value));
         });
     }
     setValue(value) {
         this.inputElem.value = value.toString();
+    }
+    getValue() {
+        return Number(this.inputElem.value);
+    }
+    addInputListener(callback) {
+        this.callback = callback;
     }
 }
 function refreshIfNotAuthNd() {

@@ -11,9 +11,9 @@ class PathDeletor {
 
 	initEvents() {
 		// delete
-		deleteButton.addEventListener("click", () => {
+		pathDeleteButton.addEventListener("click", () => {
 			if (!this.askedIfSure) {
-				deleteButton.innerText = "sure?";
+				pathDeleteButton.innerText = "sure?";
 				this.askedIfSure = true;
 				return;
 			}
@@ -21,8 +21,8 @@ class PathDeletor {
 			refreshIfNotAuthNd().then((_res) => {
 				this.deletePath().then((err) => {
 					if (err != "") {
-						deleteButton.innerText = err;
-						setBorderColor(deleteButton, "err");
+						pathDeleteButton.innerText = err;
+						setBorderColor(pathDeleteButton, "err");
 						return;
 					}
 
@@ -36,14 +36,14 @@ class PathDeletor {
 			this.cancelDelete();
 		});
 
-		saveButton.addEventListener("click", () => {
+		pathSaveButton.addEventListener("click", () => {
 			this.cancelDelete();
 		});
 	}
 
 	cancelDelete() {
 		this.askedIfSure = false;
-		deleteButton.innerText = "delete";
+		pathDeleteButton.innerText = "delete";
 	}
 
 	async deletePath(): Promise<string> {

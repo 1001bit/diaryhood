@@ -3,14 +3,8 @@
 class PathEditor {
 	path: Path;
 
-	newName: string;
-	newPublic: boolean;
-
 	constructor(path: Path) {
 		this.path = path;
-
-		this.newName = "";
-		this.newPublic = false;
 
 		this.initEvents();
 		removeBorderColorOnFocus(pathNameInput);
@@ -19,89 +13,82 @@ class PathEditor {
 	initEvents() {
 		// edit button click
 		editButton.addEventListener("click", () => {
-			this.initNewData();
+			pathNameInput.value = this.path.name;
+			pathPublicButton.innerText = this.path.isPublic ? "true" : "false";
+
+			this.showSaveButtonIfChanged();
 		});
 
 		// pathPublicButton press
 		pathPublicButton.addEventListener("click", () => {
-			this.newPublic = !this.newPublic;
-			pathPublicButton.innerText = this.newPublic ? "true" : "false";
-			this.updateNewData();
+			const newPublic = pathPublicButton.innerText != "true";
+			pathPublicButton.innerText = newPublic ? "true" : "false";
+
+			this.showSaveButtonIfChanged();
 		});
 
 		// path name input change
 		pathNameInput.addEventListener("input", () => {
-			this.newName = pathNameInput.value;
-			this.updateNewData();
+			this.showSaveButtonIfChanged();
 		});
 
 		// save button click
-		saveButton.addEventListener("click", () => {
+		pathSaveButton.addEventListener("click", () => {
 			this.save();
 		});
 	}
 
-	initNewData() {
-		this.newName = this.path.name;
-		pathNameInput.value = this.newName;
+	showSaveButtonIfChanged() {
+		pathSaveButton.innerText = "save";
 
-		this.newPublic = this.path.isPublic;
-		pathPublicButton.innerText = this.newPublic ? "true" : "false";
+		const newName = pathNameInput.value;
+		const newPublic = pathPublicButton.innerText == "true";
 
-		this.updateNewData();
-	}
-
-	updateNewData() {
-		saveButton.innerText = "save";
-
-		if (
-			this.newName == this.path.name &&
-			this.newPublic == this.path.isPublic
-		) {
-			setVisibility(saveButton, false);
+		if (newName == this.path.name && newPublic == this.path.isPublic) {
+			setVisibility(pathSaveButton, false);
 		} else {
-			setVisibility(saveButton, true);
+			setVisibility(pathSaveButton, true);
 		}
 	}
 
 	save() {
-		this.newName = pathNameInput.value;
-		this.newPublic = pathPublicButton.innerText == "true";
-
-		if (this.newName == "") {
+		if (pathNameInput.value == "") {
 			setBorderColor(pathNameInput, "err");
-			saveButton.innerText = "empty name";
+			pathSaveButton.innerText = "empty name";
 			return;
 		}
 
 		refreshIfNotAuthNd().then((_res) => {
 			this.postNewData().then((err) => {
 				if (err != "") {
-					saveButton.innerText = err;
+					pathSaveButton.innerText = err;
 					setBorderColor(pathNameInput, "err");
-				} else {
-					this.updateNewData();
+					return;
 				}
+				this.showSaveButtonIfChanged();
 			});
 		});
 	}
 
 	async postNewData(): Promise<string> {
+		const newName = pathNameInput.value;
+		const newPublic = pathPublicButton.innerText == "true";
+
 		return fetch(`/api/path/${this.path.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				name: this.newName,
-				public: this.newPublic,
+				name: newName,
+				public: newPublic,
 			}),
 		}).then((res) => {
 			switch (res.status) {
 				case 200:
-					this.path.name = this.newName;
-					this.path.isPublic = this.newPublic;
-					setPageTitle(this.newName);
+					this.path.name = newName;
+					this.path.isPublic = newPublic;
+					setPageTitle(newName);
 					return "";
 				case 400:
 					return "special characters";

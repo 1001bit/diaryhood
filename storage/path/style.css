@@ -56,7 +56,6 @@ main {
 	gap: 2%;
 	row-gap: 20px;
 	justify-content: center;
-	padding-inline: auto;
 	width: 100%;
 }
 
@@ -82,6 +81,21 @@ main {
 	color: var(--main1-dim);
 }
 
+.stat-count-input {
+	margin-top: 16px;
+}
+
+/* edit stat */
+.delete-stat-button,
+.save-stat-button {
+	user-select: none;
+	margin-top: 6px;
+}
+
+.edit-stat:nth-last-child(2) {
+	border-color: var(--acc1-dim);
+}
+
 /* number input */
 .number-input-box {
 	display: flex;
@@ -93,20 +107,4 @@ main {
 .plus,
 .minus {
 	user-select: none;
-}
-
-/* create stat */
-#create-stat {
-	border-color: var(--acc1-dim);
-	gap: 8px;
-	text-align: center;
-}
-
-#create-stat input {
-	border-color: var(--acc1-dim);
-}
-
-#create-stat input:hover,
-#create-stat input:focus {
-	border-color: var(--acc1);
 }

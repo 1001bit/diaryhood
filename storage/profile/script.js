@@ -209,21 +209,31 @@ class NumberInput {
         this.inputElem = elem.getElementsByTagName("input")[0];
         this.plus = elem.getElementsByClassName("plus")[0];
         this.minus = elem.getElementsByClassName("minus")[0];
+        this.callback = (_num) => { };
         this.initEvents();
     }
     initEvents() {
         this.plus.addEventListener("click", () => {
             this.inputElem.value = (Number(this.inputElem.value) + 1).toString();
+            this.callback(Number(this.inputElem.value));
         });
         this.minus.addEventListener("click", () => {
             this.inputElem.value = (Number(this.inputElem.value) - 1).toString();
+            this.callback(Number(this.inputElem.value));
         });
         this.inputElem.addEventListener("input", () => {
             this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+            this.callback(Number(this.inputElem.value));
         });
     }
     setValue(value) {
         this.inputElem.value = value.toString();
+    }
+    getValue() {
+        return Number(this.inputElem.value);
+    }
+    addInputListener(callback) {
+        this.callback = callback;
     }
 }
 function refreshIfNotAuthNd() {

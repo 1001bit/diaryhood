@@ -1,23 +1,23 @@
+interface EditStatElemets {
+	nameInput: HTMLInputElement;
+	stepEqInput: NumberInput;
+	saveButton: HTMLElement;
+	deleteButton: HTMLElement;
+}
+
 class PageStat {
 	stat: Stat;
 
 	statElem: HTMLElement | null;
-	countInput: NumberInput | null;
-
 	editStatElem: HTMLElement | null;
-	stepEqInput: NumberInput | null;
-	nameInput: HTMLInputElement | null;
 
 	constructor(stat: Stat, editRight: boolean) {
 		this.stat = stat;
 
 		this.statElem = null;
-		this.countInput = null;
 		this.initStatElem(stat);
 
 		this.editStatElem = null;
-		this.stepEqInput = null;
-		this.nameInput = null;
 		if (editRight) this.initStatEditElem(stat);
 	}
 
@@ -34,7 +34,7 @@ class PageStat {
 			"stat-stepeq"
 		)[0] as HTMLDivElement;
 
-		this.countInput = new NumberInput(
+		const countInput = new NumberInput(
 			this.statElem.getElementsByClassName(
 				"stat-count-input"
 			)[0] as HTMLDivElement
@@ -43,7 +43,7 @@ class PageStat {
 		statNameElem.innerText = stat.name;
 		statStepEqElem.innerText =
 			"= " + stat.stepEquivalent.toString() + " steps";
-		this.countInput.setValue(stat.count);
+		countInput.setValue(stat.count);
 	}
 
 	initStatEditElem(stat: Stat) {
@@ -55,57 +55,129 @@ class PageStat {
 		const deleteButton = this.editStatElem.getElementsByClassName(
 			"delete-stat-button"
 		)[0] as HTMLDivElement;
-		setVisibility(deleteButton, true);
 
-		this.nameInput = this.editStatElem.getElementsByClassName(
+		const saveButton = this.editStatElem.getElementsByClassName(
+			"save-stat-button"
+		)[0] as HTMLDivElement;
+
+		const nameInput = this.editStatElem.getElementsByClassName(
 			"stat-name-input"
 		)[0] as HTMLInputElement;
 
-		this.stepEqInput = new NumberInput(
+		const stepEqInput = new NumberInput(
 			this.editStatElem.getElementsByClassName(
 				"stat-stepeq-input"
 			)[0] as HTMLDivElement
 		);
 
-		this.nameInput.value = stat.name;
-		this.stepEqInput.setValue(stat.stepEquivalent);
+		nameInput.value = stat.name;
+		stepEqInput.setValue(stat.stepEquivalent);
+
+		const elems = {
+			deleteButton,
+			saveButton,
+			nameInput,
+			stepEqInput,
+		};
+
+		this.showSaveButtonIfChanged(elems);
+		this.initEditEvents(elems);
 	}
 
-	initEvents() {
-		if (!this.statElem || !this.editStatElem) return;
+	initEditEvents(elems: EditStatElemets) {
+		// edit button click
+		editButton.addEventListener("click", () => {
+			elems.nameInput.value = this.stat.name;
+			elems.stepEqInput.setValue(this.stat.stepEquivalent);
 
-		// TODO: this
+			this.showSaveButtonIfChanged(elems);
+		});
+
+		// delete
+		elems.deleteButton.addEventListener("click", () => {
+			const message = {
+				name: this.stat.name,
+			};
+			console.log("delete", message);
+		});
+
+		// save
+		elems.saveButton.addEventListener("click", () => {
+			const message = {
+				name: this.stat.name,
+				stat: {
+					name: elems.nameInput.value,
+					stepEquivalent: elems.stepEqInput.getValue(),
+				} as CountlessStat,
+			};
+			console.log("save", message);
+		});
+
+		// name edit
+		elems.nameInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged(elems);
+		});
+
+		// stepEq edit
+		elems.stepEqInput.addInputListener(() => {
+			this.showSaveButtonIfChanged(elems);
+		});
+	}
+
+	showSaveButtonIfChanged(elems: EditStatElemets) {
+		const changed =
+			!(
+				elems.nameInput.value == this.stat.name &&
+				elems.stepEqInput.getValue() == this.stat.stepEquivalent
+			) || this.stat.name == "";
+
+		setVisibility(elems.saveButton, changed);
+		setVisibility(elems.deleteButton, !changed);
 	}
 }
 
 class StatsManager {
 	stats: PageStat[];
+	newStat: PageStat | null;
 
 	constructor() {
 		this.stats = [];
+		this.newStat = null;
+	}
+
+	renderPageStat(pageStat: PageStat) {
+		if (pageStat.statElem) {
+			statsElem.insertBefore(pageStat.statElem, statsElem.firstChild);
+		}
+
+		if (pageStat.editStatElem) {
+			statsElem.insertBefore(pageStat.editStatElem, statsElem.firstChild);
+		}
 	}
 
 	renderStats(stats: Stat[], editRight: boolean) {
-		if (!stats) return;
+		if (editRight) {
+			const stat = { name: "", count: 0, stepEquivalent: 0 } as Stat;
 
+			this.newStat = new PageStat(stat, editRight);
+			this.renderPageStat(this.newStat);
+
+			setVisibility(this.newStat.statElem, false);
+		}
+
+		if (!stats) return;
 		for (const stat of stats) {
 			const pageStat = new PageStat(stat, editRight);
 			this.stats.push(pageStat);
-
-			if (pageStat.statElem) {
-				statsElem.insertBefore(pageStat.statElem, statsElem.firstChild);
-			}
-
-			if (pageStat.editStatElem) {
-				statsElem.insertBefore(
-					pageStat.editStatElem,
-					statsElem.firstChild
-				);
-			}
+			this.renderPageStat(pageStat);
 		}
 	}
 
 	setEditMode(mode: boolean) {
+		if (this.newStat) {
+			setVisibility(this.newStat.editStatElem, mode);
+		}
+
 		for (const stat of this.stats) {
 			setVisibility(stat.statElem, !mode);
 			setVisibility(stat.editStatElem, mode);

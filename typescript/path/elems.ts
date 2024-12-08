@@ -8,8 +8,8 @@ const pathNameInput = document.getElementById("path-name") as HTMLInputElement;
 const pathPublicButton = document.getElementById(
 	"path-public"
 ) as HTMLDivElement;
-const saveButton = document.getElementById("save") as HTMLDivElement;
-const deleteButton = document.getElementById("delete") as HTMLDivElement;
+const pathSaveButton = document.getElementById("save") as HTMLDivElement;
+const pathDeleteButton = document.getElementById("delete") as HTMLDivElement;
 
 // stats
 const statsElem = document.getElementById("stats") as HTMLDivElement;

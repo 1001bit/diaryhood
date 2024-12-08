@@ -80,7 +80,7 @@ func SampleEditStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-edit-stat\"><h3><input type=\"text\" placeholder=\"name\" class=\"stat-name-input no-padding\"></h3><div class=\"number-input-box stat-stepeq-input\"><a class=\"minus\">-</a><p class=\"tiny\"><input type=\"text\" placeholder=\"= steps\" class=\"no-padding\"></p><a class=\"plus\">+</a></div><a class=\"save-stat-button hidden\">save</a> <a class=\"delete-stat-button hidden\">delete</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden edit-stat\" id=\"sample-edit-stat\"><h3><input type=\"text\" placeholder=\"name\" class=\"stat-name-input no-padding\" maxlength=\"31\"></h3><div class=\"number-input-box stat-stepeq-input\"><a class=\"minus\">-</a><p class=\"tiny\"><input type=\"text\" placeholder=\"= steps\" class=\"no-padding\"></p><a class=\"plus\">+</a></div><a class=\"save-stat-button hidden\">save</a> <a class=\"delete-stat-button hidden\">delete</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
