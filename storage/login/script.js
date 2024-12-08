@@ -12,8 +12,8 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-refreshIfNotAuthNd().then((res) => {
-    if (res) {
+refreshIfNotAuthNd().then((authd) => {
+    if (authd) {
         location.replace("/");
     }
 });

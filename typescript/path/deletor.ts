@@ -18,16 +18,14 @@ class PathDeletor {
 				return;
 			}
 
-			refreshIfNotAuthNd().then((_res) => {
-				this.deletePath().then((err) => {
-					if (err != "") {
-						pathDeleteButton.innerText = err;
-						setBorderColor(pathDeleteButton, "err");
-						return;
-					}
+			this.deletePath().then((err) => {
+				if (err != "") {
+					pathDeleteButton.innerText = err;
+					setBorderColor(pathDeleteButton, "err");
+					return;
+				}
 
-					window.location.replace("/user");
-				});
+				window.location.replace("/user");
 			});
 		});
 
@@ -54,7 +52,12 @@ class PathDeletor {
 				case 200:
 					return "";
 				case 401:
-					return "unauthorized";
+					return refreshIfNotAuthNd().then((authd) => {
+						if (authd) {
+							return this.deletePath();
+						}
+						return "unauthorized";
+					});
 				default:
 					return "error";
 			}

@@ -58,15 +58,13 @@ class PathEditor {
 			return;
 		}
 
-		refreshIfNotAuthNd().then((_res) => {
-			this.postNewData().then((err) => {
-				if (err != "") {
-					pathSaveButton.innerText = err;
-					setBorderColor(pathNameInput, "err");
-					return;
-				}
-				this.showSaveButtonIfChanged();
-			});
+		this.postNewData().then((err) => {
+			if (err != "") {
+				pathSaveButton.innerText = err;
+				setBorderColor(pathNameInput, "err");
+				return;
+			}
+			this.showSaveButtonIfChanged();
 		});
 	}
 
@@ -95,7 +93,12 @@ class PathEditor {
 				case 409:
 					return "path already exists";
 				case 401:
-					return "unauthorized";
+					return refreshIfNotAuthNd().then((authd) => {
+						if (authd) {
+							return this.postNewData();
+						}
+						return "unauthorized";
+					});
 				default:
 					return "error";
 			}

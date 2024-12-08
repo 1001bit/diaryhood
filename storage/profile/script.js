@@ -74,6 +74,13 @@ function postNewName(name) {
                     return "no special characters";
                 case 409:
                     return "name already taken";
+                case 401:
+                    return refreshIfNotAuthNd().then((authd) => {
+                        if (authd) {
+                            return postNewName(name);
+                        }
+                        return "unauthorized";
+                    });
                 default:
                     return "error";
             }
@@ -85,24 +92,20 @@ function save() {
         setBorderColor(nameInputElem, "err");
         return;
     }
-    refreshIfNotAuthNd().then((_res) => {
-        postNewName(nameInputElem.value).then((err) => {
-            if (err != "") {
-                changeNameElem.innerText = err;
-                setBorderColor(nameInputElem, "err");
-            }
-        });
+    postNewName(nameInputElem.value).then((err) => {
+        if (err != "") {
+            changeNameElem.innerText = err;
+            setBorderColor(nameInputElem, "err");
+        }
     });
 }
 removeBorderColorOnFocus(pathNameInputElem);
 createPathButton.addEventListener("click", () => {
-    refreshIfNotAuthNd().then((_res) => {
-        createNewPath().then((err) => {
-            if (err != "") {
-                createPathButton.innerText = err;
-                setBorderColor(pathNameInputElem, "err");
-            }
-        });
+    createNewPath().then((err) => {
+        if (err != "") {
+            createPathButton.innerText = err;
+            setBorderColor(pathNameInputElem, "err");
+        }
     });
 });
 pathNameInputElem.addEventListener("input", () => {
@@ -135,7 +138,12 @@ function createNewPath() {
                 case 409:
                     return "path already exists";
                 case 401:
-                    return "unauthorized";
+                    return refreshIfNotAuthNd().then((authd) => {
+                        if (authd) {
+                            return createNewPath();
+                        }
+                        return "unauthorized";
+                    });
                 default:
                     return "error";
             }

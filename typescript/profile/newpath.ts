@@ -2,13 +2,11 @@
 removeBorderColorOnFocus(pathNameInputElem);
 
 createPathButton.addEventListener("click", () => {
-	refreshIfNotAuthNd().then((_res) => {
-		createNewPath().then((err) => {
-			if (err != "") {
-				createPathButton.innerText = err;
-				setBorderColor(pathNameInputElem, "err");
-			}
-		});
+	createNewPath().then((err) => {
+		if (err != "") {
+			createPathButton.innerText = err;
+			setBorderColor(pathNameInputElem, "err");
+		}
 	});
 });
 
@@ -43,7 +41,12 @@ async function createNewPath(): Promise<string> {
 			case 409:
 				return "path already exists";
 			case 401:
-				return "unauthorized";
+				return refreshIfNotAuthNd().then((authd) => {
+					if (authd) {
+						return createNewPath();
+					}
+					return "unauthorized";
+				});
 			default:
 				return "error";
 		}

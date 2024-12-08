@@ -10,8 +10,8 @@ const loginButton = document.getElementById(
 const loginInfo = document.getElementById("login-info") as HTMLParagraphElement;
 
 // move to home page is refresh token is ok
-refreshIfNotAuthNd().then((res) => {
-	if (res) {
+refreshIfNotAuthNd().then((authd) => {
+	if (authd) {
 		location.replace("/");
 	}
 });

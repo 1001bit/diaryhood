@@ -63,6 +63,13 @@ async function postNewName(name: string): Promise<string> {
 				return "no special characters";
 			case 409:
 				return "name already taken";
+			case 401:
+				return refreshIfNotAuthNd().then((authd) => {
+					if (authd) {
+						return postNewName(name);
+					}
+					return "unauthorized";
+				});
 			default:
 				return "error";
 		}
@@ -76,12 +83,10 @@ function save() {
 		return;
 	}
 
-	refreshIfNotAuthNd().then((_res) => {
-		postNewName(nameInputElem.value).then((err) => {
-			if (err != "") {
-				changeNameElem.innerText = err;
-				setBorderColor(nameInputElem, "err");
-			}
-		});
+	postNewName(nameInputElem.value).then((err) => {
+		if (err != "") {
+			changeNameElem.innerText = err;
+			setBorderColor(nameInputElem, "err");
+		}
 	});
 }
