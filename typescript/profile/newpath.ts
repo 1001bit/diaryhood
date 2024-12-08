@@ -41,7 +41,7 @@ async function createNewPath(): Promise<string> {
 			case 409:
 				return "path already exists";
 			case 401:
-				return refreshIfNotAuthNd().then((authd) => {
+				return refresh().then((authd) => {
 					if (authd) {
 						return createNewPath();
 					}

@@ -35,7 +35,7 @@ class Path {
 	}
 
 	fetchPath() {
-		refreshIfNotAuthNd().then((_res) => {
+		checkAuthAndRefresh().then((_res) => {
 			fetch(`/api/path/${this.id}`, {
 				method: "GET",
 			}).then((res) => {

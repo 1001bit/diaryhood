@@ -66,6 +66,6 @@ function fetchAndRenderPaths() {
 	});
 }
 
-refreshIfNotAuthNd().then((_res) => {
+checkAuthAndRefresh().then((_res) => {
 	fetchAndRenderPaths();
 });

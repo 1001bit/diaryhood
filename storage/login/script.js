@@ -12,7 +12,7 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-refreshIfNotAuthNd().then((authd) => {
+checkAuthAndRefresh().then((authd) => {
     if (authd) {
         location.replace("/");
     }
@@ -116,7 +116,7 @@ function removeBorderColorOnFocus(elem) {
         elem.style.borderColor = "";
     });
 }
-function refreshIfNotAuthNd() {
+function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {
             method: "GET",
@@ -132,6 +132,18 @@ function refreshIfNotAuthNd() {
                 });
             }
             return true;
+        });
+    });
+}
+function refresh() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("/auth/refresh", {
+            method: "GET",
+        }).then((res) => {
+            if (res.status == 200) {
+                return true;
+            }
+            return false;
         });
     });
 }

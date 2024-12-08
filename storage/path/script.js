@@ -50,7 +50,7 @@ class PathDeletor {
                     case 200:
                         return "";
                     case 401:
-                        return refreshIfNotAuthNd().then((authd) => {
+                        return refresh().then((authd) => {
                             if (authd) {
                                 return this.deletePath();
                             }
@@ -148,7 +148,7 @@ class PathEditor {
                     case 409:
                         return "path already exists";
                     case 401:
-                        return refreshIfNotAuthNd().then((authd) => {
+                        return refresh().then((authd) => {
                             if (authd) {
                                 return this.postNewData();
                             }
@@ -292,7 +292,7 @@ class Path {
         }
     }
     fetchPath() {
-        refreshIfNotAuthNd().then((_res) => {
+        checkAuthAndRefresh().then((_res) => {
             fetch(`/api/path/${this.id}`, {
                 method: "GET",
             }).then((res) => {
@@ -376,7 +376,7 @@ class NumberInput {
         this.callback = callback;
     }
 }
-function refreshIfNotAuthNd() {
+function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {
             method: "GET",
@@ -392,6 +392,18 @@ function refreshIfNotAuthNd() {
                 });
             }
             return true;
+        });
+    });
+}
+function refresh() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return fetch("/auth/refresh", {
+            method: "GET",
+        }).then((res) => {
+            if (res.status == 200) {
+                return true;
+            }
+            return false;
         });
     });
 }

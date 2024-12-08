@@ -52,7 +52,7 @@ class PathDeletor {
 				case 200:
 					return "";
 				case 401:
-					return refreshIfNotAuthNd().then((authd) => {
+					return refresh().then((authd) => {
 						if (authd) {
 							return this.deletePath();
 						}

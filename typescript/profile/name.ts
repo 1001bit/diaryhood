@@ -64,7 +64,7 @@ async function postNewName(name: string): Promise<string> {
 			case 409:
 				return "name already taken";
 			case 401:
-				return refreshIfNotAuthNd().then((authd) => {
+				return refresh().then((authd) => {
 					if (authd) {
 						return postNewName(name);
 					}
