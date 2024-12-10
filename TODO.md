@@ -68,8 +68,9 @@
     [X] Path deletion
     [ ] Path updating
         [X] Path data update
-        [ ] Stats update
-        [ ] Stats delete
+        [X] Stats update
+        [X] Stats delete
+        [ ] Stats create
 
 [ ] Path page
     [ ] Path view
@@ -78,7 +79,8 @@
     [ ] Edit mode
         [X] Path deletion
         [X] Path data update
-        [ ] Stats updating
-        [ ] Stats deletion
+        [X] Stats updating
+        [X] Stats deletion
+        [ ] Stats create
 
 [ ] Home page

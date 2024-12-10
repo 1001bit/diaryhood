@@ -40,7 +40,7 @@ templ Profile(name, date string, profileOwner bool) {
 
 templ CreatePath(hidden bool) {
 	<div id="path-create-box" class={ "box", templ.KV("hidden", hidden) }>
-		<h3><input type="text" id="path-name-input" class="no-padding" placeholder="name"/></h3>
+		<h3><input type="text" id="path-name-input" class="no-padding" placeholder="name" maxlength="31"/></h3>
 		<div class="line-separator"></div>
 		<a id="create-path">create</a>
 	</div>

@@ -12,12 +12,7 @@ import (
 	"github.com/lib/pq"
 )
 
-type CreateStatRequest struct {
-	Name   string `json:"name"`
-	StepEq int32  `json:"stepEq"`
-}
-
-func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 	userId := "0"
 	if claims, ok := accesstoken.GetClaimsFromContext(r.Context()); !ok {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -26,7 +21,10 @@ func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
 		userId = claims.Id
 	}
 
-	req := &CreateStatRequest{}
+	pathId := r.PathValue("id")
+	statName := r.PathValue("stat")
+
+	req := &pathmodel.Stat{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -38,11 +36,7 @@ func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.pathstore.CreateStat(r.Context(), pathmodel.Stat{
-		Name:           req.Name,
-		Count:          0,
-		StepEquivalent: req.StepEq,
-	}, r.PathValue("id"), userId)
+	err = h.pathstore.UpdateStat(r.Context(), pathId, statName, req, userId)
 
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)

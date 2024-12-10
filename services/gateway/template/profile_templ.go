@@ -181,7 +181,7 @@ func CreatePath(hidden bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3><input type=\"text\" id=\"path-name-input\" class=\"no-padding\" placeholder=\"name\"></h3><div class=\"line-separator\"></div><a id=\"create-path\">create</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h3><input type=\"text\" id=\"path-name-input\" class=\"no-padding\" placeholder=\"name\" maxlength=\"31\"></h3><div class=\"line-separator\"></div><a id=\"create-path\">create</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

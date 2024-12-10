@@ -30,7 +30,7 @@ class StatsManager {
 
 		for (const stat of stats) {
 			const pageStat = new Stat(stat, editRight, this.pathId);
-			pageStat.setDeleteCallback(() => {
+			pageStat.deletor.setDeleteCallback(() => {
 				this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
 			});
 

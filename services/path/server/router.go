@@ -27,7 +27,8 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Put("/{id}", handler.HandleUpdatePath)
 		r.Delete("/{id}", handler.HandleDeletePath)
 
-		r.Post("/{id}", handler.HandleCreateStat)
+		r.Delete("/{id}/stat/{stat}", handler.HandleDeleteStat)
+		r.Put("/{id}/stat/{stat}", handler.HandleUpdateStat)
 	})
 
 	return r

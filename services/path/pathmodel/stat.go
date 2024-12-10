@@ -2,7 +2,6 @@ package pathmodel
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/lib/pq"
 )
@@ -13,46 +12,33 @@ type Stat struct {
 	StepEquivalent int32  `json:"stepEquivalent"`
 }
 
-func (ps *PathStore) CreateStat(ctx context.Context, stat Stat, pathId string, askerId string) error {
+func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, stat *Stat, askerId string) error {
 	_, err := ps.postgresC.ExecContext(ctx, `
-		INSERT INTO stats (path_id, name, count, step_equivalent)
-		SELECT $1, $2, $3, $4
-		WHERE EXISTS (
+		UPDATE stats
+		SET name = $1, step_equivalent = $2
+		WHERE path_id = $3 AND name = $4
+		AND EXISTS (
 			SELECT 1 
 			FROM paths 
-			WHERE id = $1 AND user_id = $5
-		);
-	`, pathId, stat.Name, stat.Count, stat.StepEquivalent, askerId)
+			WHERE id = $3 AND user_id = $5
+		)
+	`, stat.Name, stat.StepEquivalent, pathId, statName, askerId)
 
 	return err
 }
 
-func (ps *PathStore) DeleteStats(ctx context.Context, pathId int32, names []string) error {
-	if len(names) == 0 {
-		return nil
-	}
+func (ps *PathStore) DeleteStat(ctx context.Context, pathId string, name string, askerId string) error {
+	_, err := ps.postgresC.ExecContext(ctx, `
+		DELETE FROM stats
+		WHERE path_id = $1 AND name = $2
+		AND EXISTS (
+			SELECT 1 
+			FROM paths 
+			WHERE id = $1 AND user_id = $3
+		)
+	`, pathId, name, askerId)
 
-	// Start transaction
-	tx, err := ps.postgresC.BeginTx(ctx)
-	if err != nil {
-		return err
-	}
-
-	for _, name := range names {
-		_, err = tx.ExecContext(ctx, `
-			DELETE FROM stats
-			WHERE path_id = $1 AND name = $2
-		`, pathId, name)
-
-		if err != nil {
-			if rollbackErr := tx.Rollback(); rollbackErr != nil {
-				slog.With("err", rollbackErr).Error("Failed to rollback")
-			}
-			return err
-		}
-	}
-
-	return tx.Commit()
+	return err
 }
 
 func (ps *PathStore) GetStats(ctx context.Context, pathId int32) ([]Stat, error) {

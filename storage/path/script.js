@@ -185,7 +185,7 @@ class StatsManager {
         }
         for (const stat of stats) {
             const pageStat = new Stat(stat, editRight, this.pathId);
-            pageStat.setDeleteCallback(() => {
+            pageStat.deletor.setDeleteCallback(() => {
                 this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
             });
             this.pageStats.push(pageStat);
@@ -255,21 +255,110 @@ function cancelEdit() {
     editButton.innerText = "edit";
     setVisibility(pathDataElem, false);
 }
-class Stat {
-    constructor(stat, editRight, pathId) {
-        this.pathId = pathId;
-        this.stat = stat;
-        this.statElem = this.newStatElem(this.stat);
-        this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
+class StatDeletor {
+    constructor(pathId, name) {
         this.deleteCallback = () => { };
+        this.pathId = pathId;
+        this.name = name;
+        this.askedIfSure = false;
     }
     setDeleteCallback(callback) {
         this.deleteCallback = callback;
     }
+    delete() {
+        if (!this.askedIfSure) {
+            this.askedIfSure = true;
+            return Promise.resolve("sure?");
+        }
+        return this.postDelete().then((message) => {
+            if (message == "") {
+                this.deleteCallback();
+            }
+            return message;
+        });
+    }
+    postDelete() {
+        return fetch(`/api/path/${this.pathId}/stat/${this.name}`, {
+            method: "DELETE",
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    return "";
+                case 401:
+                    return refresh().then((authd) => {
+                        if (authd) {
+                            return this.postDelete();
+                        }
+                        return "unauthorized";
+                    });
+                default:
+                    return "error";
+            }
+        });
+    }
+}
+class StatUpdater {
+    constructor(name, pathId) {
+        this.name = name;
+        this.pathId = pathId;
+    }
+    save(newName, newStepEq) {
+        if (newName == "") {
+            return Promise.resolve("no name");
+        }
+        if (Number.isNaN(newStepEq)) {
+            return Promise.resolve("no step eq.");
+        }
+        return this.postSave({
+            name: newName,
+            stepEquivalent: newStepEq,
+        }).then((message) => {
+            if (message == "") {
+                this.name = newName;
+            }
+            return message;
+        });
+    }
+    postSave(newStat) {
+        return fetch(`/api/path/${this.pathId}/stat/${this.name}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newStat),
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    return "";
+                case 400:
+                    return "special characters";
+                case 409:
+                    return "already exists";
+                case 401:
+                    return refresh().then((authd) => {
+                        if (authd) {
+                            return this.postSave(newStat);
+                        }
+                        return "unauthorized";
+                    });
+                default:
+                    return "error";
+            }
+        });
+    }
+}
+class Stat {
+    constructor(stat, editRight, pathId) {
+        this.stat = stat;
+        this.statElem = this.newStatElem(this.stat);
+        this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
+        this.deletor = new StatDeletor(pathId, stat.name);
+        this.updater = new StatUpdater(stat.name, pathId);
+    }
     newStatElem(stat) {
         const statElem = sampleStatElem.cloneNode(true);
         statElem.removeAttribute("id");
-        setVisibility(this.statElem, true);
+        setVisibility(statElem, true);
         const statNameElem = statElem.getElementsByClassName("stat-name")[0];
         const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
         const countInput = new NumberInput(statElem.getElementsByClassName("stat-count-input")[0]);
@@ -306,10 +395,27 @@ class Stat {
             this.showSaveButtonIfChanged(elems);
         });
         elems.deleteButton.addEventListener("click", () => {
-            this.delete(elems);
+            this.deletor.delete().then((message) => {
+                var _a;
+                if (message == "") {
+                    this.statElem.remove();
+                    (_a = this.editStatElem) === null || _a === void 0 ? void 0 : _a.remove();
+                    return;
+                }
+                elems.deleteButton.innerText = message;
+            });
         });
         elems.saveButton.addEventListener("click", () => {
-            this.save(elems);
+            this.updater
+                .save(elems.nameInput.value, elems.stepEqInput.getValue())
+                .then((message) => {
+                if (message == "") {
+                    this.stat.name = elems.nameInput.value;
+                    this.stat.stepEquivalent = elems.stepEqInput.getValue();
+                    this.updateStat(this.stat);
+                    this.showSaveButtonIfChanged(elems);
+                }
+            });
         });
         elems.nameInput.addEventListener("input", () => {
             this.showSaveButtonIfChanged(elems);
@@ -319,6 +425,13 @@ class Stat {
             removeBorderColor(elems.stepEqInput.getInputElem());
         });
     }
+    updateStat(newStat) {
+        this.stat = newStat;
+        const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
+        const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
+        statNameElem.innerText = this.stat.name;
+        statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
+    }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
             elems.stepEqInput.getValue() == this.stat.stepEquivalent);
@@ -326,98 +439,6 @@ class Stat {
         elems.deleteButton.innerText = "delete";
         setVisibility(elems.saveButton, changed);
         setVisibility(elems.deleteButton, !changed);
-    }
-    save(elems) {
-        const newStat = {
-            name: elems.nameInput.value,
-            stepEquivalent: elems.stepEqInput.getValue(),
-        };
-        if (newStat.name == "") {
-            setBorderColor(elems.nameInput, "err");
-            elems.saveButton.innerText = "no name";
-            return;
-        }
-        if (elems.stepEqInput.getInputElem().value == "") {
-            setBorderColor(elems.stepEqInput.getInputElem(), "err");
-            elems.saveButton.innerText = "no step eq.";
-            return;
-        }
-        this.postSave(newStat).then((message) => {
-            if (message == "") {
-                this.stat.name = newStat.name;
-                this.stat.stepEquivalent = newStat.stepEquivalent;
-                this.showSaveButtonIfChanged(elems);
-                return;
-            }
-            setBorderColor(elems.nameInput, "err");
-            elems.saveButton.innerText = message;
-        });
-    }
-    postSave(newStat) {
-        const message = {
-            name: this.stat.name,
-            stat: newStat,
-        };
-        return fetch("/api/path/" + this.pathId + "/stat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(message),
-        }).then((res) => {
-            switch (res.status) {
-                case 200:
-                    return "";
-                case 401:
-                    return refresh().then((authd) => {
-                        if (authd) {
-                            return this.postSave(newStat);
-                        }
-                        return "unauthorized";
-                    });
-                case 400:
-                    return "special characters";
-                default:
-                    return "error";
-            }
-        });
-    }
-    delete(elems) {
-        this.postDelete().then((message) => {
-            if (message == "" && this.statElem && this.editStatElem) {
-                this.statElem.remove();
-                this.editStatElem.remove();
-                this.deleteCallback();
-                return;
-            }
-            elems.deleteButton.innerText = message;
-        });
-    }
-    postDelete() {
-        const message = {
-            name: this.stat.name,
-        };
-        return fetch("/api/path/" + this.pathId + "/stat", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(message),
-        }).then((res) => {
-            switch (res.status) {
-                case 200:
-                    return "";
-                case 401:
-                    return refresh().then((authd) => {
-                        if (authd) {
-                            return this.postDelete();
-                        }
-                        return "unauthorized";
-                    });
-                default:
-                    return "error";
-            }
-        });
     }
 }
 function setBorderColor(elem, colorVar) {
