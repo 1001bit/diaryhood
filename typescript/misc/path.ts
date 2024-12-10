@@ -1,17 +1,17 @@
-interface Stat {
+interface StatInterface {
 	name: string;
 	count: number;
 	stepEquivalent: number;
 }
 
-interface CountlessStat {
+interface CountlessStatInterface {
 	name: string;
 	stepEquivalent: number;
 }
 
-interface Path {
+interface PathInterface {
 	id: string;
 	name: string;
 	public: boolean;
-	stats: Stat[];
+	stats: StatInterface[];
 }

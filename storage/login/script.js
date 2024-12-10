@@ -116,6 +116,12 @@ function removeBorderColorOnFocus(elem) {
         elem.style.borderColor = "";
     });
 }
+function removeBorderColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.borderColor = "";
+}
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {

@@ -33,7 +33,7 @@ class NumberInput {
 		});
 
 		this.inputElem.addEventListener("input", () => {
-			this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+			this.inputElem.value = this.inputElem.value.replace(/[^0-9-]/g, "");
 
 			this.callback(Number(this.inputElem.value));
 		});
@@ -45,6 +45,10 @@ class NumberInput {
 
 	getValue() {
 		return Number(this.inputElem.value);
+	}
+
+	getInputElem() {
+		return this.inputElem;
 	}
 
 	addInputListener(callback: (num: number) => void) {

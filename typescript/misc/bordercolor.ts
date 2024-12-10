@@ -14,3 +14,10 @@ function removeBorderColorOnFocus(elem: HTMLElement | null) {
 		elem.style.borderColor = "";
 	});
 }
+
+function removeBorderColor(elem: HTMLElement | null) {
+	if (!elem) {
+		return;
+	}
+	elem.style.borderColor = "";
+}

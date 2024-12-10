@@ -163,16 +163,16 @@ function countSteps(stats) {
     userStepsElem.innerText = `${userSteps} steps`;
     return count;
 }
-function newPathElem(Path) {
+function newPathElem(path) {
     const pathElem = samplePathElem.cloneNode(true);
     pathElem.removeAttribute("id");
     setVisibility(pathElem, true);
     const pathNameElem = pathElem.getElementsByClassName("path-name")[0];
     const pathLinkElem = pathElem.getElementsByClassName("path-link")[0];
     const pathStepsElem = pathElem.getElementsByClassName("path-steps")[0];
-    pathNameElem.innerText = Path.name;
-    pathLinkElem.href = `/path/${Path.id}`;
-    pathStepsElem.innerText = `${countSteps(Path.stats)} steps`;
+    pathNameElem.innerText = path.name;
+    pathLinkElem.href = `/path/${path.id}`;
+    pathStepsElem.innerText = `${countSteps(path.stats)} steps`;
     return pathElem;
 }
 function renderPaths(paths) {
@@ -212,6 +212,12 @@ function removeBorderColorOnFocus(elem) {
         elem.style.borderColor = "";
     });
 }
+function removeBorderColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.borderColor = "";
+}
 class NumberInput {
     constructor(elem) {
         this.inputElem = elem.getElementsByTagName("input")[0];
@@ -230,7 +236,7 @@ class NumberInput {
             this.callback(Number(this.inputElem.value));
         });
         this.inputElem.addEventListener("input", () => {
-            this.inputElem.value = this.inputElem.value.replace(/[^0-9]/g, "");
+            this.inputElem.value = this.inputElem.value.replace(/[^0-9-]/g, "");
             this.callback(Number(this.inputElem.value));
         });
     }
@@ -239,6 +245,9 @@ class NumberInput {
     }
     getValue() {
         return Number(this.inputElem.value);
+    }
+    getInputElem() {
+        return this.inputElem;
     }
     addInputListener(callback) {
         this.callback = callback;

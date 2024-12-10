@@ -92,10 +92,6 @@ main {
 	margin-top: 6px;
 }
 
-.edit-stat:nth-last-child(2) {
-	border-color: var(--acc1-dim);
-}
-
 /* number input */
 .number-input-box {
 	display: flex;

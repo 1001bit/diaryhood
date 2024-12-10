@@ -3,7 +3,7 @@
 /// <reference path="statsmanager.ts"/>
 
 interface PathResponse {
-	path: Path;
+	path: PathInterface;
 	editRight: boolean;
 }
 
@@ -18,14 +18,14 @@ class Path {
 		this.id = id;
 		this.name = "";
 		this.isPublic = false;
-		this.statsManager = new StatsManager();
+		this.statsManager = new StatsManager(id);
 
 		this.fetchPath();
 	}
 
 	handleFetchedData(data: PathResponse) {
 		setPageTitle(data.path.name);
-		this.statsManager.renderStats(data.path.stats, data.editRight);
+		this.statsManager.initStats(data.path.stats, data.editRight);
 
 		if (data.editRight) {
 			setVisibility(editButton, true);
