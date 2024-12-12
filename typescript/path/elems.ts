@@ -18,3 +18,11 @@ const sampleStatElem = document.getElementById("sample-stat") as HTMLDivElement;
 const sampleEditStatElem = document.getElementById(
 	"sample-edit-stat"
 ) as HTMLDivElement;
+// create stat
+const statCreateBoxElem = document.getElementById("stat-create");
+const createStatNameInput = document.getElementById(
+	"create-stat-name"
+) as HTMLInputElement;
+const createStatButton = document.getElementById(
+	"create-stat-button"
+) as HTMLDivElement;

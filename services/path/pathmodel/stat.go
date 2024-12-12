@@ -27,6 +27,21 @@ func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, st
 	return err
 }
 
+func (ps *PathStore) CreateStat(ctx context.Context, pathId string, name, askerId string) error {
+	_, err := ps.postgresC.ExecContext(ctx, `
+		WITH check_path AS (
+			SELECT 1 
+			FROM paths 
+			WHERE id = $1 AND user_id = $3
+		)
+		INSERT INTO stats (path_id, name)
+		SELECT $1, $2
+		FROM check_path;
+	`, pathId, name, askerId)
+
+	return err
+}
+
 func (ps *PathStore) DeleteStat(ctx context.Context, pathId string, name string, askerId string) error {
 	_, err := ps.postgresC.ExecContext(ctx, `
 		DELETE FROM stats

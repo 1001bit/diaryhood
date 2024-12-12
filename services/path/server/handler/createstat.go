@@ -5,14 +5,16 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"strconv"
 
-	"github.com/1001bit/pathgoer/services/path/pathmodel"
 	"github.com/1001bit/pathgoer/services/path/shared/accesstoken"
 	"github.com/lib/pq"
 )
 
-func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
+type CreateStatRequest struct {
+	Name string `json:"name"`
+}
+
+func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
 	userId := "0"
 	if claims, ok := accesstoken.GetClaimsFromContext(r.Context()); !ok {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -22,9 +24,8 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pathId := r.PathValue("id")
-	statName := r.PathValue("stat")
 
-	req := &pathmodel.Stat{}
+	req := &CreateStatRequest{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -36,7 +37,7 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.pathstore.UpdateStat(r.Context(), pathId, statName, req, userId)
+	err = h.pathstore.CreateStat(r.Context(), pathId, req.Name, userId)
 
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
@@ -51,9 +52,4 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-}
-
-func idValid(id string) bool {
-	_, err := strconv.Atoi(id)
-	return err == nil && id != ""
 }

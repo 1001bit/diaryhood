@@ -69,6 +69,7 @@ main {
 	width: fit-content;
 	justify-content: center;
 	align-items: center;
+	text-align: center;
 	overflow-wrap: break-word;
 }
 
@@ -87,9 +88,24 @@ main {
 
 /* edit stat */
 .delete-stat-button,
-.save-stat-button {
+.save-stat-button,
+#create-stat-button {
 	user-select: none;
 	margin-top: 6px;
+}
+
+/* create stat */
+#stat-create {
+	border-color: var(--acc1-dim);
+}
+
+#stat-create input {
+	border-color: var(--acc1-dim);
+}
+
+#stat-create input:hover,
+#stat-create input:focus {
+	border-color: var(--acc1);
 }
 
 /* number input */

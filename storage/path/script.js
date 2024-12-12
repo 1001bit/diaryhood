@@ -73,6 +73,9 @@ const pathDeleteButton = document.getElementById("delete");
 const statsElem = document.getElementById("stats");
 const sampleStatElem = document.getElementById("sample-stat");
 const sampleEditStatElem = document.getElementById("sample-edit-stat");
+const statCreateBoxElem = document.getElementById("stat-create");
+const createStatNameInput = document.getElementById("create-stat-name");
+const createStatButton = document.getElementById("create-stat-button");
 class PathEditor {
     constructor(path) {
         this.path = path;
@@ -161,99 +164,161 @@ class PathEditor {
         });
     }
 }
-class StatsManager {
-    constructor(pathId) {
-        this.pathId = pathId;
-        this.pageStats = [];
+class Stat {
+    constructor(stat, editRight, pathId) {
+        this.stat = stat;
+        this.statElem = this.newStatElem(this.stat);
+        this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
+        this.deletor = new StatDeletor(pathId, stat.name);
+        this.updater = new StatUpdater(stat.name, pathId);
     }
-    renderPageStat(pageStat) {
-        if (pageStat.statElem) {
-            statsElem.appendChild(pageStat.statElem);
-        }
-        if (pageStat.editStatElem) {
-            statsElem.appendChild(pageStat.editStatElem);
-        }
+    newStatElem(stat) {
+        const statElem = sampleStatElem.cloneNode(true);
+        statElem.removeAttribute("id");
+        setVisibility(statElem, true);
+        const statNameElem = statElem.getElementsByClassName("stat-name")[0];
+        const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
+        const countInput = new NumberInput(statElem.getElementsByClassName("stat-count-input")[0]);
+        statNameElem.innerText = stat.name;
+        statStepEqElem.innerText =
+            "= " + stat.stepEquivalent.toString() + " steps";
+        countInput.setValue(stat.count);
+        return statElem;
     }
-    renderStats() {
-        for (const pageStat of this.pageStats) {
-            this.renderPageStat(pageStat);
-        }
+    newEditStatElem(stat) {
+        const editStatElem = sampleEditStatElem.cloneNode(true);
+        editStatElem.removeAttribute("id");
+        const deleteButton = editStatElem.getElementsByClassName("delete-stat-button")[0];
+        const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
+        const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
+        const stepEqInput = new NumberInput(editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
+        nameInput.value = stat.name;
+        stepEqInput.setValue(stat.stepEquivalent);
+        const elems = {
+            deleteButton,
+            saveButton,
+            nameInput,
+            stepEqInput,
+        };
+        this.initEditEvents(elems);
+        return editStatElem;
     }
-    initStats(stats, editRight) {
-        if (!stats) {
-            return;
-        }
-        for (const stat of stats) {
-            const pageStat = new Stat(stat, editRight, this.pathId);
-            pageStat.deletor.setDeleteCallback(() => {
-                this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
+    initEditEvents(elems) {
+        removeBorderColorOnFocus(elems.nameInput);
+        removeBorderColorOnFocus(elems.stepEqInput.getInputElem());
+        editButton.addEventListener("click", () => {
+            elems.nameInput.value = this.stat.name;
+            elems.stepEqInput.setValue(this.stat.stepEquivalent);
+            this.showSaveButtonIfChanged(elems);
+        });
+        elems.deleteButton.addEventListener("click", () => {
+            this.deletor.delete().then((message) => {
+                var _a;
+                if (message == "") {
+                    this.statElem.remove();
+                    (_a = this.editStatElem) === null || _a === void 0 ? void 0 : _a.remove();
+                    return;
+                }
+                elems.deleteButton.innerText = message;
             });
-            this.pageStats.push(pageStat);
-        }
-        this.renderStats();
-    }
-    setEditMode(mode) {
-        for (const stat of this.pageStats) {
-            setVisibility(stat.statElem, !mode);
-            setVisibility(stat.editStatElem, mode);
-        }
-    }
-}
-class Path {
-    constructor(id) {
-        this.id = id;
-        this.name = "";
-        this.isPublic = false;
-        this.statsManager = new StatsManager(id);
-        this.fetchPath();
-    }
-    handleFetchedData(data) {
-        setPageTitle(data.path.name);
-        this.statsManager.initStats(data.path.stats, data.editRight);
-        if (data.editRight) {
-            setVisibility(editButton, true);
-            this.isPublic = data.path.public;
-            this.name = data.path.name;
-        }
-    }
-    fetchPath() {
-        checkAuthAndRefresh().then((_res) => {
-            fetch(`/api/path/${this.id}`, {
-                method: "GET",
-            }).then((res) => {
-                switch (res.status) {
-                    case 200:
-                        res.json().then((res) => {
-                            this.handleFetchedData(res);
-                        });
-                        break;
-                    case 404:
-                        window.location.replace("/404");
-                        break;
-                    default:
-                        break;
+        });
+        elems.saveButton.addEventListener("click", () => {
+            this.updater
+                .save(elems.nameInput.value, elems.stepEqInput.getValue())
+                .then((message) => {
+                if (message == "") {
+                    this.stat.name = elems.nameInput.value;
+                    this.stat.stepEquivalent = elems.stepEqInput.getValue();
+                    this.updateStat(this.stat);
+                    this.showSaveButtonIfChanged(elems);
                 }
             });
         });
+        elems.nameInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged(elems);
+        });
+        elems.stepEqInput.addInputListener(() => {
+            this.showSaveButtonIfChanged(elems);
+            removeBorderColor(elems.stepEqInput.getInputElem());
+        });
+        this.showSaveButtonIfChanged(elems);
+    }
+    updateStat(newStat) {
+        this.stat = newStat;
+        const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
+        const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
+        statNameElem.innerText = this.stat.name;
+        statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
+    }
+    showSaveButtonIfChanged(elems) {
+        const changed = !(elems.nameInput.value == this.stat.name &&
+            elems.stepEqInput.getValue() == this.stat.stepEquivalent);
+        elems.saveButton.innerText = "save";
+        elems.deleteButton.innerText = "delete";
+        setVisibility(elems.saveButton, changed);
+        setVisibility(elems.deleteButton, !changed);
     }
 }
-const path = new Path(window.location.pathname.split("/").pop() || "0");
-const deletor = new PathDeletor(path.id);
-const editor = new PathEditor(path);
-let editing = false;
-editButton.addEventListener("click", () => {
-    editing ? cancelEdit() : startEdit();
-    path.statsManager.setEditMode(editing);
-});
-function startEdit() {
-    editing = true;
-    editButton.innerText = "cancel";
-    setVisibility(pathDataElem, true);
-}
-function cancelEdit() {
-    editing = false;
-    editButton.innerText = "edit";
-    setVisibility(pathDataElem, false);
+class StatCreator {
+    constructor(pathId) {
+        this.pathId = pathId;
+        this.createCallback = (_name) => { };
+        this.initEvents();
+    }
+    initEvents() {
+        createStatButton.addEventListener("click", () => {
+            this.create();
+        });
+        removeBorderColorOnFocus(createStatNameInput);
+        createStatNameInput.addEventListener("input", () => {
+            createStatButton.innerText = "create";
+        });
+    }
+    setCreateCallback(callback) {
+        this.createCallback = callback;
+    }
+    create() {
+        const name = createStatNameInput.value;
+        this.postCreate(name).then((message) => {
+            if (message == "") {
+                this.createCallback(name);
+                createStatNameInput.value = "";
+            }
+            else {
+                setBorderColor(createStatNameInput, "err");
+                createStatButton.innerText = message;
+            }
+        });
+    }
+    postCreate(name) {
+        return fetch(`/api/path/${this.pathId}/stat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name,
+            }),
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    return "";
+                case 400:
+                    return "special characters";
+                case 409:
+                    return "already exists";
+                case 401:
+                    return refresh().then((authd) => {
+                        if (authd) {
+                            return this.postCreate(name);
+                        }
+                        return "unauthorized";
+                    });
+                default:
+                    return "error";
+            }
+        });
+    }
 }
 class StatDeletor {
     constructor(pathId, name) {
@@ -347,99 +412,109 @@ class StatUpdater {
         });
     }
 }
-class Stat {
-    constructor(stat, editRight, pathId) {
-        this.stat = stat;
-        this.statElem = this.newStatElem(this.stat);
-        this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
-        this.deletor = new StatDeletor(pathId, stat.name);
-        this.updater = new StatUpdater(stat.name, pathId);
-    }
-    newStatElem(stat) {
-        const statElem = sampleStatElem.cloneNode(true);
-        statElem.removeAttribute("id");
-        setVisibility(statElem, true);
-        const statNameElem = statElem.getElementsByClassName("stat-name")[0];
-        const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
-        const countInput = new NumberInput(statElem.getElementsByClassName("stat-count-input")[0]);
-        statNameElem.innerText = stat.name;
-        statStepEqElem.innerText =
-            "= " + stat.stepEquivalent.toString() + " steps";
-        countInput.setValue(stat.count);
-        return statElem;
-    }
-    newEditStatElem(stat) {
-        const editStatElem = sampleEditStatElem.cloneNode(true);
-        editStatElem.removeAttribute("id");
-        const deleteButton = editStatElem.getElementsByClassName("delete-stat-button")[0];
-        const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
-        const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
-        const stepEqInput = new NumberInput(editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
-        nameInput.value = stat.name;
-        stepEqInput.setValue(stat.stepEquivalent);
-        const elems = {
-            deleteButton,
-            saveButton,
-            nameInput,
-            stepEqInput,
-        };
-        this.initEditEvents(elems);
-        return editStatElem;
-    }
-    initEditEvents(elems) {
-        removeBorderColorOnFocus(elems.nameInput);
-        removeBorderColorOnFocus(elems.stepEqInput.getInputElem());
-        editButton.addEventListener("click", () => {
-            elems.nameInput.value = this.stat.name;
-            elems.stepEqInput.setValue(this.stat.stepEquivalent);
-            this.showSaveButtonIfChanged(elems);
+class StatsManager {
+    constructor(pathId) {
+        this.pathId = pathId;
+        this.pageStats = [];
+        this.statCreator = new StatCreator(this.pathId);
+        this.statCreator.setCreateCallback((name) => {
+            const stat = {
+                name: name,
+                stepEquivalent: 1,
+                count: 0,
+            };
+            const pageStat = new Stat(stat, true, this.pathId);
+            pageStat.deletor.setDeleteCallback(() => {
+                this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
+            });
+            this.pageStats.push(pageStat);
+            this.renderPageStat(pageStat);
+            setVisibility(pageStat.statElem, false);
+            setVisibility(pageStat.editStatElem, true);
         });
-        elems.deleteButton.addEventListener("click", () => {
-            this.deletor.delete().then((message) => {
-                var _a;
-                if (message == "") {
-                    this.statElem.remove();
-                    (_a = this.editStatElem) === null || _a === void 0 ? void 0 : _a.remove();
-                    return;
+    }
+    renderPageStat(pageStat) {
+        statsElem.insertBefore(pageStat.statElem, statCreateBoxElem);
+        if (pageStat.editStatElem) {
+            statsElem.insertBefore(pageStat.editStatElem, statCreateBoxElem);
+        }
+    }
+    initStats(stats, editRight) {
+        if (!stats) {
+            return;
+        }
+        for (const stat of stats) {
+            const pageStat = new Stat(stat, editRight, this.pathId);
+            pageStat.deletor.setDeleteCallback(() => {
+                this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
+            });
+            this.pageStats.push(pageStat);
+            this.renderPageStat(pageStat);
+        }
+    }
+    setEditMode(mode) {
+        setVisibility(statCreateBoxElem, mode);
+        for (const stat of this.pageStats) {
+            setVisibility(stat.statElem, !mode);
+            setVisibility(stat.editStatElem, mode);
+        }
+    }
+}
+class Path {
+    constructor(id) {
+        this.id = id;
+        this.name = "";
+        this.isPublic = false;
+        this.statsManager = new StatsManager(id);
+        this.fetchPath();
+    }
+    handleFetchedData(data) {
+        setPageTitle(data.path.name);
+        this.statsManager.initStats(data.path.stats, data.editRight);
+        if (data.editRight) {
+            setVisibility(editButton, true);
+            this.isPublic = data.path.public;
+            this.name = data.path.name;
+        }
+    }
+    fetchPath() {
+        checkAuthAndRefresh().then((_res) => {
+            fetch(`/api/path/${this.id}`, {
+                method: "GET",
+            }).then((res) => {
+                switch (res.status) {
+                    case 200:
+                        res.json().then((res) => {
+                            this.handleFetchedData(res);
+                        });
+                        break;
+                    case 404:
+                        window.location.replace("/404");
+                        break;
+                    default:
+                        break;
                 }
-                elems.deleteButton.innerText = message;
             });
         });
-        elems.saveButton.addEventListener("click", () => {
-            this.updater
-                .save(elems.nameInput.value, elems.stepEqInput.getValue())
-                .then((message) => {
-                if (message == "") {
-                    this.stat.name = elems.nameInput.value;
-                    this.stat.stepEquivalent = elems.stepEqInput.getValue();
-                    this.updateStat(this.stat);
-                    this.showSaveButtonIfChanged(elems);
-                }
-            });
-        });
-        elems.nameInput.addEventListener("input", () => {
-            this.showSaveButtonIfChanged(elems);
-        });
-        elems.stepEqInput.addInputListener(() => {
-            this.showSaveButtonIfChanged(elems);
-            removeBorderColor(elems.stepEqInput.getInputElem());
-        });
     }
-    updateStat(newStat) {
-        this.stat = newStat;
-        const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
-        const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
-        statNameElem.innerText = this.stat.name;
-        statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
-    }
-    showSaveButtonIfChanged(elems) {
-        const changed = !(elems.nameInput.value == this.stat.name &&
-            elems.stepEqInput.getValue() == this.stat.stepEquivalent);
-        elems.saveButton.innerText = "save";
-        elems.deleteButton.innerText = "delete";
-        setVisibility(elems.saveButton, changed);
-        setVisibility(elems.deleteButton, !changed);
-    }
+}
+const path = new Path(window.location.pathname.split("/").pop() || "0");
+const deletor = new PathDeletor(path.id);
+const editor = new PathEditor(path);
+let editing = false;
+editButton.addEventListener("click", () => {
+    editing ? cancelEdit() : startEdit();
+    path.statsManager.setEditMode(editing);
+});
+function startEdit() {
+    editing = true;
+    editButton.innerText = "cancel";
+    setVisibility(pathDataElem, true);
+}
+function cancelEdit() {
+    editing = false;
+    editButton.innerText = "edit";
+    setVisibility(pathDataElem, false);
 }
 function setBorderColor(elem, colorVar) {
     if (!elem) {

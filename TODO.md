@@ -70,17 +70,21 @@
         [X] Path data update
         [X] Stats update
         [X] Stats delete
-        [ ] Stats create
+        [X] Stats create
+        [ ] Count update
+
+    [ ] Test
 
 [ ] Path page
     [ ] Path view
         [X] Stats
         [ ] Overall steps
-    [ ] Edit mode
+    [X] Edit mode
         [X] Path deletion
         [X] Path data update
         [X] Stats updating
         [X] Stats deletion
-        [ ] Stats create
+        [X] Stats create
+    [ ] Stats count update
 
 [ ] Home page
