@@ -1,5 +1,5 @@
-/// <reference path="deletor.ts"/>
-/// <reference path="editor.ts"/>
+/// <reference path="pathdeletor.ts"/>
+/// <reference path="patheditor.ts"/>
 /// <reference path="statsmanager.ts"/>
 
 interface PathResponse {

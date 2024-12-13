@@ -1,5 +1,5 @@
 /// <reference path="stat.ts" />
-/// <reference path="stateditors.ts" />
+/// <reference path="statcontrollers.ts" />
 
 class StatsManager {
 	pathId: string;

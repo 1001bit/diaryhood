@@ -8,6 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const editSectionElem = document.getElementById("edit-section");
+const pathDataElem = document.getElementById("path-data");
+const editButton = document.getElementById("edit");
+const pathNameInput = document.getElementById("path-name");
+const pathPublicButton = document.getElementById("path-public");
+const pathSaveButton = document.getElementById("save");
+const pathDeleteButton = document.getElementById("delete");
+const statsElem = document.getElementById("stats");
+const sampleStatElem = document.getElementById("sample-stat");
+const sampleEditStatElem = document.getElementById("sample-edit-stat");
+const statCreateBoxElem = document.getElementById("stat-create");
+const createStatNameInput = document.getElementById("create-stat-name");
+const createStatButton = document.getElementById("create-stat-button");
 class PathDeletor {
     constructor(pathId) {
         this.pathId = pathId;
@@ -63,19 +76,6 @@ class PathDeletor {
         });
     }
 }
-const editSectionElem = document.getElementById("edit-section");
-const pathDataElem = document.getElementById("path-data");
-const editButton = document.getElementById("edit");
-const pathNameInput = document.getElementById("path-name");
-const pathPublicButton = document.getElementById("path-public");
-const pathSaveButton = document.getElementById("save");
-const pathDeleteButton = document.getElementById("delete");
-const statsElem = document.getElementById("stats");
-const sampleStatElem = document.getElementById("sample-stat");
-const sampleEditStatElem = document.getElementById("sample-edit-stat");
-const statCreateBoxElem = document.getElementById("stat-create");
-const createStatNameInput = document.getElementById("create-stat-name");
-const createStatButton = document.getElementById("create-stat-button");
 class PathEditor {
     constructor(path) {
         this.path = path;
