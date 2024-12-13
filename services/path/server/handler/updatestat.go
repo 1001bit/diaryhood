@@ -24,7 +24,7 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 	pathId := r.PathValue("id")
 	statName := r.PathValue("stat")
 
-	req := &pathmodel.Stat{}
+	req := &pathmodel.CountlessStat{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -45,7 +45,44 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusConflict)
 		return
 	} else if err != nil {
-		slog.With("err", err).Error("Failed to create stat")
+		slog.With("err", err).Error("Failed to update stat")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) HandleUpdateStatsCounts(w http.ResponseWriter, r *http.Request) {
+	userId := "0"
+	if claims, ok := accesstoken.GetClaimsFromContext(r.Context()); !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	} else {
+		userId = claims.Id
+	}
+
+	pathId := r.PathValue("id")
+	req := []pathmodel.StatCount{}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if !idValid(pathId) {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = h.pathstore.UpdateStatsCounts(r.Context(), pathId, req, userId)
+
+	if err == sql.ErrNoRows {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err != nil {
+		slog.With("err", err).Error("Failed to update stat counter")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

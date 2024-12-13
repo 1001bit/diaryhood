@@ -12,7 +12,17 @@ type Stat struct {
 	StepEquivalent int32  `json:"stepEquivalent"`
 }
 
-func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, stat *Stat, askerId string) error {
+type CountlessStat struct {
+	Name           string `json:"name"`
+	StepEquivalent int32  `json:"stepEquivalent"`
+}
+
+type StatCount struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
+}
+
+func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, stat *CountlessStat, askerId string) error {
 	_, err := ps.postgresC.ExecContext(ctx, `
 		UPDATE stats
 		SET name = $1, step_equivalent = $2
@@ -25,6 +35,39 @@ func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, st
 	`, stat.Name, stat.StepEquivalent, pathId, statName, askerId)
 
 	return err
+}
+
+func (ps *PathStore) UpdateStatsCounts(ctx context.Context, pathId string, counts []StatCount, askerId string) error {
+	tx, err := ps.postgresC.BeginTx(ctx)
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.PrepareContext(ctx, `
+		UPDATE stats
+		SET count = $1
+		WHERE path_id = $2 AND name = $3
+		AND EXISTS (
+			SELECT 1 
+			FROM paths 
+			WHERE id = $2 AND user_id = $4
+		)
+	`)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	defer stmt.Close()
+
+	for _, count := range counts {
+		_, err := stmt.ExecContext(ctx, count.Count, pathId, count.Name, askerId)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit()
 }
 
 func (ps *PathStore) CreateStat(ctx context.Context, pathId string, name, askerId string) error {

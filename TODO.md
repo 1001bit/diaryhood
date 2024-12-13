@@ -66,12 +66,12 @@
         [X] Dummy path creation api
         [X] Real path creation
     [X] Path deletion
-    [ ] Path updating
+    [X] Path updating
         [X] Path data update
         [X] Stats update
         [X] Stats delete
         [X] Stats create
-        [ ] Count update
+        [X] Count update
 
     [ ] Test
 
@@ -85,6 +85,6 @@
         [X] Stats updating
         [X] Stats deletion
         [X] Stats create
-    [ ] Stats count update
+    [X] Stats count update
 
 [ ] Home page

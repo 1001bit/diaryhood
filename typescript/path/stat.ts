@@ -7,6 +7,7 @@ interface EditStatElemets {
 
 class Stat {
 	stat: StatInterface;
+	newCount = 0;
 
 	statElem: HTMLDivElement;
 	editStatElem: HTMLDivElement | null;
@@ -16,6 +17,7 @@ class Stat {
 
 	constructor(stat: StatInterface, editRight: boolean, pathId: string) {
 		this.stat = stat;
+		this.newCount = stat.count;
 
 		this.statElem = this.newStatElem(this.stat);
 		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
@@ -48,7 +50,15 @@ class Stat {
 			"= " + stat.stepEquivalent.toString() + " steps";
 		countInput.setValue(stat.count);
 
+		this.initEvents(countInput);
+
 		return statElem;
+	}
+
+	initEvents(countInput: NumberInput) {
+		countInput.addInputListener((num: number) => {
+			this.newCount = num;
+		});
 	}
 
 	newEditStatElem(stat: StatInterface): HTMLDivElement {

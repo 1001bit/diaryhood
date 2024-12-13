@@ -166,7 +166,9 @@ class PathEditor {
 }
 class Stat {
     constructor(stat, editRight, pathId) {
+        this.newCount = 0;
         this.stat = stat;
+        this.newCount = stat.count;
         this.statElem = this.newStatElem(this.stat);
         this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
         this.deletor = new StatDeletor(pathId, stat.name);
@@ -183,7 +185,13 @@ class Stat {
         statStepEqElem.innerText =
             "= " + stat.stepEquivalent.toString() + " steps";
         countInput.setValue(stat.count);
+        this.initEvents(countInput);
         return statElem;
+    }
+    initEvents(countInput) {
+        countInput.addInputListener((num) => {
+            this.newCount = num;
+        });
     }
     newEditStatElem(stat) {
         const editStatElem = sampleEditStatElem.cloneNode(true);
@@ -417,6 +425,13 @@ class StatsManager {
         this.pathId = pathId;
         this.pageStats = [];
         this.statCreator = new StatCreator(this.pathId);
+        this.countUpdateTicker = setInterval(() => {
+            this.updateCounts();
+        }, 3000);
+        window.addEventListener("beforeunload", () => {
+            clearInterval(this.countUpdateTicker);
+            this.updateCounts();
+        });
         this.statCreator.setCreateCallback((name) => {
             const stat = {
                 name: name,
@@ -451,6 +466,47 @@ class StatsManager {
             this.pageStats.push(pageStat);
             this.renderPageStat(pageStat);
         }
+    }
+    updateCounts() {
+        let counts = [];
+        for (const stat of this.pageStats) {
+            if (stat.newCount == stat.stat.count) {
+                continue;
+            }
+            counts.push({
+                name: stat.stat.name,
+                count: stat.newCount,
+            });
+        }
+        if (counts.length == 0) {
+            return;
+        }
+        this.postCounts(counts);
+    }
+    postCounts(counts) {
+        fetch(`/api/path/${this.pathId}/stats/counts`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(counts),
+            keepalive: true,
+        }).then((res) => {
+            switch (res.status) {
+                case 200:
+                    break;
+                case 401:
+                    refresh().then((authd) => {
+                        if (authd) {
+                            this.postCounts(counts);
+                        }
+                    });
+                    break;
+                default:
+                    console.error("Failed to update counts");
+                    break;
+            }
+        });
     }
     setEditMode(mode) {
         setVisibility(statCreateBoxElem, mode);
