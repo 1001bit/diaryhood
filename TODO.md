@@ -72,8 +72,12 @@
         [X] Stats delete
         [X] Stats create
         [X] Count update
-
     [ ] Test
+        [X] Server init
+        [X] Path creation
+        [ ] Path/paths get
+        [ ] Path update
+        [ ] Path delete
 
 [X] Path page
     [X] Path view
