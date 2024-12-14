@@ -9,6 +9,15 @@ import (
 	"github.com/1001bit/pathgoer/services/path/shared/accesstoken"
 )
 
+func handleResults(t *testing.T, ctx context.Context, code, wantedCode int, err error) {
+	if err != nil {
+		t.Fatalf("failed to create path: %v", err)
+	}
+	if code != wantedCode {
+		t.Errorf("expected status code %d, got %d", wantedCode, code)
+	}
+}
+
 func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 	jwt1, err := accesstoken.Generate("1")
 	if err != nil {
@@ -22,37 +31,28 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 	_ = jwt2
 
 	t.Run("create path", func(t *testing.T) {
+		// bad inputs
 		code, err := client.CreatePath(ctx, handler.CreatePathRequest{
 			Name: "special char",
 		})
-		if err != nil {
-			t.Fatalf("failed to create path: %v", err)
-		}
-
-		if code != http.StatusBadRequest {
-			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, code)
-		}
+		handleResults(t, ctx, code, http.StatusBadRequest, err)
 
 		code, err = client.CreatePath(ctx, handler.CreatePathRequest{
 			Name: "TooLongName111111111111111111111111111111",
 		})
-		if err != nil {
-			t.Fatalf("failed to create path: %v", err)
-		}
+		handleResults(t, ctx, code, http.StatusBadRequest, err)
 
-		if code != http.StatusBadRequest {
-			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, code)
-		}
-
+		// good inputs
 		code, err = client.CreatePath(ctx, handler.CreatePathRequest{
 			Name: "path",
 		})
-		if err != nil {
-			t.Fatalf("failed to create path: %v", err)
-		}
-
-		if code != http.StatusOK {
-			t.Errorf("expected status code %d, got %d", http.StatusOK, code)
-		}
+		handleResults(t, ctx, code, http.StatusOK, err)
 	})
+
+	// TODO:
+	// Fetch path by: Owner, Another user
+	// Update path: Visibility, name, stepeq
+	// Create stats, update stat, delete stat
+	// Fetch path by: Owner, Another user
+	// Delete Path
 }
