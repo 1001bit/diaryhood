@@ -3,7 +3,6 @@ package handler
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"regexp"
@@ -14,6 +13,10 @@ import (
 
 type CreatePathRequest struct {
 	Name string `json:"name"`
+}
+
+type CreatePathResponse struct {
+	Id string `json:"id"`
 }
 
 func (h *Handler) HandleCreatePath(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +53,16 @@ func (h *Handler) HandleCreatePath(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, `{"id": %s}`, id)
+	resp, err := json.Marshal(CreatePathResponse{
+		Id: id,
+	})
+	if err != nil {
+		slog.With("err", err).Error("Failed to marshal response")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(resp)
 }
 
 func nameValid(s string) bool {

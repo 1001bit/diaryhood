@@ -55,14 +55,23 @@ func (c *HTTPClient) MakeRequest(ctx context.Context, method string, url string,
 	return res.StatusCode, bodyBytes, err
 }
 
-func (c *HTTPClient) CreatePath(ctx context.Context, body handler.CreatePathRequest) (int, error) {
-	code, _, err := c.MakeRequest(ctx, "POST", "/", body)
-	return code, err
+func (c *HTTPClient) CreatePath(ctx context.Context, body handler.CreatePathRequest) (int, *handler.CreatePathResponse, error) {
+	code, respBody, err := c.MakeRequest(ctx, "POST", "/", body)
+	if err != nil || code != http.StatusOK {
+		return code, nil, err
+	}
+
+	resp := &handler.CreatePathResponse{}
+	if err := json.Unmarshal(respBody, resp); err != nil {
+		return 0, nil, err
+	}
+
+	return code, resp, err
 }
 
 func (c *HTTPClient) FetchUserPaths(ctx context.Context, userId string) (int, []*pathmodel.Path, error) {
 	code, body, err := c.MakeRequest(ctx, "GET", "/user/"+userId, nil)
-	if err != nil {
+	if err != nil || code != http.StatusOK {
 		return code, nil, err
 	}
 
@@ -76,7 +85,7 @@ func (c *HTTPClient) FetchUserPaths(ctx context.Context, userId string) (int, []
 
 func (c *HTTPClient) FetchPath(ctx context.Context, pathId string) (int, *handler.PathResponse, error) {
 	code, body, err := c.MakeRequest(ctx, "GET", "/"+pathId, nil)
-	if err != nil {
+	if err != nil || code != http.StatusOK {
 		return code, nil, err
 	}
 

@@ -22,6 +22,11 @@ func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 		akserId = claims.Id
 	}
 
+	if !idValid(r.PathValue("id")) {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	path, ownerId, err := h.pathstore.GetPathAndOwnerId(r.Context(), akserId, r.PathValue("id"))
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
@@ -56,7 +61,13 @@ func (h *Handler) HandleUserPaths(w http.ResponseWriter, r *http.Request) {
 		askerId = claims.Id
 	}
 
-	paths, err := h.pathstore.GetPaths(r.Context(), r.PathValue("id"), askerId)
+	userId := r.PathValue("id")
+	if !idValid(userId) {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	paths, err := h.pathstore.GetPaths(r.Context(), userId, askerId)
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return

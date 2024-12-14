@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/1001bit/pathgoer/services/path/pathmodel"
 	"github.com/1001bit/pathgoer/services/path/server"
@@ -41,6 +42,8 @@ func TestPathService(t *testing.T) {
 			t.Errorf("failed to start server: %s", err)
 		}
 	}()
+
+	time.Sleep(time.Second)
 
 	client := NewHTTPClient(fmt.Sprintf("http://localhost:%s", port))
 
