@@ -19,14 +19,14 @@ class Stat {
 		this.stat = stat;
 		this.newCount = stat.count;
 
-		this.statElem = this.newStatElem(this.stat);
+		this.statElem = this.newStatElem(this.stat, editRight);
 		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
 
 		this.deletor = new StatDeletor(pathId, stat.name);
 		this.updater = new StatUpdater(stat.name, pathId);
 	}
 
-	newStatElem(stat: StatInterface): HTMLDivElement {
+	newStatElem(stat: StatInterface, editRight: boolean): HTMLDivElement {
 		const statElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
 		statElem.removeAttribute("id");
 		setVisibility(statElem, true);
@@ -34,23 +34,32 @@ class Stat {
 		const statNameElem = statElem.getElementsByClassName(
 			"stat-name"
 		)[0] as HTMLDivElement;
+		statNameElem.innerText = stat.name;
 
 		const statStepEqElem = statElem.getElementsByClassName(
 			"stat-stepeq"
 		)[0] as HTMLDivElement;
-
-		const countInput = new NumberInput(
-			statElem.getElementsByClassName(
-				"stat-count-input"
-			)[0] as HTMLDivElement
-		);
-
-		statNameElem.innerText = stat.name;
 		statStepEqElem.innerText =
 			"= " + stat.stepEquivalent.toString() + " steps";
-		countInput.setValue(stat.count);
 
-		this.initEvents(countInput);
+		if (editRight) {
+			const statCountInputElem = statElem.getElementsByClassName(
+				"stat-count-input"
+			)[0] as HTMLDivElement;
+			setVisibility(statCountInputElem, true);
+
+			const countInput = new NumberInput(statCountInputElem);
+			countInput.setValue(stat.count);
+
+			this.initEvents(countInput);
+		} else {
+			const countElem = statElem.getElementsByClassName(
+				"stat-count"
+			)[0] as HTMLDivElement;
+			setVisibility(countElem, true);
+
+			countElem.innerText = stat.count.toString();
+		}
 
 		return statElem;
 	}

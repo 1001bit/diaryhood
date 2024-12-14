@@ -57,12 +57,14 @@ main {
 	row-gap: 20px;
 	justify-content: center;
 	width: 100%;
+	margin-bottom: 80px;
 }
 
 /* stat */
 .stat {
 	max-width: 130px;
 	min-width: 130px;
+	height: fit-content;
 	display: flex;
 	padding: 20px;
 	flex-direction: column;
@@ -71,6 +73,10 @@ main {
 	align-items: center;
 	text-align: center;
 	overflow-wrap: break-word;
+}
+
+.stat * {
+	max-width: 100%;
 }
 
 .stat input {
@@ -82,8 +88,15 @@ main {
 	color: var(--main1-dim);
 }
 
-.stat-count-input {
+.stat-count-input,
+.stat-count {
 	margin-top: 16px;
+}
+
+.stat-count {
+	border: 2px solid var(--main1-dim);
+	padding: 4px 8px;
+	border-radius: 4px;
 }
 
 /* edit stat */

@@ -28,6 +28,7 @@ templ Path() {
 						<a id="create-stat-button">create</a>
 					</div>
 				</div>
+				<h3 id="path-steps">steps: 0</h3>
 			</main>
 		</body>
 		@SampleStat()
@@ -53,10 +54,11 @@ templ SampleStat() {
 	<div class="stat box hidden" id="sample-stat">
 		<h3 class="stat-name">stat</h3>
 		<p class="tiny stat-stepeq"></p>
-		<div class="number-input-box stat-count-input">
+		<div class="number-input-box stat-count-input hidden">
 			<a class="minus">-</a>
-			<p><input type="text" placeholder="0" class="no-padding"/></p>
+			<b><input type="text" placeholder="0" class="no-padding"/></b>
 			<a class="plus">+</a>
 		</div>
+		<b class="stat-count hidden">0</b>
 	</div>
 }

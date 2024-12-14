@@ -169,23 +169,32 @@ class Stat {
         this.newCount = 0;
         this.stat = stat;
         this.newCount = stat.count;
-        this.statElem = this.newStatElem(this.stat);
+        this.statElem = this.newStatElem(this.stat, editRight);
         this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
         this.deletor = new StatDeletor(pathId, stat.name);
         this.updater = new StatUpdater(stat.name, pathId);
     }
-    newStatElem(stat) {
+    newStatElem(stat, editRight) {
         const statElem = sampleStatElem.cloneNode(true);
         statElem.removeAttribute("id");
         setVisibility(statElem, true);
         const statNameElem = statElem.getElementsByClassName("stat-name")[0];
-        const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
-        const countInput = new NumberInput(statElem.getElementsByClassName("stat-count-input")[0]);
         statNameElem.innerText = stat.name;
+        const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
         statStepEqElem.innerText =
             "= " + stat.stepEquivalent.toString() + " steps";
-        countInput.setValue(stat.count);
-        this.initEvents(countInput);
+        if (editRight) {
+            const statCountInputElem = statElem.getElementsByClassName("stat-count-input")[0];
+            setVisibility(statCountInputElem, true);
+            const countInput = new NumberInput(statCountInputElem);
+            countInput.setValue(stat.count);
+            this.initEvents(countInput);
+        }
+        else {
+            const countElem = statElem.getElementsByClassName("stat-count")[0];
+            setVisibility(countElem, true);
+            countElem.innerText = stat.count.toString();
+        }
         return statElem;
     }
     initEvents(countInput) {
