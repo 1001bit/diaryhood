@@ -75,10 +75,10 @@
 
     [ ] Test
 
-[ ] Path page
-    [ ] Path view
+[X] Path page
+    [X] Path view
         [X] Stats
-        [ ] Overall steps
+        [X] Overall steps
     [X] Edit mode
         [X] Path deletion
         [X] Path data update

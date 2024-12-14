@@ -25,7 +25,12 @@ class Path {
 
 	handleFetchedData(data: PathResponse) {
 		setPageTitle(data.path.name);
-		this.statsManager.initStats(data.path.stats, data.editRight);
+		if (data.path.stats) {
+			for (const stat of data.path.stats) {
+				this.statsManager.initStat(stat, data.editRight);
+			}
+			this.statsManager.updatePathSteps();
+		}
 
 		if (data.editRight) {
 			setVisibility(editButton, true);

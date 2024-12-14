@@ -26,3 +26,6 @@ const createStatNameInput = document.getElementById(
 const createStatButton = document.getElementById(
 	"create-stat-button"
 ) as HTMLDivElement;
+
+// path total steps
+const pathStepsElem = document.getElementById("path-steps") as HTMLDivElement;

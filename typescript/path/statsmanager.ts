@@ -19,6 +19,12 @@ class StatsManager {
 		this.pageStats = [];
 		this.statCreator = new StatCreator(this.pathId);
 
+		this.countUpdateTicker = 0;
+
+		this.initEvents();
+	}
+
+	initEvents() {
 		this.countUpdateTicker = setInterval(() => {
 			this.updateCounts();
 		}, 3000);
@@ -34,12 +40,8 @@ class StatsManager {
 				stepEquivalent: 1,
 				count: 0,
 			};
-			const pageStat = new Stat(stat, true, this.pathId);
-			pageStat.deletor.setDeleteCallback(() => {
-				this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-			});
-			this.pageStats.push(pageStat);
-			this.renderPageStat(pageStat);
+
+			const pageStat = this.initStat(stat, true);
 			setVisibility(pageStat.statElem, false);
 			setVisibility(pageStat.editStatElem, true);
 		});
@@ -53,20 +55,21 @@ class StatsManager {
 		}
 	}
 
-	initStats(stats: StatInterface[], editRight: boolean) {
-		if (!stats) {
-			return;
-		}
+	initStat(stat: StatInterface, editRight: boolean): Stat {
+		const pageStat = new Stat(stat, editRight, this.pathId);
+		pageStat.deletor.setDeleteCallback(() => {
+			this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
+			this.updatePathSteps();
+		});
 
-		for (const stat of stats) {
-			const pageStat = new Stat(stat, editRight, this.pathId);
-			pageStat.deletor.setDeleteCallback(() => {
-				this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-			});
+		this.pageStats.push(pageStat);
+		this.renderPageStat(pageStat);
 
-			this.pageStats.push(pageStat);
-			this.renderPageStat(pageStat);
-		}
+		pageStat.stepsUpdateCallback = () => {
+			this.updatePathSteps();
+		};
+
+		return pageStat;
 	}
 
 	updateCounts() {
@@ -88,6 +91,14 @@ class StatsManager {
 		}
 
 		this.postCounts(counts);
+	}
+
+	updatePathSteps() {
+		let steps = 0;
+		for (const stat of this.pageStats) {
+			steps += stat.newCount * stat.stat.stepEquivalent;
+		}
+		pathStepsElem.innerText = `steps: ${steps}`;
 	}
 
 	postCounts(counts: StatCount[]) {

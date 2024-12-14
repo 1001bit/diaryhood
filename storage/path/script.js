@@ -21,6 +21,7 @@ const sampleEditStatElem = document.getElementById("sample-edit-stat");
 const statCreateBoxElem = document.getElementById("stat-create");
 const createStatNameInput = document.getElementById("create-stat-name");
 const createStatButton = document.getElementById("create-stat-button");
+const pathStepsElem = document.getElementById("path-steps");
 class PathDeletor {
     constructor(pathId) {
         this.pathId = pathId;
@@ -166,10 +167,12 @@ class PathEditor {
 }
 class Stat {
     constructor(stat, editRight, pathId) {
-        this.newCount = 0;
         this.stat = stat;
         this.newCount = stat.count;
+        this.steps = 0;
+        this.stepsUpdateCallback = () => { };
         this.statElem = this.newStatElem(this.stat, editRight);
+        this.updateStat(stat);
         this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
         this.deletor = new StatDeletor(pathId, stat.name);
         this.updater = new StatUpdater(stat.name, pathId);
@@ -178,11 +181,6 @@ class Stat {
         const statElem = sampleStatElem.cloneNode(true);
         statElem.removeAttribute("id");
         setVisibility(statElem, true);
-        const statNameElem = statElem.getElementsByClassName("stat-name")[0];
-        statNameElem.innerText = stat.name;
-        const statStepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
-        statStepEqElem.innerText =
-            "= " + stat.stepEquivalent.toString() + " steps";
         if (editRight) {
             const statCountInputElem = statElem.getElementsByClassName("stat-count-input")[0];
             setVisibility(statCountInputElem, true);
@@ -200,6 +198,8 @@ class Stat {
     initEvents(countInput) {
         countInput.addInputListener((num) => {
             this.newCount = num;
+            this.steps = this.newCount * this.stat.stepEquivalent;
+            this.stepsUpdateCallback();
         });
     }
     newEditStatElem(stat) {
@@ -266,6 +266,8 @@ class Stat {
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
         statNameElem.innerText = this.stat.name;
         statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
+        this.steps = this.newCount * this.stat.stepEquivalent;
+        this.stepsUpdateCallback();
     }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
@@ -434,6 +436,10 @@ class StatsManager {
         this.pathId = pathId;
         this.pageStats = [];
         this.statCreator = new StatCreator(this.pathId);
+        this.countUpdateTicker = 0;
+        this.initEvents();
+    }
+    initEvents() {
         this.countUpdateTicker = setInterval(() => {
             this.updateCounts();
         }, 3000);
@@ -447,12 +453,7 @@ class StatsManager {
                 stepEquivalent: 1,
                 count: 0,
             };
-            const pageStat = new Stat(stat, true, this.pathId);
-            pageStat.deletor.setDeleteCallback(() => {
-                this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-            });
-            this.pageStats.push(pageStat);
-            this.renderPageStat(pageStat);
+            const pageStat = this.initStat(stat, true);
             setVisibility(pageStat.statElem, false);
             setVisibility(pageStat.editStatElem, true);
         });
@@ -463,18 +464,18 @@ class StatsManager {
             statsElem.insertBefore(pageStat.editStatElem, statCreateBoxElem);
         }
     }
-    initStats(stats, editRight) {
-        if (!stats) {
-            return;
-        }
-        for (const stat of stats) {
-            const pageStat = new Stat(stat, editRight, this.pathId);
-            pageStat.deletor.setDeleteCallback(() => {
-                this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-            });
-            this.pageStats.push(pageStat);
-            this.renderPageStat(pageStat);
-        }
+    initStat(stat, editRight) {
+        const pageStat = new Stat(stat, editRight, this.pathId);
+        pageStat.deletor.setDeleteCallback(() => {
+            this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
+            this.updatePathSteps();
+        });
+        this.pageStats.push(pageStat);
+        this.renderPageStat(pageStat);
+        pageStat.stepsUpdateCallback = () => {
+            this.updatePathSteps();
+        };
+        return pageStat;
     }
     updateCounts() {
         let counts = [];
@@ -491,6 +492,13 @@ class StatsManager {
             return;
         }
         this.postCounts(counts);
+    }
+    updatePathSteps() {
+        let steps = 0;
+        for (const stat of this.pageStats) {
+            steps += stat.newCount * stat.stat.stepEquivalent;
+        }
+        pathStepsElem.innerText = `steps: ${steps}`;
     }
     postCounts(counts) {
         fetch(`/api/path/${this.pathId}/stats/counts`, {
@@ -535,7 +543,12 @@ class Path {
     }
     handleFetchedData(data) {
         setPageTitle(data.path.name);
-        this.statsManager.initStats(data.path.stats, data.editRight);
+        if (data.path.stats) {
+            for (const stat of data.path.stats) {
+                this.statsManager.initStat(stat, data.editRight);
+            }
+            this.statsManager.updatePathSteps();
+        }
         if (data.editRight) {
             setVisibility(editButton, true);
             this.isPublic = data.path.public;

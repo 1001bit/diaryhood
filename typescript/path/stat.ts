@@ -7,7 +7,10 @@ interface EditStatElemets {
 
 class Stat {
 	stat: StatInterface;
-	newCount = 0;
+
+	newCount: number;
+	steps: number;
+	stepsUpdateCallback: () => void;
 
 	statElem: HTMLDivElement;
 	editStatElem: HTMLDivElement | null;
@@ -17,9 +20,13 @@ class Stat {
 
 	constructor(stat: StatInterface, editRight: boolean, pathId: string) {
 		this.stat = stat;
+
 		this.newCount = stat.count;
+		this.steps = 0;
+		this.stepsUpdateCallback = () => {};
 
 		this.statElem = this.newStatElem(this.stat, editRight);
+		this.updateStat(stat);
 		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
 
 		this.deletor = new StatDeletor(pathId, stat.name);
@@ -30,17 +37,6 @@ class Stat {
 		const statElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
 		statElem.removeAttribute("id");
 		setVisibility(statElem, true);
-
-		const statNameElem = statElem.getElementsByClassName(
-			"stat-name"
-		)[0] as HTMLDivElement;
-		statNameElem.innerText = stat.name;
-
-		const statStepEqElem = statElem.getElementsByClassName(
-			"stat-stepeq"
-		)[0] as HTMLDivElement;
-		statStepEqElem.innerText =
-			"= " + stat.stepEquivalent.toString() + " steps";
 
 		if (editRight) {
 			const statCountInputElem = statElem.getElementsByClassName(
@@ -67,6 +63,8 @@ class Stat {
 	initEvents(countInput: NumberInput) {
 		countInput.addInputListener((num: number) => {
 			this.newCount = num;
+			this.steps = this.newCount * this.stat.stepEquivalent;
+			this.stepsUpdateCallback();
 		});
 	}
 
@@ -174,6 +172,9 @@ class Stat {
 
 		statNameElem.innerText = this.stat.name;
 		statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
+
+		this.steps = this.newCount * this.stat.stepEquivalent;
+		this.stepsUpdateCallback();
 	}
 
 	showSaveButtonIfChanged(elems: EditStatElemets) {
