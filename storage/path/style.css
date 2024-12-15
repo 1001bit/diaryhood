@@ -1,6 +1,5 @@
 main {
 	display: flex;
-	padding-top: 20px;
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
@@ -132,4 +131,9 @@ main {
 .plus,
 .minus {
 	user-select: none;
+}
+
+/* steps count */
+#path-steps {
+	margin-bottom: 16px;
 }

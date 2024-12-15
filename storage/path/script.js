@@ -22,6 +22,7 @@ const statCreateBoxElem = document.getElementById("stat-create");
 const createStatNameInput = document.getElementById("create-stat-name");
 const createStatButton = document.getElementById("create-stat-button");
 const pathStepsElem = document.getElementById("path-steps");
+const ownerElem = document.getElementById("path-owner");
 class PathDeletor {
     constructor(pathId) {
         this.pathId = pathId;
@@ -542,6 +543,7 @@ class Path {
         this.fetchPath();
     }
     handleFetchedData(data) {
+        ownerElem.href = `/user/${data.ownerId}`;
         setPageTitle(data.path.name);
         if (data.path.stats) {
             for (const stat of data.path.stats) {

@@ -42,7 +42,7 @@ func Path() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><div id=\"edit-buttons\"><a id=\"edit\" class=\"hidden\">edit</a> <a id=\"save\" class=\"hidden\">save</a></div><div id=\"path-data\" class=\"thin box hidden\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"delete\">delete</a></div></div><div id=\"stats\"><div class=\"stat box hidden\" id=\"stat-create\"><h3><input type=\"text\" placeholder=\"name\" id=\"create-stat-name\" class=\"no-padding\" maxlength=\"31\"></h3><a id=\"create-stat-button\">create</a></div></div><h3 id=\"path-steps\">steps: 0</h3></main></body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"edit-section\"><div id=\"edit-buttons\"><a id=\"edit\" class=\"hidden\">edit</a> <a id=\"save\" class=\"hidden\">save</a></div><div id=\"path-data\" class=\"thin box hidden\"><p>name: <input type=\"text\" id=\"path-name\" class=\"thin\" maxlength=\"31\"></p><p>public: <a id=\"path-public\">false</a></p><a id=\"delete\">delete</a></div></div><div id=\"stats\"><div class=\"stat box hidden\" id=\"stat-create\"><h3><input type=\"text\" placeholder=\"name\" id=\"create-stat-name\" class=\"no-padding\" maxlength=\"31\"></h3><a id=\"create-stat-button\">create</a></div></div><h3 id=\"path-steps\">steps: 0</h3><a id=\"path-owner\">owner</a></main></body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

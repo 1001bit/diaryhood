@@ -8,7 +8,6 @@
             User service responds with Email
         Gateway sets Email as a cookie
 
-
 2. Entering the OTP From email:
     User POST Requests /login/otp with Email and OTP fields in body
         Gateway handles it with LoginOTPHandler handler 

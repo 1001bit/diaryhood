@@ -13,6 +13,7 @@ import (
 type PathResponse struct {
 	Path      pathmodel.Path `json:"path"`
 	EditRight bool           `json:"editRight"`
+	OwnerId   string         `json:"ownerId"`
 }
 
 // single path
@@ -40,6 +41,7 @@ func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 	resp := PathResponse{
 		Path:      path,
 		EditRight: ownerId == akserId,
+		OwnerId:   ownerId,
 	}
 
 	pathJson, err := json.Marshal(resp)

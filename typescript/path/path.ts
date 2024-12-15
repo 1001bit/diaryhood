@@ -3,6 +3,7 @@
 /// <reference path="statsmanager.ts"/>
 
 interface PathResponse {
+	ownerId: string;
 	path: PathInterface;
 	editRight: boolean;
 }
@@ -24,6 +25,8 @@ class Path {
 	}
 
 	handleFetchedData(data: PathResponse) {
+		ownerElem.href = `/user/${data.ownerId}`;
+
 		setPageTitle(data.path.name);
 		if (data.path.stats) {
 			for (const stat of data.path.stats) {

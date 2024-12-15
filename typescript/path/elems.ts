@@ -29,3 +29,6 @@ const createStatButton = document.getElementById(
 
 // path total steps
 const pathStepsElem = document.getElementById("path-steps") as HTMLDivElement;
+
+// owner
+const ownerElem = document.getElementById("path-owner") as HTMLAnchorElement;

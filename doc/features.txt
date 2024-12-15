@@ -4,13 +4,14 @@ L0
     Raw Home page
     OTP Email sign in + auth
 
-Doing:
 L1
     Paths for each player
     Profile page
     Stats for path. 1 Stat unit = Some step units. Steps are calculated on client side
 
+Doing:
 L2
+    Dynamic file storage, profile picture
     Enhanced Home page
     Path levels
     Streak

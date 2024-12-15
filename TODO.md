@@ -48,14 +48,6 @@
     [X] PLG Stack
     [X] Slog
 
-[X] Profile page
-    [X] Dummy layout
-    [X] Use templ variables to fill the layout
-    [X] Name change
-    [X] Path creation
-    [X] Real paths view
-        [ ] Other stats view
-
 [X] Path service
     [X] Database
         [X] Path
@@ -85,5 +77,14 @@
         [X] Stats deletion
         [X] Stats create
     [X] Stats count update
+    [X] Path owner link
+
+[ ] Profile page
+    [X] Dummy layout
+    [X] Use templ variables to fill the layout
+    [X] Name change
+    [X] Path creation
+    [X] Real paths view
+    [ ] Avatar
 
 [ ] Home page
