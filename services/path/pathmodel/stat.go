@@ -2,6 +2,7 @@ package pathmodel
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/lib/pq"
 )
@@ -23,7 +24,7 @@ type StatCount struct {
 }
 
 func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, stat *CountlessStat, askerId string) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
+	result, err := ps.postgresC.ExecContext(ctx, `
 		UPDATE stats
 		SET name = $1, step_equivalent = $2
 		WHERE path_id = $3 AND name = $4
@@ -34,7 +35,19 @@ func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, st
 		)
 	`, stat.Name, stat.StepEquivalent, pathId, statName, askerId)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
 }
 
 func (ps *PathStore) UpdateStatsCounts(ctx context.Context, pathId string, counts []StatCount, askerId string) error {
@@ -71,7 +84,7 @@ func (ps *PathStore) UpdateStatsCounts(ctx context.Context, pathId string, count
 }
 
 func (ps *PathStore) CreateStat(ctx context.Context, pathId string, name, askerId string) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
+	result, err := ps.postgresC.ExecContext(ctx, `
 		WITH check_path AS (
 			SELECT 1 
 			FROM paths 
@@ -82,11 +95,23 @@ func (ps *PathStore) CreateStat(ctx context.Context, pathId string, name, askerI
 		FROM check_path;
 	`, pathId, name, askerId)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
 }
 
 func (ps *PathStore) DeleteStat(ctx context.Context, pathId string, name string, askerId string) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
+	result, err := ps.postgresC.ExecContext(ctx, `
 		DELETE FROM stats
 		WHERE path_id = $1 AND name = $2
 		AND EXISTS (
@@ -96,7 +121,15 @@ func (ps *PathStore) DeleteStat(ctx context.Context, pathId string, name string,
 		)
 	`, pathId, name, askerId)
 
-	return err
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
 }
 
 func (ps *PathStore) GetStats(ctx context.Context, pathId int32) ([]Stat, error) {

@@ -69,6 +69,11 @@ func (c *HTTPClient) CreatePath(ctx context.Context, body handler.CreatePathRequ
 	return code, resp, err
 }
 
+func (c *HTTPClient) DeletePath(ctx context.Context, pathId string) (int, error) {
+	code, _, err := c.MakeRequest(ctx, "DELETE", "/"+pathId, nil)
+	return code, err
+}
+
 func (c *HTTPClient) FetchUserPaths(ctx context.Context, userId string) (int, []*pathmodel.Path, error) {
 	code, body, err := c.MakeRequest(ctx, "GET", "/user/"+userId, nil)
 	if err != nil || code != http.StatusOK {
@@ -99,9 +104,20 @@ func (c *HTTPClient) FetchPath(ctx context.Context, pathId string) (int, *handle
 
 func (c *HTTPClient) UpdatePath(ctx context.Context, pathId string, body handler.UpdatePathRequest) (int, error) {
 	code, _, err := c.MakeRequest(ctx, "PUT", "/"+pathId, body)
-	if err != nil || code != http.StatusOK {
-		return code, err
-	}
+	return code, err
+}
 
-	return code, nil
+func (c *HTTPClient) CreateStat(ctx context.Context, pathId string, body handler.CreateStatRequest) (int, error) {
+	code, _, err := c.MakeRequest(ctx, "POST", "/"+pathId+"/stat", body)
+	return code, err
+}
+
+func (c *HTTPClient) UpdateStat(ctx context.Context, pathId, statName string, newStat pathmodel.CountlessStat) (int, error) {
+	code, _, err := c.MakeRequest(ctx, "PUT", "/"+pathId+"/stat/"+statName, newStat)
+	return code, err
+}
+
+func (c *HTTPClient) DeleteStat(ctx context.Context, pathId, statName string) (int, error) {
+	code, _, err := c.MakeRequest(ctx, "DELETE", "/"+pathId+"/stat/"+statName, nil)
+	return code, err
 }

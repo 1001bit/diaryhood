@@ -56,7 +56,7 @@
     [X] Real paths view
         [ ] Other stats view
 
-[ ] Path service
+[X] Path service
     [X] Database
         [X] Path
         [X] Stats
@@ -72,12 +72,7 @@
         [X] Stats delete
         [X] Stats create
         [X] Count update
-    [ ] Test
-        [X] Server init
-        [X] Path creation
-        [ ] Path/paths get
-        [ ] Path update
-        [ ] Path delete
+    [X] Test
 
 [X] Path page
     [X] Path view

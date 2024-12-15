@@ -38,19 +38,29 @@ func (ps *PathStore) UpdatePath(ctx context.Context, pathId string, name string,
 	}
 
 	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
 	if rowsAffected == 0 {
 		return sql.ErrNoRows
 	}
-	return err
+	return nil
 }
 
 func (ps *PathStore) DeletePath(ctx context.Context, pathId string, askerId string) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
+	result, err := ps.postgresC.ExecContext(ctx, `
 		DELETE FROM paths
 		WHERE id = $1 AND user_id = $2
 	`, pathId, askerId)
 
-	return err
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }
 
 func (ps *PathStore) GetPathAndOwnerId(ctx context.Context, askerId, pathId string) (Path, string, error) {
