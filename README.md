@@ -8,13 +8,24 @@ a productivity app made to gamify process of doing something for a long period o
 
 - One-time password sign in
 - Access JWT + Refresh UUID authN and authZ
+- Paths creation for each user
+- Stats creation for each path
+
 ## Environment Variables
 
-To run this project, you will need to create your own .env file based on .env.example file
+To run this project, you will need to create your own `.env` file based on `.env.example` file.
+
+There are variables like: credentials to services, ports, secrets, keys etc.
+
+Specifically, you want to set:
+
+`MG_API_KEY`: Mailgun API key
+
+`MG_DOMAIN`: Mailgun domain
 
 ## Run Locally
 
-To run you need docker
+To run you need **docker** and **docker compose**
 
 Clone the project
 
@@ -37,14 +48,50 @@ Build and start
 You can see the result on http://localhost:80 after successful start
 
 You can see other commands in the Makefile
+
+## Testing
+
+**User service**: run `make test-user`
+
+**Path service**: run `make test-path`
+
+## Directories
+
+`config`: config files for some services
+
+`doc`: additional docs
+
+`protobuf`: protobuf files for gRPC servers
+
+`services`: services, their servers
+
+`shared`: golang code, shared between services
+
+`sql`: init sql scripts for databases
+
+`storage`: static storage for css, js, etc.
+
+`typescript`: typescript code to be compiled into `storage`
+
+## Editing typescript, protobuf, templ, shared code
+
+After editing one of this you can do `make gencopy` or `make` (both of them do all the stuff described later), but specifically:
+
+`make tscompile` **---** `.ts` files inside `typescript` directory are compiled to `storage` directory according to their tsconfigs (python and typescript compiler required)
+
+`make protoc` **---** `.proto` files inside `protobuf` directory are compiled to `services/*service*/shared` directory (golang protoc required)
+
+`make templ` **---** `.templ` files inside `services/gateway/template` directory are compiled in the same directory (golang templ compiler required)
+
+`make copyshared` **---** `.go` files inside `shared` directory are copied to `services/*service*/shared` directory (python required)
+
 ## Tech Stack
 
 **Client:** HTML, CSS, Javascript <- Typescript
 
-**Server:** Docker, Golang, PostgreSQL, Redis, gRPC, RabbitMQ etc.
+**Server:** Docker, Golang + Many other libs used, PostgreSQL, Redis, gRPC, HTTP, RabbitMQ etc.
 
+## Additional Docs
 
-## Documentation
-
-You can read additional docs in `doc` directory
+Can be found in `doc` directory
 
