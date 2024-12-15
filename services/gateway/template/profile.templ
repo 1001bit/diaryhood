@@ -11,7 +11,10 @@ templ Profile(id, name, date string, profileOwner bool) {
 			@nav(name)
 			<main>
 				<div id="profile-box">
-					<img class="avatar" src={ "/dynamic/avatar/" + id }/>
+					<div id="avatar-box">
+						<img id="avatar" src={ "/dynamic/avatar/" + id }/>
+						<a class={ "tiny", "no-padding", templ.KV("hidden", !profileOwner) } id="change-avatar">new</a>
+					</div>
 					<div id="name-box">
 						<p id="name">{ name }</p>
 						<p><textarea id="name-input" class="hidden" maxlength="31" spellcheck="false" rows="3">{ name }</textarea></p>

@@ -1,34 +1,32 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/1001bit/pathgoer/services/storage/server/handler"
+	"github.com/1001bit/pathgoer/services/storage/server/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimw "github.com/go-chi/chi/v5/middleware"
 )
 
 const storagePath = "./storage"
 
-func CacheMiddleware(dur time.Duration) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", int(dur.Seconds()))) // Cache for one day
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
 func (s *Server) newRouter() *chi.Mux {
 	r := chi.NewRouter()
-	r.Use(middleware.Timeout(time.Second * 10))
-	r.Use(middleware.CleanPath)
-	r.Use(middleware.Recoverer)
+	r.Use(chimw.Timeout(time.Second * 10))
+	r.Use(chimw.CleanPath)
+	r.Use(chimw.Recoverer)
 
 	fileServer := http.FileServer(http.Dir(storagePath))
+
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.JwtClaimsToContext)
+		r.Post("/dynamic/avatar", handler.UploadAvatar)
+	})
+
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
 		// Clean and validate the requested file path
 		requestedPath := chi.URLParam(r, "*")
@@ -42,7 +40,11 @@ func (s *Server) newRouter() *chi.Mux {
 		}
 
 		// Serve file with caching
-		CacheMiddleware(time.Hour*24)(fileServer).ServeHTTP(w, r)
+		cacheTime := time.Hour * 24
+		if strings.Split(cleanPath, "/")[0] == "dynamic" {
+			cacheTime = time.Minute * 5
+		}
+		middleware.Cache(cacheTime)(fileServer).ServeHTTP(w, r)
 	})
 
 	return r

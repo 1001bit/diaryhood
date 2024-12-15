@@ -9,6 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const mainElem = document.getElementsByTagName("main")[0];
+const changeAvatarElem = document.getElementById("change-avatar");
+const avatarElem = document.getElementById("avatar");
 const nameElem = document.getElementById("name");
 const changeNameElem = document.getElementById("change-name");
 const nameInputElem = document.getElementById("name-input");
@@ -19,6 +21,39 @@ const createPathButton = document.getElementById("create-path");
 const pathNameInputElem = document.getElementById("path-name-input");
 const samplePathElem = document.getElementById("sample-path");
 const noPathsElem = document.getElementById("no-paths");
+const avatarInput = document.createElement("input");
+avatarInput.type = "file";
+avatarInput.accept = "image/*";
+setVisibility(avatarInput, false);
+changeAvatarElem.addEventListener("click", () => {
+    avatarInput.click();
+});
+avatarInput.addEventListener("change", () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const file = (_a = avatarInput.files) === null || _a === void 0 ? void 0 : _a.item(0);
+    if (!file) {
+        return;
+    }
+    const formData = new FormData();
+    formData.append("avatar", file);
+    try {
+        fetch("/dynamic/avatar", {
+            method: "POST",
+            body: formData,
+        }).then((res) => {
+            if (!res.ok) {
+                changeAvatarElem.innerHTML = "error";
+                return;
+            }
+            res.json().then((res) => {
+                avatarElem.src = res.url;
+            });
+        });
+    }
+    catch (e) {
+        changeAvatarElem.innerHTML = "error";
+    }
+}));
 let isEditing = false;
 nameInputElem.addEventListener("input", () => {
     if (nameInputElem.value == nameElem.innerText) {

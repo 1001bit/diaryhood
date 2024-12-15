@@ -1,6 +1,12 @@
 // main
 const mainElem = document.getElementsByTagName("main")[0] as HTMLDivElement;
 
+// avatar
+const changeAvatarElem = document.getElementById(
+	"change-avatar"
+) as HTMLDivElement;
+const avatarElem = document.getElementById("avatar") as HTMLImageElement;
+
 // name
 const nameElem = document.getElementById("name") as HTMLDivElement;
 const changeNameElem = document.getElementById("change-name") as HTMLDivElement;

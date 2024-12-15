@@ -37,7 +37,7 @@ func (s *Server) newRouter() *chi.Mux {
 
 	// With JWT claims in context
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.JwtClaimsToContext)
+		r.Use(middleware.CookieJwtClaimsToContext)
 
 		// Home
 		r.Get("/", handler.HandleHome)
@@ -58,7 +58,7 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Post("/login/otp", s.userclient.HandleLoginOtp)
 
 		// Change username
-		r.Post("/change-name", middleware.JwtClaimsToContext(http.HandlerFunc(s.userclient.HandleChangeUsername)).ServeHTTP)
+		r.Post("/change-name", middleware.CookieJwtClaimsToContext(http.HandlerFunc(s.userclient.HandleChangeUsername)).ServeHTTP)
 
 		// Path
 		r.Handle("/path", middleware.JwtToHeader(s.pathproxy.ReverseProxy("/api/path")))
@@ -67,7 +67,7 @@ func (s *Server) newRouter() *chi.Mux {
 
 	// Routes that get refresh token
 	r.Route("/auth", func(r chi.Router) {
-		r.Use(middleware.JwtClaimsToContext)
+		r.Use(middleware.CookieJwtClaimsToContext)
 
 		// Refresh
 		r.Get("/refresh", s.userclient.HandleRefresh)
@@ -78,6 +78,7 @@ func (s *Server) newRouter() *chi.Mux {
 	// Storage
 	r.Get("/static/*", s.storageproxy.ReverseProxy(""))
 	r.Get("/dynamic/*", s.storageproxy.ReverseProxy(""))
+	r.Post("/dynamic/*", middleware.JwtToHeader(s.storageproxy.ReverseProxy("")).ServeHTTP)
 	r.Get("/favicon.ico", s.storageproxy.ReverseProxy(""))
 
 	// 404

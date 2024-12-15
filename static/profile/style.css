@@ -16,12 +16,23 @@ main {
 	overflow-wrap: break-word;
 }
 
-.avatar {
+#avatar-box {
+	margin-bottom: 16px;
+	position: relative;
+}
+
+#avatar {
 	width: 200px;
 	height: 200px;
 	border-radius: 100%;
 	border: 2px solid var(--main1-dim);
-	margin-bottom: 12px;
+}
+
+#change-avatar {
+	position: absolute;
+	right: 0%;
+	bottom: 0%;
+	user-select: none;
 }
 
 /* make all text elements inside #name-box in one line */
@@ -33,6 +44,10 @@ main {
 #name-box textarea {
 	resize: none;
 	max-width: 100%;
+}
+
+#change-name {
+	user-select: none;
 }
 
 /* Paths (right) */
@@ -64,6 +79,10 @@ main {
 	max-width: 100%;
 }
 
+.path a {
+	user-select: none;
+}
+
 #path-create-box {
 	white-space: pre-line;
 	border-color: var(--acc1-dim);
@@ -72,6 +91,7 @@ main {
 
 #path-create-box a {
 	text-align: center;
+	user-select: none;
 }
 
 #path-create-box input {

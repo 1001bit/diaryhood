@@ -1,3 +1,4 @@
 services/user
 services/path
 services/gateway
+services/storage
