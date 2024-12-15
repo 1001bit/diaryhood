@@ -34,7 +34,7 @@ func Login() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link rel=\"stylesheet\" href=\"/storage/login/style.css\"></head><body>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link rel=\"stylesheet\" href=\"/static/login/style.css\"></head><body>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,7 @@ func Login() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"login-box\" class=\"box\"><p><input type=\"text\" placeholder=\"email or username\" id=\"login-input\"></p><p><button id=\"login-button\">enter</button></p><p id=\"login-info\">enter your username or email</p></div></main><script src=\"/storage/login/script.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"login-box\" class=\"box\"><p><input type=\"text\" placeholder=\"email or username\" id=\"login-input\"></p><p><button id=\"login-button\">enter</button></p><p id=\"login-info\">enter your username or email</p></div></main><script src=\"/static/login/script.js\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

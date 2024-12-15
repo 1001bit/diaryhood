@@ -1,17 +1,17 @@
 package template
 
-templ Profile(name, date string, profileOwner bool) {
+templ Profile(id, name, date string, profileOwner bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			@baseHead(name)
-			<link rel="stylesheet" href="/storage/profile/style.css"/>
+			<link rel="stylesheet" href="/static/profile/style.css"/>
 		</head>
 		<body>
 			@nav(name)
 			<main>
 				<div id="profile-box">
-					<img class="avatar" src="avatar.png"/>
+					<img class="avatar" src={ "/dynamic/avatar/" + id }/>
 					<div id="name-box">
 						<p id="name">{ name }</p>
 						<p><textarea id="name-input" class="hidden" maxlength="31" spellcheck="false" rows="3">{ name }</textarea></p>
@@ -32,7 +32,7 @@ templ Profile(name, date string, profileOwner bool) {
 				</div>
 			</main>
 			@SamplePath()
-			<script src="/storage/profile/script.js"></script>
+			<script src="/static/profile/script.js"></script>
 		</body>
 	</html>
 }

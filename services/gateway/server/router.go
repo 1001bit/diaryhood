@@ -76,8 +76,9 @@ func (s *Server) newRouter() *chi.Mux {
 	})
 
 	// Storage
-	r.Get("/storage/*", s.storageproxy.ReverseProxy("/storage"))
-	r.Get("/favicon.ico", s.storageproxy.ReverseProxy("").ServeHTTP)
+	r.Get("/static/*", s.storageproxy.ReverseProxy(""))
+	r.Get("/dynamic/*", s.storageproxy.ReverseProxy(""))
+	r.Get("/favicon.ico", s.storageproxy.ReverseProxy(""))
 
 	// 404
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {

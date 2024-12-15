@@ -69,15 +69,15 @@ You can see other commands in the Makefile
 
 `sql`: init sql scripts for databases
 
-`storage`: static storage for css, js, etc.
+`static`: static storage for css, js, etc.
 
-`typescript`: typescript code to be compiled into `storage`
+`typescript`: typescript code to be compiled into `static`
 
 ## Editing typescript, protobuf, templ, shared code
 
 After editing one of this you can do `make gencopy` or `make` (both of them do all the stuff described later), but specifically:
 
-`make tscompile` **---** `.ts` files inside `typescript` directory are compiled to `storage` directory according to their tsconfigs (python and typescript compiler required)
+`make tscompile` **---** `.ts` files inside `typescript` directory are compiled to `static` directory according to their tsconfigs (python and typescript compiler required)
 
 `make protoc` **---** `.proto` files inside `protobuf` directory are compiled to `services/*service*/shared` directory (golang protoc required)
 

@@ -32,7 +32,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 
 	claims, _ := accesstoken.GetClaimsFromContext(r.Context())
 
-	template.Profile(response.Name, date, id == claims.Id).Render(r.Context(), w)
+	template.Profile(id, response.Name, date, id == claims.Id).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {
