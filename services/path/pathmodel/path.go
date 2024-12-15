@@ -2,6 +2,7 @@ package pathmodel
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Path struct {
@@ -26,12 +27,20 @@ func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (s
 }
 
 func (ps *PathStore) UpdatePath(ctx context.Context, pathId string, name string, public bool, askerId string) error {
-	_, err := ps.postgresC.ExecContext(ctx, `
+	result, err := ps.postgresC.ExecContext(ctx, `
 		UPDATE paths
 		SET name = $1, public = $2
 		WHERE id = $3 AND user_id = $4
 	`, name, public, pathId, askerId)
 
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
 	return err
 }
 

@@ -30,7 +30,6 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 		t.Fatalf("failed to generate jwt: %v", err)
 	}
 	client.SetJWT(jwt1)
-	_ = jwt2
 
 	pathId := ""
 	t.Run("create path", func(t *testing.T) {
@@ -85,8 +84,30 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 		}
 	})
 
+	t.Run("update path by another user", func(t *testing.T) {
+		code, err := client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+			Name:   "name",
+			Public: true,
+		})
+
+		if err = handleResults(code, http.StatusNotFound, err); err != nil {
+			t.Errorf("unauthorized update path failed: %v", err)
+		}
+	})
+
+	t.Run("update path by owner", func(t *testing.T) {
+		client.SetJWT(jwt1)
+		code, err := client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+			Name:   "name2",
+			Public: true,
+		})
+
+		if err = handleResults(code, http.StatusOK, err); err != nil {
+			t.Errorf("update path failed: %v", err)
+		}
+	})
+
 	// TODO:
-	// Update path: Visibility, name, stepeq
 	// Create stats, update stat, delete stat
 	// Fetch path by: Owner, Another user
 	// Delete Path

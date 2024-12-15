@@ -96,3 +96,12 @@ func (c *HTTPClient) FetchPath(ctx context.Context, pathId string) (int, *handle
 
 	return code, path, nil
 }
+
+func (c *HTTPClient) UpdatePath(ctx context.Context, pathId string, body handler.UpdatePathRequest) (int, error) {
+	code, _, err := c.MakeRequest(ctx, "PUT", "/"+pathId, body)
+	if err != nil || code != http.StatusOK {
+		return code, err
+	}
+
+	return code, nil
+}
