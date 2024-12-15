@@ -2,8 +2,6 @@ package server
 
 import (
 	"net/http"
-	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/1001bit/pathgoer/services/storage/server/handler"
@@ -27,24 +25,16 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Post("/dynamic/avatar", handler.UploadAvatar)
 	})
 
-	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
-		// Clean and validate the requested file path
-		requestedPath := chi.URLParam(r, "*")
-		cleanPath := filepath.Clean(requestedPath)
-		finalPath := filepath.Join(storagePath, cleanPath)
-
-		// Ensure the final path is within the storage directory
-		if !strings.HasPrefix(finalPath, filepath.Clean(storagePath)) {
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
+	r.Get("/static/*", func(w http.ResponseWriter, r *http.Request) {
 		// Serve file with caching
 		cacheTime := time.Hour * 24
-		if strings.Split(cleanPath, "/")[0] == "dynamic" {
-			cacheTime = time.Minute * 5
-		}
 		middleware.Cache(cacheTime)(fileServer).ServeHTTP(w, r)
+	})
+
+	r.Get("/dynamic/*", func(w http.ResponseWriter, r *http.Request) {
+		// Serve file without caching
+		w.Header().Set("Cache-Control", "public, max-age=0")
+		fileServer.ServeHTTP(w, r)
 	})
 
 	return r

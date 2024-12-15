@@ -661,12 +661,21 @@ function checkAuthAndRefresh() {
                     method: "GET",
                 }).then((res) => {
                     if (res.status == 200) {
-                        return true;
+                        return {
+                            authnd: true,
+                            refreshed: true,
+                        };
                     }
-                    return false;
+                    return {
+                        authnd: false,
+                        refreshed: false,
+                    };
                 });
             }
-            return true;
+            return {
+                authnd: true,
+                refreshed: false,
+            };
         });
     });
 }

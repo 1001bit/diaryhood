@@ -1,5 +1,10 @@
 // needed when it's just better to be authenticated
-async function checkAuthAndRefresh(): Promise<boolean> {
+interface authAndRefresh {
+	authnd: boolean;
+	refreshed: boolean;
+}
+
+async function checkAuthAndRefresh(): Promise<authAndRefresh> {
 	return fetch("/authenticated", {
 		method: "GET",
 	}).then((res) => {
@@ -8,12 +13,21 @@ async function checkAuthAndRefresh(): Promise<boolean> {
 				method: "GET",
 			}).then((res) => {
 				if (res.status == 200) {
-					return true;
+					return {
+						authnd: true,
+						refreshed: true,
+					};
 				}
-				return false;
+				return {
+					authnd: false,
+					refreshed: false,
+				};
 			});
 		}
-		return true;
+		return {
+			authnd: true,
+			refreshed: false,
+		};
 	});
 }
 

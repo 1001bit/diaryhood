@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 
@@ -12,10 +10,6 @@ import (
 )
 
 const avatarPath = "./storage/dynamic/avatar"
-
-type UploadAvatarResponse struct {
-	Url string `json:"url"`
-}
 
 func UploadAvatar(w http.ResponseWriter, r *http.Request) {
 	userId := "0"
@@ -75,15 +69,5 @@ func UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Respond with the new avatar URL
-	respBytes, err := json.Marshal(UploadAvatarResponse{
-		Url: fmt.Sprintf("/dynamic/avatar/%s", userId),
-	})
-	if err != nil {
-		slog.With("err", err).Error("Failed to marshal response")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(respBytes)
+	w.WriteHeader(http.StatusOK)
 }

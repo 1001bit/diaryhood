@@ -65,7 +65,3 @@ function fetchAndRenderPaths() {
 		res.json().then(renderPaths);
 	});
 }
-
-checkAuthAndRefresh().then((_res) => {
-	fetchAndRenderPaths();
-});

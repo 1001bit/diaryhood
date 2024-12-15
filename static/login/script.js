@@ -12,8 +12,8 @@ const loginBox = document.getElementById("login-box");
 const loginInput = document.getElementById("login-input");
 const loginButton = document.getElementById("login-button");
 const loginInfo = document.getElementById("login-info");
-checkAuthAndRefresh().then((authd) => {
-    if (authd) {
+checkAuthAndRefresh().then((resp) => {
+    if (resp.authnd) {
         location.replace("/");
     }
 });
@@ -132,12 +132,21 @@ function checkAuthAndRefresh() {
                     method: "GET",
                 }).then((res) => {
                     if (res.status == 200) {
-                        return true;
+                        return {
+                            authnd: true,
+                            refreshed: true,
+                        };
                     }
-                    return false;
+                    return {
+                        authnd: false,
+                        refreshed: false,
+                    };
                 });
             }
-            return true;
+            return {
+                authnd: true,
+                refreshed: false,
+            };
         });
     });
 }

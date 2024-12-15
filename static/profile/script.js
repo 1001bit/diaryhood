@@ -45,15 +45,19 @@ avatarInput.addEventListener("change", () => __awaiter(void 0, void 0, void 0, f
                 changeAvatarElem.innerHTML = "error";
                 return;
             }
-            res.json().then((res) => {
-                avatarElem.src = res.url;
-            });
+            avatarElem.src = avatarElem.src.split("?")[0] + "?" + Date.now();
         });
     }
     catch (e) {
         changeAvatarElem.innerHTML = "error";
     }
 }));
+checkAuthAndRefresh().then((res) => {
+    if (res.refreshed) {
+        location.reload();
+    }
+    fetchAndRenderPaths();
+});
 let isEditing = false;
 nameInputElem.addEventListener("input", () => {
     if (nameInputElem.value == nameElem.innerText) {
@@ -230,9 +234,6 @@ function fetchAndRenderPaths() {
         res.json().then(renderPaths);
     });
 }
-checkAuthAndRefresh().then((_res) => {
-    fetchAndRenderPaths();
-});
 function setBorderColor(elem, colorVar) {
     if (!elem) {
         return;
@@ -298,12 +299,21 @@ function checkAuthAndRefresh() {
                     method: "GET",
                 }).then((res) => {
                     if (res.status == 200) {
-                        return true;
+                        return {
+                            authnd: true,
+                            refreshed: true,
+                        };
                     }
-                    return false;
+                    return {
+                        authnd: false,
+                        refreshed: false,
+                    };
                 });
             }
-            return true;
+            return {
+                authnd: true,
+                refreshed: false,
+            };
         });
     });
 }

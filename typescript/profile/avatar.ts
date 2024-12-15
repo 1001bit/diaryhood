@@ -28,9 +28,7 @@ avatarInput.addEventListener("change", async () => {
 				return;
 			}
 
-			res.json().then((res) => {
-				avatarElem.src = res.url;
-			});
+			avatarElem.src = avatarElem.src.split("?")[0] + "?" + Date.now();
 		});
 	} catch (e) {
 		changeAvatarElem.innerHTML = "error";
