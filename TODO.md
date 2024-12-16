@@ -48,6 +48,14 @@
     [X] PLG Stack
     [X] Slog
 
+[X] Profile page
+    [X] Dummy layout
+    [X] Use templ variables to fill the layout
+    [X] Name change
+    [X] Path creation
+    [X] Real paths view
+    [X] Avatar
+
 [X] Path service
     [X] Database
         [X] Path
@@ -65,14 +73,7 @@
         [X] Stats create
         [X] Count update
     [X] Test
-
-[X] Profile page
-    [X] Dummy layout
-    [X] Use templ variables to fill the layout
-    [X] Name change
-    [X] Path creation
-    [X] Real paths view
-    [X] Avatar
+    [ ] Stat quota
 
 [ ] Path page
     [X] Path view
@@ -86,5 +87,7 @@
         [X] Stats create
     [X] Stats count update
     [X] Path owner link
-    [ ] Change stat cards to stat lines
-    [ ] Quota for stat
+    [X] Change stat cards to stat lines
+    [ ] Stat quota
+
+[ ] Responsible design

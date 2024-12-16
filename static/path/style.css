@@ -3,6 +3,7 @@ main {
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
+	width: 100%;
 }
 
 /* path edit */
@@ -11,7 +12,7 @@ main {
 	align-items: center;
 	flex-direction: column;
 	position: relative;
-	margin-bottom: 120px;
+	margin-bottom: 160px;
 }
 
 #edit-section * a,
@@ -50,46 +51,31 @@ main {
 /* stats */
 #stats {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	flex-wrap: wrap;
 	gap: 2%;
 	row-gap: 20px;
-	justify-content: center;
-	width: 100%;
+	align-items: center;
+	max-width: 100%;
+	width: 50%;
 	margin-bottom: 80px;
 }
 
 /* stat */
 .stat {
-	max-width: 130px;
-	min-width: 130px;
-	height: fit-content;
 	display: flex;
-	padding: 20px;
-	flex-direction: column;
-	width: fit-content;
-	justify-content: center;
+	flex-direction: row;
+	width: 100%;
+	gap: 24px;
+	height: 70px;
+	justify-content: space-between;
 	align-items: center;
-	text-align: center;
-	overflow-wrap: break-word;
-}
-
-.stat * {
-	max-width: 100%;
+	padding-inline: 16px;
+	box-sizing: border-box;
 }
 
 .stat input {
-	text-align: center;
-	width: 100%;
-}
-
-.stat-stepeq {
-	color: var(--main1-dim);
-}
-
-.stat-count-input,
-.stat-count {
-	margin-top: 16px;
+	padding-inline: 8px;
 }
 
 .stat-count {
@@ -98,12 +84,27 @@ main {
 	border-radius: 4px;
 }
 
+.stat-count-input input {
+	text-align: center;
+}
+
+.stat-count-input {
+	width: 30%;
+}
+
+.stat h3 {
+	width: 25%;
+}
+
 /* edit stat */
 .delete-stat-button,
 .save-stat-button,
 #create-stat-button {
 	user-select: none;
-	margin-top: 6px;
+}
+
+.stat-stepeq-input {
+	width: 30%;
 }
 
 /* create stat */
