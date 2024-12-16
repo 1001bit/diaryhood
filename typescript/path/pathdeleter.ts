@@ -1,4 +1,4 @@
-class PathDeletor {
+class PathDeleter {
 	pathId: string;
 	askedIfSure: boolean;
 

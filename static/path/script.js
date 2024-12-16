@@ -23,7 +23,7 @@ const createStatNameInput = document.getElementById("create-stat-name");
 const createStatButton = document.getElementById("create-stat-button");
 const pathStepsElem = document.getElementById("path-steps");
 const ownerElem = document.getElementById("path-owner");
-class PathDeletor {
+class PathDeleter {
     constructor(pathId) {
         this.pathId = pathId;
         this.askedIfSure = false;
@@ -175,7 +175,7 @@ class Stat {
         this.statElem = this.newStatElem(this.stat, editRight);
         this.updateStat(stat);
         this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
-        this.deletor = new StatDeletor(pathId, stat.name);
+        this.deleter = new StatDeleter(pathId, stat.name);
         this.updater = new StatUpdater(stat.name, pathId);
     }
     newStatElem(stat, editRight) {
@@ -230,7 +230,7 @@ class Stat {
             this.showSaveButtonIfChanged(elems);
         });
         elems.deleteButton.addEventListener("click", () => {
-            this.deletor.delete().then((message) => {
+            this.deleter.delete().then((message) => {
                 var _a;
                 if (message == "") {
                     this.statElem.remove();
@@ -340,7 +340,7 @@ class StatCreator {
         });
     }
 }
-class StatDeletor {
+class StatDeleter {
     constructor(pathId, name) {
         this.deleteCallback = () => { };
         this.pathId = pathId;
@@ -467,7 +467,7 @@ class StatsManager {
     }
     initStat(stat, editRight) {
         const pageStat = new Stat(stat, editRight, this.pathId);
-        pageStat.deletor.setDeleteCallback(() => {
+        pageStat.deleter.setDeleteCallback(() => {
             this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
             this.updatePathSteps();
         });
@@ -579,7 +579,7 @@ class Path {
     }
 }
 const path = new Path(window.location.pathname.split("/").pop() || "0");
-const deletor = new PathDeletor(path.id);
+const deleter = new PathDeleter(path.id);
 const editor = new PathEditor(path);
 let editing = false;
 editButton.addEventListener("click", () => {

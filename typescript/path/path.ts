@@ -1,4 +1,4 @@
-/// <reference path="pathdeletor.ts"/>
+/// <reference path="pathdeleter.ts"/>
 /// <reference path="patheditor.ts"/>
 /// <reference path="statsmanager.ts"/>
 

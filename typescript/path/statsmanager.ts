@@ -1,6 +1,7 @@
 /// <reference path="stat.ts" />
 /// <reference path="statcreator.ts" />
-/// <reference path="statcontrollers.ts" />
+/// <reference path="statdeleter.ts" />
+/// <reference path="statupdater.ts" />
 
 interface StatCount {
 	name: string;
@@ -57,7 +58,7 @@ class StatsManager {
 
 	initStat(stat: StatInterface, editRight: boolean): Stat {
 		const pageStat = new Stat(stat, editRight, this.pathId);
-		pageStat.deletor.setDeleteCallback(() => {
+		pageStat.deleter.setDeleteCallback(() => {
 			this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
 			this.updatePathSteps();
 		});

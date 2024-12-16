@@ -1,7 +1,7 @@
 /// <reference path="path.ts"/>
 
 const path = new Path(window.location.pathname.split("/").pop() || "0");
-const deletor = new PathDeletor(path.id);
+const deleter = new PathDeleter(path.id);
 const editor = new PathEditor(path);
 
 // edit button click

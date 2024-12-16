@@ -15,7 +15,7 @@ class Stat {
 	statElem: HTMLDivElement;
 	editStatElem: HTMLDivElement | null;
 
-	deletor: StatDeletor;
+	deleter: StatDeleter;
 	updater: StatUpdater;
 
 	constructor(stat: StatInterface, editRight: boolean, pathId: string) {
@@ -29,7 +29,7 @@ class Stat {
 		this.updateStat(stat);
 		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
 
-		this.deletor = new StatDeletor(pathId, stat.name);
+		this.deleter = new StatDeleter(pathId, stat.name);
 		this.updater = new StatUpdater(stat.name, pathId);
 	}
 
@@ -121,7 +121,7 @@ class Stat {
 
 		// delete
 		elems.deleteButton.addEventListener("click", () => {
-			this.deletor.delete().then((message) => {
+			this.deleter.delete().then((message) => {
 				if (message == "") {
 					this.statElem.remove();
 					this.editStatElem?.remove();
