@@ -89,5 +89,6 @@
     [X] Path owner link
     [X] Change stat cards to stat lines
     [ ] Stat quota
+        [X] Template
 
 [ ] Responsible design

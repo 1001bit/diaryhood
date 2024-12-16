@@ -88,23 +88,16 @@ main {
 	text-align: center;
 }
 
-.stat-count-input {
-	width: 30%;
-}
-
-.stat h3 {
-	width: 25%;
+.stat > * {
+	width: 21%;
 }
 
 /* edit stat */
 .delete-stat-button,
 .save-stat-button,
 #create-stat-button {
+	text-align: right;
 	user-select: none;
-}
-
-.stat-stepeq-input {
-	width: 30%;
 }
 
 /* create stat */
