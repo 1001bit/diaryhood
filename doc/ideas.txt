@@ -1,2 +1,1 @@
-On path creation, user can set own stats and "import" their progress from real life by simply setting the stats and their step equivalent.
-On home page there also will be some reminders to do something
+some sort of habit tracking

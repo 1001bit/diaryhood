@@ -66,7 +66,15 @@
         [X] Count update
     [X] Test
 
-[X] Path page
+[X] Profile page
+    [X] Dummy layout
+    [X] Use templ variables to fill the layout
+    [X] Name change
+    [X] Path creation
+    [X] Real paths view
+    [X] Avatar
+
+[ ] Path page
     [X] Path view
         [X] Stats
         [X] Overall steps
@@ -78,13 +86,5 @@
         [X] Stats create
     [X] Stats count update
     [X] Path owner link
-
-[X] Profile page
-    [X] Dummy layout
-    [X] Use templ variables to fill the layout
-    [X] Name change
-    [X] Path creation
-    [X] Real paths view
-    [X] Avatar
-
-[ ] Home page
+    [ ] Change stat cards to stat lines
+    [ ] Quota for stat

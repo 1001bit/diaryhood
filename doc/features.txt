@@ -9,18 +9,17 @@ L1
     Profile page
     Stats for path. 1 Stat unit = Some step units. Steps are calculated on client side
 
-Doing:
 L2
     Dynamic file storage, profile picture
-    Enhanced Home page
-    Path levels
-    Streak
+Doing:
+    Daily quota with streak (1 day skip per 4 days)
+    Home page with quotas
 
 L3
-    Special (one-time) tasks that increment some stats
-    Routine tasks/quota
+    Path levels
+    Compound tasks, which consist of some amount of stats
+        One-time, like "read a book" task consists of 200 pages
+        Routine, like "workout" task consists of 100 pushups and 50 pullups
 
-L4
-    Time stat for a task
-    Possibility to add time for a task
-    Tasks, that start a timer
+Additional
+    Time along steps for stat
