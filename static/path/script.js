@@ -169,7 +169,6 @@ class PathEditor {
 class Stat {
     constructor(stat, editRight, pathId) {
         this.stat = stat;
-        this.newCount = stat.count;
         this.steps = 0;
         this.stepsUpdateCallback = () => { };
         this.statElem = this.newStatElem(this.stat, editRight);
@@ -198,8 +197,8 @@ class Stat {
     }
     initEvents(countInput) {
         countInput.addInputListener((num) => {
-            this.newCount = num;
-            this.steps = this.newCount * this.stat.stepEquivalent;
+            this.stat.count = num;
+            this.steps = this.stat.count * this.stat.stepEquivalent;
             this.stepsUpdateCallback();
         });
     }
@@ -210,6 +209,7 @@ class Stat {
         const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
         const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
         const stepEqInput = new NumberInput(editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
+        const quotaInput = new NumberInput(editStatElem.getElementsByClassName("stat-quota-input")[0]);
         nameInput.value = stat.name;
         stepEqInput.setValue(stat.stepEquivalent);
         const elems = {
@@ -217,13 +217,13 @@ class Stat {
             saveButton,
             nameInput,
             stepEqInput,
+            quotaInput,
         };
         this.initEditEvents(elems);
         return editStatElem;
     }
     initEditEvents(elems) {
         removeBorderColorOnFocus(elems.nameInput);
-        removeBorderColorOnFocus(elems.stepEqInput.getInputElem());
         editButton.addEventListener("click", () => {
             elems.nameInput.value = this.stat.name;
             elems.stepEqInput.setValue(this.stat.stepEquivalent);
@@ -242,14 +242,22 @@ class Stat {
         });
         elems.saveButton.addEventListener("click", () => {
             this.updater
-                .save(elems.nameInput.value, elems.stepEqInput.getValue())
+                .save({
+                name: elems.nameInput.value,
+                stepEquivalent: elems.stepEqInput.getValue(),
+                quota: elems.quotaInput.getValue(),
+            })
                 .then((message) => {
                 if (message == "") {
                     this.stat.name = elems.nameInput.value;
                     this.stat.stepEquivalent = elems.stepEqInput.getValue();
+                    this.stat.quota = elems.quotaInput.getValue();
                     this.updateStat(this.stat);
                     this.showSaveButtonIfChanged(elems);
+                    return;
                 }
+                elems.saveButton.innerText = message;
+                setBorderColor(elems.nameInput, "err");
             });
         });
         elems.nameInput.addEventListener("input", () => {
@@ -257,7 +265,9 @@ class Stat {
         });
         elems.stepEqInput.addInputListener(() => {
             this.showSaveButtonIfChanged(elems);
-            removeBorderColor(elems.stepEqInput.getInputElem());
+        });
+        elems.quotaInput.addInputListener(() => {
+            this.showSaveButtonIfChanged(elems);
         });
         this.showSaveButtonIfChanged(elems);
     }
@@ -266,13 +276,14 @@ class Stat {
         const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
         statNameElem.innerText = this.stat.name;
-        statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
-        this.steps = this.newCount * this.stat.stepEquivalent;
+        statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
+        this.steps = this.stat.count * this.stat.stepEquivalent;
         this.stepsUpdateCallback();
     }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
-            elems.stepEqInput.getValue() == this.stat.stepEquivalent);
+            elems.stepEqInput.getValue() == this.stat.stepEquivalent &&
+            elems.quotaInput.getValue() == this.stat.quota);
         elems.saveButton.innerText = "save";
         elems.deleteButton.innerText = "delete";
         setVisibility(elems.saveButton, changed);
@@ -387,19 +398,13 @@ class StatUpdater {
         this.name = name;
         this.pathId = pathId;
     }
-    save(newName, newStepEq) {
-        if (newName == "") {
+    save(newStat) {
+        if (newStat.name == "") {
             return Promise.resolve("no name");
         }
-        if (Number.isNaN(newStepEq)) {
-            return Promise.resolve("no step eq.");
-        }
-        return this.postSave({
-            name: newName,
-            stepEquivalent: newStepEq,
-        }).then((message) => {
+        return this.postSave(newStat).then((message) => {
             if (message == "") {
-                this.name = newName;
+                this.name = newStat.name;
             }
             return message;
         });
@@ -453,6 +458,7 @@ class StatsManager {
                 name: name,
                 stepEquivalent: 1,
                 count: 0,
+                quota: 0,
             };
             const pageStat = this.initStat(stat, true);
             setVisibility(pageStat.statElem, false);

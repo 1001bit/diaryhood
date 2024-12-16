@@ -1,6 +1,7 @@
 interface EditStatElemets {
 	nameInput: HTMLInputElement;
 	stepEqInput: NumberInput;
+	quotaInput: NumberInput;
 	saveButton: HTMLElement;
 	deleteButton: HTMLElement;
 }
@@ -8,7 +9,6 @@ interface EditStatElemets {
 class Stat {
 	stat: StatInterface;
 
-	newCount: number;
 	steps: number;
 	stepsUpdateCallback: () => void;
 
@@ -21,7 +21,6 @@ class Stat {
 	constructor(stat: StatInterface, editRight: boolean, pathId: string) {
 		this.stat = stat;
 
-		this.newCount = stat.count;
 		this.steps = 0;
 		this.stepsUpdateCallback = () => {};
 
@@ -62,8 +61,8 @@ class Stat {
 
 	initEvents(countInput: NumberInput) {
 		countInput.addInputListener((num: number) => {
-			this.newCount = num;
-			this.steps = this.newCount * this.stat.stepEquivalent;
+			this.stat.count = num;
+			this.steps = this.stat.count * this.stat.stepEquivalent;
 			this.stepsUpdateCallback();
 		});
 	}
@@ -92,6 +91,12 @@ class Stat {
 			)[0] as HTMLDivElement
 		);
 
+		const quotaInput = new NumberInput(
+			editStatElem.getElementsByClassName(
+				"stat-quota-input"
+			)[0] as HTMLDivElement
+		);
+
 		nameInput.value = stat.name;
 		stepEqInput.setValue(stat.stepEquivalent);
 
@@ -100,6 +105,7 @@ class Stat {
 			saveButton,
 			nameInput,
 			stepEqInput,
+			quotaInput,
 		};
 
 		this.initEditEvents(elems);
@@ -109,7 +115,6 @@ class Stat {
 
 	initEditEvents(elems: EditStatElemets) {
 		removeBorderColorOnFocus(elems.nameInput);
-		removeBorderColorOnFocus(elems.stepEqInput.getInputElem());
 
 		// edit button click
 		editButton.addEventListener("click", () => {
@@ -134,15 +139,23 @@ class Stat {
 		// save
 		elems.saveButton.addEventListener("click", () => {
 			this.updater
-				.save(elems.nameInput.value, elems.stepEqInput.getValue())
+				.save({
+					name: elems.nameInput.value,
+					stepEquivalent: elems.stepEqInput.getValue(),
+					quota: elems.quotaInput.getValue(),
+				})
 				.then((message) => {
 					if (message == "") {
 						this.stat.name = elems.nameInput.value;
 						this.stat.stepEquivalent = elems.stepEqInput.getValue();
+						this.stat.quota = elems.quotaInput.getValue();
 						this.updateStat(this.stat);
 
 						this.showSaveButtonIfChanged(elems);
+						return;
 					}
+					elems.saveButton.innerText = message;
+					setBorderColor(elems.nameInput, "err");
 				});
 		});
 
@@ -154,7 +167,11 @@ class Stat {
 		// stepEq edit
 		elems.stepEqInput.addInputListener(() => {
 			this.showSaveButtonIfChanged(elems);
-			removeBorderColor(elems.stepEqInput.getInputElem());
+		});
+
+		// quota edit
+		elems.quotaInput.addInputListener(() => {
+			this.showSaveButtonIfChanged(elems);
 		});
 
 		this.showSaveButtonIfChanged(elems);
@@ -171,16 +188,17 @@ class Stat {
 		)[0] as HTMLDivElement;
 
 		statNameElem.innerText = this.stat.name;
-		statStepEqElem.innerText = `= ${this.stat.stepEquivalent.toString()} steps`;
+		statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
 
-		this.steps = this.newCount * this.stat.stepEquivalent;
+		this.steps = this.stat.count * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();
 	}
 
 	showSaveButtonIfChanged(elems: EditStatElemets) {
 		const changed = !(
 			elems.nameInput.value == this.stat.name &&
-			elems.stepEqInput.getValue() == this.stat.stepEquivalent
+			elems.stepEqInput.getValue() == this.stat.stepEquivalent &&
+			elems.quotaInput.getValue() == this.stat.quota
 		);
 
 		elems.saveButton.innerText = "save";

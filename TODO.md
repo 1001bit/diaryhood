@@ -90,5 +90,6 @@
     [X] Change stat cards to stat lines
     [ ] Stat quota
         [X] Template
+        [X] Basic logic
 
 [ ] Responsible design

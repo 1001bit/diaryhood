@@ -40,6 +40,7 @@ class StatsManager {
 				name: name,
 				stepEquivalent: 1,
 				count: 0,
+				quota: 0,
 			};
 
 			const pageStat = this.initStat(stat, true);

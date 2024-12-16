@@ -7,20 +7,14 @@ class StatUpdater {
 		this.pathId = pathId;
 	}
 
-	save(newName: string, newStepEq: number): Promise<string> {
-		if (newName == "") {
+	save(newStat: CountlessStatInterface): Promise<string> {
+		if (newStat.name == "") {
 			return Promise.resolve("no name");
 		}
-		if (Number.isNaN(newStepEq)) {
-			return Promise.resolve("no step eq.");
-		}
 
-		return this.postSave({
-			name: newName,
-			stepEquivalent: newStepEq,
-		}).then((message) => {
+		return this.postSave(newStat).then((message) => {
 			if (message == "") {
-				this.name = newName;
+				this.name = newStat.name;
 			}
 			return message;
 		});
