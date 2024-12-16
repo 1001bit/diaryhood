@@ -56,7 +56,6 @@ main {
 	gap: 2%;
 	row-gap: 20px;
 	align-items: center;
-	max-width: 100%;
 	width: 50%;
 	margin-bottom: 80px;
 }
@@ -65,9 +64,10 @@ main {
 .stat {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 	width: 100%;
-	gap: 24px;
-	height: 70px;
+	gap: 16px;
+	min-height: 70px;
 	justify-content: space-between;
 	align-items: center;
 	padding-inline: 16px;
@@ -100,6 +100,27 @@ main {
 	user-select: none;
 }
 
+/* adapt for mobile */
+@media (max-width: 1000px) {
+	#stats {
+		width: 98%;
+	}
+
+	.stat {
+		flex-direction: column;
+		padding-block: 24px;
+	}
+
+	.stat > * {
+		width: 100%;
+	}
+
+	.stat *,
+	#create-stat-button {
+		text-align: center;
+	}
+}
+
 /* create stat */
 #stat-create {
 	border-color: var(--acc1-dim);
@@ -119,6 +140,7 @@ main {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 	gap: 8px;
 }
 
