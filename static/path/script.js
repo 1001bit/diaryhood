@@ -169,6 +169,7 @@ class PathEditor {
 class Stat {
     constructor(stat, editRight, pathId) {
         this.stat = stat;
+        this.newCount = stat.count;
         this.steps = 0;
         this.stepsUpdateCallback = () => { };
         this.statElem = this.newStatElem(this.stat, editRight);
@@ -197,8 +198,8 @@ class Stat {
     }
     initEvents(countInput) {
         countInput.addInputListener((num) => {
-            this.stat.count = num;
-            this.steps = this.stat.count * this.stat.stepEquivalent;
+            this.newCount = num;
+            this.steps = this.newCount * this.stat.stepEquivalent;
             this.stepsUpdateCallback();
         });
     }
@@ -277,7 +278,7 @@ class Stat {
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
         statNameElem.innerText = this.stat.name;
         statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
-        this.steps = this.stat.count * this.stat.stepEquivalent;
+        this.steps = this.newCount * this.stat.stepEquivalent;
         this.stepsUpdateCallback();
     }
     showSaveButtonIfChanged(elems) {

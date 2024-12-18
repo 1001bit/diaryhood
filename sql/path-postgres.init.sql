@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS paths (
     user_id INTEGER NOT NULL,
     name VARCHAR(31) NOT NULL,
     public BOOLEAN NOT NULL DEFAULT false,
-
-    CONSTRAINT paths_userid_id_unique UNIQUE (user_id, name)
+    CONSTRAINT paths_userid_name_unique UNIQUE (user_id, name)
 );
+
 
 CREATE TABLE IF NOT EXISTS stats (
     path_id INTEGER NOT NULL,
@@ -14,5 +14,8 @@ CREATE TABLE IF NOT EXISTS stats (
     step_equivalent INTEGER NOT NULL DEFAULT 1,
 
     PRIMARY KEY (path_id, name),
-    CONSTRAINT stats_path_id_fkey FOREIGN KEY (path_id) REFERENCES paths (id) ON DELETE CASCADE
+    CONSTRAINT stats_path_id_fkey 
+        FOREIGN KEY (path_id) 
+        REFERENCES paths (id) 
+        ON DELETE CASCADE
 );

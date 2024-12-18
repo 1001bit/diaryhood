@@ -8,6 +8,7 @@ interface EditStatElemets {
 
 class Stat {
 	stat: StatInterface;
+	newCount: number;
 
 	steps: number;
 	stepsUpdateCallback: () => void;
@@ -20,6 +21,7 @@ class Stat {
 
 	constructor(stat: StatInterface, editRight: boolean, pathId: string) {
 		this.stat = stat;
+		this.newCount = stat.count;
 
 		this.steps = 0;
 		this.stepsUpdateCallback = () => {};
@@ -61,8 +63,8 @@ class Stat {
 
 	initEvents(countInput: NumberInput) {
 		countInput.addInputListener((num: number) => {
-			this.stat.count = num;
-			this.steps = this.stat.count * this.stat.stepEquivalent;
+			this.newCount = num;
+			this.steps = this.newCount * this.stat.stepEquivalent;
 			this.stepsUpdateCallback();
 		});
 	}
@@ -190,7 +192,7 @@ class Stat {
 		statNameElem.innerText = this.stat.name;
 		statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
 
-		this.steps = this.stat.count * this.stat.stepEquivalent;
+		this.steps = this.newCount * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();
 	}
 
