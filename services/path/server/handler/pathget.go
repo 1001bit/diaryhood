@@ -11,9 +11,8 @@ import (
 )
 
 type PathResponse struct {
-	Path      pathmodel.Path `json:"path"`
-	EditRight bool           `json:"editRight"`
-	OwnerId   string         `json:"ownerId"`
+	Path      pathmodel.FullPath `json:"path"`
+	EditRight bool               `json:"editRight"`
 }
 
 // single path
@@ -28,7 +27,7 @@ func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path, ownerId, err := h.pathstore.GetPathAndOwnerId(r.Context(), akserId, r.PathValue("id"))
+	path, err := h.pathstore.GetFullPath(r.Context(), akserId, r.PathValue("id"))
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -40,8 +39,7 @@ func (h *Handler) HandlePath(w http.ResponseWriter, r *http.Request) {
 
 	resp := PathResponse{
 		Path:      path,
-		EditRight: ownerId == akserId,
-		OwnerId:   ownerId,
+		EditRight: path.OwnerId == akserId,
 	}
 
 	pathJson, err := json.Marshal(resp)

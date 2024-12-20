@@ -191,17 +191,6 @@ function createNewPath() {
 }
 let userSteps = 0;
 const userId = window.location.pathname.split("/").pop();
-function countSteps(stats) {
-    let count = 0;
-    if (stats) {
-        for (const stat of stats) {
-            count += stat.count * stat.stepEquivalent;
-        }
-    }
-    userSteps += count;
-    userStepsElem.innerText = `${userSteps} steps`;
-    return count;
-}
 function newPathElem(path) {
     const pathElem = samplePathElem.cloneNode(true);
     pathElem.removeAttribute("id");
@@ -211,7 +200,7 @@ function newPathElem(path) {
     const pathStepsElem = pathElem.getElementsByClassName("path-steps")[0];
     pathNameElem.innerText = path.name;
     pathLinkElem.href = `/path/${path.id}`;
-    pathStepsElem.innerText = `${countSteps(path.stats)} steps`;
+    pathStepsElem.innerText = `${path.steps} steps`;
     return pathElem;
 }
 function renderPaths(paths) {

@@ -102,7 +102,7 @@ func (c *HTTPClient) FetchPath(ctx context.Context, pathId string) (int, *handle
 	return code, path, nil
 }
 
-func (c *HTTPClient) UpdatePath(ctx context.Context, pathId string, body handler.UpdatePathRequest) (int, error) {
+func (c *HTTPClient) UpdatePath(ctx context.Context, pathId string, body pathmodel.Path) (int, error) {
 	code, _, err := c.MakeRequest(ctx, "PUT", "/"+pathId, body)
 	return code, err
 }

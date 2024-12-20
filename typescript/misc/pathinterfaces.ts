@@ -17,3 +17,10 @@ interface PathInterface {
 	public: boolean;
 	stats: StatInterface[];
 }
+
+interface PathWithSteps {
+	id: string;
+	name: string;
+	public: boolean;
+	steps: number;
+}

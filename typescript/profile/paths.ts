@@ -3,22 +3,7 @@
 let userSteps = 0;
 const userId = window.location.pathname.split("/").pop();
 
-function countSteps(stats: StatInterface[]) {
-	let count = 0;
-
-	if (stats) {
-		for (const stat of stats) {
-			count += stat.count * stat.stepEquivalent;
-		}
-	}
-
-	userSteps += count;
-	userStepsElem.innerText = `${userSteps} steps`;
-
-	return count;
-}
-
-function newPathElem(path: PathInterface) {
+function newPathElem(path: PathWithSteps) {
 	const pathElem = samplePathElem.cloneNode(true) as HTMLDivElement;
 	pathElem.removeAttribute("id");
 	setVisibility(pathElem, true);
@@ -37,11 +22,11 @@ function newPathElem(path: PathInterface) {
 
 	pathNameElem.innerText = path.name;
 	pathLinkElem.href = `/path/${path.id}`;
-	pathStepsElem.innerText = `${countSteps(path.stats)} steps`;
+	pathStepsElem.innerText = `${path.steps} steps`;
 	return pathElem;
 }
 
-function renderPaths(paths: PathInterface[]) {
+function renderPaths(paths: PathWithSteps[]) {
 	if (!paths) {
 		return;
 	}

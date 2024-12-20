@@ -8,8 +8,18 @@ import (
 type Path struct {
 	Name   string `json:"name"`
 	Public bool   `json:"public"`
-	Stats  []Stat `json:"stats"`
-	Id     int32  `json:"id"`
+	Id     string `json:"id"`
+}
+
+type FullPath struct {
+	Path
+	Stats   []Stat `json:"stats"`
+	OwnerId string `json:"ownerId"`
+}
+
+type PathWithSteps struct {
+	Path
+	Steps int `json:"steps"`
 }
 
 func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (string, error) {
@@ -26,12 +36,12 @@ func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (s
 	return id, err
 }
 
-func (ps *PathStore) UpdatePath(ctx context.Context, pathId string, name string, public bool, askerId string) error {
+func (ps *PathStore) UpdatePath(ctx context.Context, newPath Path, askerId string) error {
 	result, err := ps.postgresC.ExecContext(ctx, `
 		UPDATE paths
 		SET name = $1, public = $2
 		WHERE id = $3 AND user_id = $4
-	`, name, public, pathId, askerId)
+	`, newPath.Name, newPath.Public, newPath.Id, askerId)
 
 	if err != nil {
 		return err
@@ -63,7 +73,7 @@ func (ps *PathStore) DeletePath(ctx context.Context, pathId string, askerId stri
 	return nil
 }
 
-func (ps *PathStore) GetPathAndOwnerId(ctx context.Context, askerId, pathId string) (Path, string, error) {
+func (ps *PathStore) GetFullPath(ctx context.Context, askerId, pathId string) (FullPath, error) {
 	row, err := ps.postgresC.QueryRowContext(ctx, `
 		SELECT id, name, public, user_id
 		FROM paths
@@ -71,51 +81,57 @@ func (ps *PathStore) GetPathAndOwnerId(ctx context.Context, askerId, pathId stri
 		AND (public = true OR user_id = $2)
 	`, pathId, askerId)
 	if err != nil {
-		return Path{}, "", err
+		return FullPath{}, err
 	}
 
-	userId := ""
-	path := Path{
+	path := FullPath{
 		Stats: []Stat{},
 	}
 
-	if err := row.Scan(&path.Id, &path.Name, &path.Public, &userId); err != nil {
-		return Path{}, "", err
+	if err := row.Scan(&path.Id, &path.Name, &path.Public, &path.OwnerId); err != nil {
+		return FullPath{}, err
 	}
 
 	path.Stats, err = ps.GetStats(ctx, path.Id)
 
-	return path, userId, err
+	return path, err
 }
 
-func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]*Path, error) {
+func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]PathWithSteps, error) {
 	rows, err := ps.postgresC.QueryContext(ctx, `
-        SELECT id, name, public
-        FROM paths
-        WHERE user_id = $1 
-        AND (public = true OR user_id = $2)
+		SELECT 
+			p.id, 
+			p.name, 
+			p.public, 
+			COALESCE(SUM(s.count * s.step_equivalent), 0) AS total_steps
+		FROM 
+			paths p
+		LEFT JOIN 
+			stats s
+		ON 
+			s.path_id = p.id
+		WHERE 
+			p.user_id = $1 
+			AND (p.public = true OR p.user_id = $2)
+		GROUP BY 
+			p.id, p.name, p.public;
     `, userId, askerId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var paths []*Path
-	pathMap := make(map[int32]*Path)
+	paths := make([]PathWithSteps, 0)
 
 	for rows.Next() {
-		path := &Path{
-			Stats: []Stat{},
-		}
+		path := PathWithSteps{}
 
-		if err := rows.Scan(&path.Id, &path.Name, &path.Public); err != nil {
+		if err := rows.Scan(&path.Id, &path.Name, &path.Public, &path.Steps); err != nil {
 			return nil, err
 		}
 
 		paths = append(paths, path)
-		pathMap[path.Id] = paths[len(paths)-1]
 	}
 
-	err = ps.FetchStatsIntoPaths(ctx, pathMap)
 	return paths, err
 }

@@ -105,7 +105,7 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 	})
 
 	t.Run("update path by another user", func(t *testing.T) {
-		code, err := client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+		code, err := client.UpdatePath(ctx, pathId, pathmodel.Path{
 			Name:   "name",
 			Public: true,
 		})
@@ -117,7 +117,7 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 
 	t.Run("update path by owner", func(t *testing.T) {
 		client.SetJWT(jwt1)
-		code, err := client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+		code, err := client.UpdatePath(ctx, pathId, pathmodel.Path{
 			Name:   "name2",
 			Public: true,
 		})
@@ -127,7 +127,7 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 		}
 
 		// bad inputs
-		code, err = client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+		code, err = client.UpdatePath(ctx, pathId, pathmodel.Path{
 			Name:   "TooLongName111111111111111111111111111111",
 			Public: true,
 		})
@@ -135,7 +135,7 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 			t.Errorf("update path failed: %v", err)
 		}
 
-		code, err = client.UpdatePath(ctx, pathId, handler.UpdatePathRequest{
+		code, err = client.UpdatePath(ctx, pathId, pathmodel.Path{
 			Name:   "special char",
 			Public: true,
 		})
@@ -240,7 +240,7 @@ func testServer(t *testing.T, ctx context.Context, client *HTTPClient) {
 		client.SetJWT(jwt2)
 		code, resp, err = client.FetchPath(ctx, pathId)
 		if err = handleResults(code, http.StatusOK, err); err != nil {
-			t.Errorf("fetch path failed: %v", err)
+			t.Fatalf("fetch path failed: %v", err)
 		}
 		if resp.EditRight {
 			t.Errorf("fetch path failed: edit right")
