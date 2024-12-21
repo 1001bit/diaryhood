@@ -77,6 +77,11 @@ main {
 	max-width: 100%;
 }
 
+.stat-row {
+	display: flex;
+	gap: 8px;
+}
+
 .stat input {
 	padding-inline: 8px;
 	text-align: center;

@@ -1,6 +1,6 @@
 interface EditStatElemets {
 	nameInput: HTMLInputElement;
-	stepEqInput: NumberInput;
+	stepEqInput: HTMLInputElement;
 	saveButton: HTMLElement;
 	deleteButton: HTMLElement;
 }
@@ -86,14 +86,13 @@ class Stat {
 			"stat-name-input"
 		)[0] as HTMLInputElement;
 
-		const stepEqInput = new NumberInput(
-			editStatElem.getElementsByClassName(
-				"stat-stepeq-input"
-			)[0] as HTMLDivElement
-		);
+		// TODO: Prevent non-number input
+		const stepEqInput = editStatElem.getElementsByClassName(
+			"stat-stepeq-input"
+		)[0] as HTMLInputElement;
 
 		nameInput.value = stat.name;
-		stepEqInput.setValue(stat.stepEquivalent);
+		stepEqInput.value = stat.stepEquivalent.toString();
 
 		const elems = {
 			deleteButton,
@@ -113,7 +112,7 @@ class Stat {
 		// edit button click
 		editButton.addEventListener("click", () => {
 			elems.nameInput.value = this.stat.name;
-			elems.stepEqInput.setValue(this.stat.stepEquivalent);
+			elems.stepEqInput.value = this.stat.stepEquivalent.toString();
 
 			this.showSaveButtonIfChanged(elems);
 		});
@@ -135,12 +134,14 @@ class Stat {
 			this.updater
 				.save({
 					name: elems.nameInput.value,
-					stepEquivalent: elems.stepEqInput.getValue(),
+					stepEquivalent: Number(elems.stepEqInput.value),
 				})
 				.then((message) => {
 					if (message == "") {
 						this.stat.name = elems.nameInput.value;
-						this.stat.stepEquivalent = elems.stepEqInput.getValue();
+						this.stat.stepEquivalent = Number(
+							elems.stepEqInput.value
+						);
 						this.updateStat(this.stat);
 
 						this.showSaveButtonIfChanged(elems);
@@ -157,7 +158,7 @@ class Stat {
 		});
 
 		// stepEq edit
-		elems.stepEqInput.addInputListener(() => {
+		elems.stepEqInput.addEventListener("input", () => {
 			this.showSaveButtonIfChanged(elems);
 		});
 
@@ -184,7 +185,7 @@ class Stat {
 	showSaveButtonIfChanged(elems: EditStatElemets) {
 		const changed = !(
 			elems.nameInput.value == this.stat.name &&
-			elems.stepEqInput.getValue() == this.stat.stepEquivalent
+			Number(elems.stepEqInput.value) == this.stat.stepEquivalent
 		);
 
 		elems.saveButton.innerText = "save";

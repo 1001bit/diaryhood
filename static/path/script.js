@@ -209,9 +209,9 @@ class Stat {
         const deleteButton = editStatElem.getElementsByClassName("delete-stat-button")[0];
         const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
         const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
-        const stepEqInput = new NumberInput(editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
+        const stepEqInput = editStatElem.getElementsByClassName("stat-stepeq-input")[0];
         nameInput.value = stat.name;
-        stepEqInput.setValue(stat.stepEquivalent);
+        stepEqInput.value = stat.stepEquivalent.toString();
         const elems = {
             deleteButton,
             saveButton,
@@ -225,7 +225,7 @@ class Stat {
         removeBorderColorOnFocus(elems.nameInput);
         editButton.addEventListener("click", () => {
             elems.nameInput.value = this.stat.name;
-            elems.stepEqInput.setValue(this.stat.stepEquivalent);
+            elems.stepEqInput.value = this.stat.stepEquivalent.toString();
             this.showSaveButtonIfChanged(elems);
         });
         elems.deleteButton.addEventListener("click", () => {
@@ -243,12 +243,12 @@ class Stat {
             this.updater
                 .save({
                 name: elems.nameInput.value,
-                stepEquivalent: elems.stepEqInput.getValue(),
+                stepEquivalent: Number(elems.stepEqInput.value),
             })
                 .then((message) => {
                 if (message == "") {
                     this.stat.name = elems.nameInput.value;
-                    this.stat.stepEquivalent = elems.stepEqInput.getValue();
+                    this.stat.stepEquivalent = Number(elems.stepEqInput.value);
                     this.updateStat(this.stat);
                     this.showSaveButtonIfChanged(elems);
                     return;
@@ -260,7 +260,7 @@ class Stat {
         elems.nameInput.addEventListener("input", () => {
             this.showSaveButtonIfChanged(elems);
         });
-        elems.stepEqInput.addInputListener(() => {
+        elems.stepEqInput.addEventListener("input", () => {
             this.showSaveButtonIfChanged(elems);
         });
         this.showSaveButtonIfChanged(elems);
@@ -276,7 +276,7 @@ class Stat {
     }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
-            elems.stepEqInput.getValue() == this.stat.stepEquivalent);
+            Number(elems.stepEqInput.value) == this.stat.stepEquivalent);
         elems.saveButton.innerText = "save";
         elems.deleteButton.innerText = "delete";
         setVisibility(elems.saveButton, changed);
