@@ -51,31 +51,35 @@ main {
 /* stats */
 #stats {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 2%;
-	row-gap: 20px;
-	align-items: center;
-	width: 50%;
+	gap: 20px;
+	align-items: first baseline;
+	justify-content: center;
+	width: 90%;
 	margin-bottom: 80px;
 }
 
 /* stat */
 .stat {
 	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	width: 100%;
+	flex-direction: column;
+	width: 300px;
 	gap: 16px;
-	min-height: 70px;
-	justify-content: space-between;
-	align-items: center;
-	padding-inline: 16px;
+	padding: 20px 16px;
 	box-sizing: border-box;
+	align-items: center;
+	word-wrap: break-word;
+	text-align: center;
+}
+
+.stat > * {
+	max-width: 100%;
 }
 
 .stat input {
 	padding-inline: 8px;
+	text-align: center;
 }
 
 .stat-count {
@@ -88,8 +92,8 @@ main {
 	text-align: center;
 }
 
-.stat > * {
-	width: 21%;
+.stat-quota {
+	text-align: center;
 }
 
 /* edit stat */
@@ -100,30 +104,13 @@ main {
 	user-select: none;
 }
 
-/* adapt for mobile */
-@media (max-width: 1000px) {
-	#stats {
-		width: 98%;
-	}
-
-	.stat {
-		flex-direction: column;
-		padding-block: 24px;
-	}
-
-	.stat > * {
-		width: 100%;
-	}
-
-	.stat *,
-	#create-stat-button {
-		text-align: center;
-	}
-}
-
 /* create stat */
 #stat-create {
 	border-color: var(--acc1-dim);
+}
+
+#stat-create .stat-section {
+	height: 60px;
 }
 
 #stat-create input {

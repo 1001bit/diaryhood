@@ -26,6 +26,12 @@ class StatCreator {
 	create() {
 		const name = createStatNameInput.value;
 
+		if (name == "") {
+			setBorderColor(createStatNameInput, "err");
+			createStatButton.innerText = "no name";
+			return;
+		}
+
 		this.postCreate(name).then((message) => {
 			if (message == "") {
 				this.createCallback(name);

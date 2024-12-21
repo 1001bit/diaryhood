@@ -1,7 +1,6 @@
 interface EditStatElemets {
 	nameInput: HTMLInputElement;
 	stepEqInput: NumberInput;
-	quotaInput: NumberInput;
 	saveButton: HTMLElement;
 	deleteButton: HTMLElement;
 }
@@ -93,12 +92,6 @@ class Stat {
 			)[0] as HTMLDivElement
 		);
 
-		const quotaInput = new NumberInput(
-			editStatElem.getElementsByClassName(
-				"stat-quota-input"
-			)[0] as HTMLDivElement
-		);
-
 		nameInput.value = stat.name;
 		stepEqInput.setValue(stat.stepEquivalent);
 
@@ -107,8 +100,7 @@ class Stat {
 			saveButton,
 			nameInput,
 			stepEqInput,
-			quotaInput,
-		};
+		} as EditStatElemets;
 
 		this.initEditEvents(elems);
 
@@ -144,13 +136,11 @@ class Stat {
 				.save({
 					name: elems.nameInput.value,
 					stepEquivalent: elems.stepEqInput.getValue(),
-					quota: elems.quotaInput.getValue(),
 				})
 				.then((message) => {
 					if (message == "") {
 						this.stat.name = elems.nameInput.value;
 						this.stat.stepEquivalent = elems.stepEqInput.getValue();
-						this.stat.quota = elems.quotaInput.getValue();
 						this.updateStat(this.stat);
 
 						this.showSaveButtonIfChanged(elems);
@@ -168,11 +158,6 @@ class Stat {
 
 		// stepEq edit
 		elems.stepEqInput.addInputListener(() => {
-			this.showSaveButtonIfChanged(elems);
-		});
-
-		// quota edit
-		elems.quotaInput.addInputListener(() => {
 			this.showSaveButtonIfChanged(elems);
 		});
 
@@ -199,8 +184,7 @@ class Stat {
 	showSaveButtonIfChanged(elems: EditStatElemets) {
 		const changed = !(
 			elems.nameInput.value == this.stat.name &&
-			elems.stepEqInput.getValue() == this.stat.stepEquivalent &&
-			elems.quotaInput.getValue() == this.stat.quota
+			elems.stepEqInput.getValue() == this.stat.stepEquivalent
 		);
 
 		elems.saveButton.innerText = "save";

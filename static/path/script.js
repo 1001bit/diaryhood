@@ -210,7 +210,6 @@ class Stat {
         const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
         const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
         const stepEqInput = new NumberInput(editStatElem.getElementsByClassName("stat-stepeq-input")[0]);
-        const quotaInput = new NumberInput(editStatElem.getElementsByClassName("stat-quota-input")[0]);
         nameInput.value = stat.name;
         stepEqInput.setValue(stat.stepEquivalent);
         const elems = {
@@ -218,7 +217,6 @@ class Stat {
             saveButton,
             nameInput,
             stepEqInput,
-            quotaInput,
         };
         this.initEditEvents(elems);
         return editStatElem;
@@ -246,13 +244,11 @@ class Stat {
                 .save({
                 name: elems.nameInput.value,
                 stepEquivalent: elems.stepEqInput.getValue(),
-                quota: elems.quotaInput.getValue(),
             })
                 .then((message) => {
                 if (message == "") {
                     this.stat.name = elems.nameInput.value;
                     this.stat.stepEquivalent = elems.stepEqInput.getValue();
-                    this.stat.quota = elems.quotaInput.getValue();
                     this.updateStat(this.stat);
                     this.showSaveButtonIfChanged(elems);
                     return;
@@ -265,9 +261,6 @@ class Stat {
             this.showSaveButtonIfChanged(elems);
         });
         elems.stepEqInput.addInputListener(() => {
-            this.showSaveButtonIfChanged(elems);
-        });
-        elems.quotaInput.addInputListener(() => {
             this.showSaveButtonIfChanged(elems);
         });
         this.showSaveButtonIfChanged(elems);
@@ -283,8 +276,7 @@ class Stat {
     }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
-            elems.stepEqInput.getValue() == this.stat.stepEquivalent &&
-            elems.quotaInput.getValue() == this.stat.quota);
+            elems.stepEqInput.getValue() == this.stat.stepEquivalent);
         elems.saveButton.innerText = "save";
         elems.deleteButton.innerText = "delete";
         setVisibility(elems.saveButton, changed);
@@ -311,6 +303,11 @@ class StatCreator {
     }
     create() {
         const name = createStatNameInput.value;
+        if (name == "") {
+            setBorderColor(createStatNameInput, "err");
+            createStatButton.innerText = "no name";
+            return;
+        }
         this.postCreate(name).then((message) => {
             if (message == "") {
                 this.createCallback(name);
