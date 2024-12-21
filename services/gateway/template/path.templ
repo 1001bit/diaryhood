@@ -46,10 +46,11 @@ templ SampleEditStat() {
 			<p class="dim">steps</p>
 		</div>
 		<div class="stat-row">
-			<p><input type="text" placeholder="24" class="no-padding stat-quota-time-input"/></p>
-			<p>hrs</p>
+			<p class="dim tiny">task:</p>
 			<p><input type="text" placeholder="0" class="no-padding stat-quota-input"/></p>
-			<p>quota</p>
+			<p class="dim tiny">in</p>
+			<p><input type="text" placeholder="24" class="no-padding stat-quota-time-input"/></p>
+			<p class="dim tiny">hrs</p>
 		</div>
 		<a class="save-stat-button hidden">save</a>
 		<a class="delete-stat-button hidden">delete</a>
@@ -60,7 +61,10 @@ templ SampleStat() {
 	<div class="stat box hidden" id="sample-stat">
 		<h3 class="stat-name">stat</h3>
 		<p class="stat-stepeq dim">= 1 step</p>
-		<p class="stat-quota">6 hrs to get 25</p>
+		<div class="stat-row">
+			<p class="stat-quota">500 / 1000</p>
+			<p class="stat-quota-time dim tiny">(6/24 hrs)</p>
+		</div>
 		<div class="number-input-box stat-count-input hidden">
 			<a class="minus">-</a>
 			<b><input type="text" placeholder="0" class="no-padding"/></b>
