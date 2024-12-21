@@ -16,10 +16,14 @@ Doing:
     Home page with quotas
 
 L3
-    Path levels
+    Some graphs
+    Overall progress visualization
+
+L4
     Compound tasks, which consist of some amount of stats
-        One-time, like "read a book" task consists of 200 pages
-        Routine, like "workout" task consists of 100 pushups and 50 pullups
+        One-time. Example: "read a book" task consists of 200 pages
+        Routine. Example: "workout" task consists of 100 pushups and 50 pullups
+    Path levels
 
 Additional
     Time along steps for stat
