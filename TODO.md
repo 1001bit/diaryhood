@@ -90,6 +90,9 @@
     [X] Change stat cards to stat lines
     [ ] Stat quota
         [X] HTML Template
-        [ ] Interactivity and API request
+        [X] Interactivity
+        [ ] Api request
+        [ ] Streak
+
 
 [ ] Responsible design

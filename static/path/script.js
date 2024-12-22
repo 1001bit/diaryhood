@@ -298,6 +298,8 @@ class Stat {
             if (message == "") {
                 this.stat.name = this.editStatElems.nameInput.value;
                 this.stat.stepEquivalent = Number(this.editStatElems.stepEqInput.value);
+                this.stat.quota.quota = Number(this.editStatElems.quotaInput.value);
+                this.stat.quota.hoursLimit = Number(this.editStatElems.quotaTimeInput.value);
                 this.updateStatElems(this.stat);
                 this.showSaveButtonIfChanged();
                 return;
@@ -329,7 +331,7 @@ class Stat {
         this.stat = newStat;
         this.statElems.name.innerText = this.stat.name;
         this.statElems.stepEq.innerText = `= ${this.stat.stepEquivalent} steps`;
-        this.statElems.quota.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
+        this.statElems.quota.innerText = `${this.stat.quota.countProgress + this.newCount - this.stat.count}/${this.stat.quota.quota}`;
         this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
         this.steps = this.newCount * this.stat.stepEquivalent;
         this.stepsUpdateCallback();

@@ -234,6 +234,12 @@ class Stat {
 					this.stat.stepEquivalent = Number(
 						this.editStatElems.stepEqInput.value
 					);
+					this.stat.quota.quota = Number(
+						this.editStatElems.quotaInput.value
+					);
+					this.stat.quota.hoursLimit = Number(
+						this.editStatElems.quotaTimeInput.value
+					);
 					this.updateStatElems(this.stat);
 
 					this.showSaveButtonIfChanged();
@@ -266,13 +272,17 @@ class Stat {
 		}/${this.stat.quota.quota}`;
 	}
 
+	// TODO: Highlight quota if it's reached
+
 	updateStatElems(newStat: StatInterface) {
 		this.stat = newStat;
 
 		this.statElems.name.innerText = this.stat.name;
 		this.statElems.stepEq.innerText = `= ${this.stat.stepEquivalent} steps`;
 
-		this.statElems.quota.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
+		this.statElems.quota.innerText = `${
+			this.stat.quota.countProgress + this.newCount - this.stat.count
+		}/${this.stat.quota.quota}`;
 		this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
 
 		this.steps = this.newCount * this.stat.stepEquivalent;
