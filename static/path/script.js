@@ -247,6 +247,12 @@ class Stat {
         elems.stepEqInput.addEventListener("input", () => {
             this.showSaveButtonIfChanged(elems);
         });
+        elems.quotaInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged(elems);
+        });
+        elems.quotaTimeInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged(elems);
+        });
         this.showSaveButtonIfChanged(elems);
     }
     save(elems) {
@@ -563,7 +569,7 @@ class Path {
         this.fetchPath();
     }
     handleFetchedData(data) {
-        ownerElem.href = `/user/${data.ownerId}`;
+        ownerElem.href = `/user/${data.path.ownerId}`;
         setPageTitle(data.path.name);
         if (data.path.stats) {
             for (const stat of data.path.stats) {

@@ -3,11 +3,6 @@
 /// <reference path="statdeleter.ts" />
 /// <reference path="statupdater.ts" />
 
-interface StatCount {
-	name: string;
-	count: number;
-}
-
 class StatsManager {
 	pathId: string;
 	pageStats: Array<Stat>;
@@ -103,7 +98,7 @@ class StatsManager {
 		pathStepsElem.innerText = `steps: ${steps}`;
 	}
 
-	postCounts(counts: StatCount[]) {
+	postCounts(counts: StatCountInterface[]) {
 		fetch(`/api/path/${this.pathId}/stats/counts`, {
 			method: "PUT",
 			headers: {
