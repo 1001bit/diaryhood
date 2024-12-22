@@ -1,10 +1,12 @@
 class NumberInput {
+	private elem: HTMLDivElement;
 	private inputElem: HTMLInputElement;
 	private plus: HTMLDivElement;
 	private minus: HTMLDivElement;
 	private callback: (num: number) => void;
 
 	constructor(elem: HTMLDivElement) {
+		this.elem = elem;
 		this.inputElem = elem.getElementsByTagName(
 			"input"
 		)[0] as HTMLInputElement;
@@ -45,6 +47,10 @@ class NumberInput {
 
 	getValue() {
 		return Number(this.inputElem.value);
+	}
+
+	getElem() {
+		return this.elem;
 	}
 
 	getInputElem() {

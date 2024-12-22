@@ -3,5 +3,12 @@
 	"compilerOptions": {
 		"outFile": "../../static/profile/script.js"
 	},
-	"include": ["*.ts", "../misc/*.ts"]
+	"include": [
+		"*.ts",
+		"../misc/togglableclasses.ts",
+		"../misc/refresh.ts",
+		"../misc/pathinterfaces.ts",
+		"../misc/bordercolor.ts",
+		"../misc/title.ts"
+	]
 }

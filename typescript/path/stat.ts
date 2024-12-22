@@ -1,10 +1,21 @@
-interface EditStatElemets {
+interface EditStatElements {
+	editStat: HTMLDivElement;
 	nameInput: HTMLInputElement;
 	stepEqInput: HTMLInputElement;
 	quotaInput: HTMLInputElement;
 	quotaTimeInput: HTMLInputElement;
 	saveButton: HTMLElement;
 	deleteButton: HTMLElement;
+}
+
+interface StatElements {
+	stat: HTMLDivElement;
+	name: HTMLDivElement;
+	stepEq: HTMLDivElement;
+	quota: HTMLDivElement;
+	quotaTime: HTMLDivElement;
+	countInput: NumberInput;
+	count: HTMLDivElement;
 }
 
 class Stat {
@@ -14,8 +25,8 @@ class Stat {
 	steps: number;
 	stepsUpdateCallback: () => void;
 
-	statElem: HTMLDivElement;
-	editStatElem: HTMLDivElement | null;
+	statElems: StatElements;
+	editStatElems: EditStatElements | null;
 
 	deleter: StatDeleter;
 	updater: StatUpdater;
@@ -27,51 +38,73 @@ class Stat {
 		this.steps = 0;
 		this.stepsUpdateCallback = () => {};
 
-		this.statElem = this.newStatElem(this.stat, editRight);
-		this.updateStatElem(stat);
-		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
+		this.statElems = this.newStatElems(this.stat, editRight);
+		this.editStatElems = editRight ? this.newEditStatElems(stat) : null;
+
+		this.updateStatElems(this.stat);
+		this.initEvents();
+		if (this.editStatElems) {
+			this.initEditEvents();
+		}
 
 		this.deleter = new StatDeleter(pathId, stat.name);
 		this.updater = new StatUpdater(stat.name, pathId);
 	}
 
-	newStatElem(stat: StatInterface, editRight: boolean): HTMLDivElement {
+	newStatElems(stat: StatInterface, editRight: boolean): StatElements {
 		const statElem = sampleStatElem.cloneNode(true) as HTMLDivElement;
-		statElem.removeAttribute("id");
-		setVisibility(statElem, true);
-
-		if (editRight) {
-			const statCountInputElem = statElem.getElementsByClassName(
+		const nameElem = statElem.getElementsByClassName(
+			"stat-name"
+		)[0] as HTMLDivElement;
+		const stepEqElem = statElem.getElementsByClassName(
+			"stat-stepeq"
+		)[0] as HTMLDivElement;
+		const quotaElem = statElem.getElementsByClassName(
+			"stat-quota"
+		)[0] as HTMLDivElement;
+		const quotaTimeElem = statElem.getElementsByClassName(
+			"stat-quota-time"
+		)[0] as HTMLDivElement;
+		const countElem = statElem.getElementsByClassName(
+			"stat-count"
+		)[0] as HTMLDivElement;
+		const countInputElem = new NumberInput(
+			statElem.getElementsByClassName(
 				"stat-count-input"
-			)[0] as HTMLDivElement;
-			setVisibility(statCountInputElem, true);
+			)[0] as HTMLDivElement
+		);
 
-			const countInput = new NumberInput(statCountInputElem);
-			countInput.setValue(stat.count);
+		const statElems = {
+			stat: statElem,
+			name: nameElem,
+			stepEq: stepEqElem,
+			quota: quotaElem,
+			quotaTime: quotaTimeElem,
+			count: countElem,
+			countInput: countInputElem,
+		} as StatElements;
 
-			this.initEvents(countInput);
-		} else {
-			const countElem = statElem.getElementsByClassName(
-				"stat-count"
-			)[0] as HTMLDivElement;
-			setVisibility(countElem, true);
+		// stat elem
+		statElems.stat.removeAttribute("id");
+		setVisibility(statElems.stat, true);
 
-			countElem.innerText = stat.count.toString();
-		}
+		// count
+		setVisibility(statElems.count, !editRight);
+		statElems.count.innerText = stat.count.toString();
 
-		return statElem;
+		setVisibility(statElems.countInput.getElem(), editRight);
+		statElems.countInput.setValue(stat.count);
+
+		return statElems;
 	}
 
-	initEvents(countInput: NumberInput) {
-		countInput.addInputListener((num: number) => {
-			// TODO: update quota count progress
-			this.newCount = num;
-			this.steps = this.newCount * this.stat.stepEquivalent;
-			this.stepsUpdateCallback();
+	initEvents() {
+		this.statElems.countInput.addInputListener((_num: number) => {
+			this.updateCount();
 		});
 	}
 
-	newEditStatElem(stat: StatInterface): HTMLDivElement {
+	newEditStatElems(stat: StatInterface): EditStatElements {
 		const editStatElem = sampleEditStatElem.cloneNode(
 			true
 		) as HTMLDivElement;
@@ -104,154 +137,165 @@ class Stat {
 		)[0] as HTMLInputElement;
 		acceptOnlyNumbers(quotaTimeInput);
 
-		nameInput.value = stat.name;
-		stepEqInput.value = stat.stepEquivalent.toString();
-
-		quotaInput.value = stat.quota.quota.toString();
-		quotaTimeInput.value = stat.quota.hoursLimit.toString();
-
 		const elems = {
-			deleteButton,
-			saveButton,
-			nameInput,
-			stepEqInput,
-			quotaInput,
-			quotaTimeInput,
-		} as EditStatElemets;
+			editStat: editStatElem,
+			nameInput: nameInput,
+			stepEqInput: stepEqInput,
+			quotaInput: quotaInput,
+			quotaTimeInput: quotaTimeInput,
+			saveButton: saveButton,
+			deleteButton: deleteButton,
+		} as EditStatElements;
 
-		this.initEditEvents(elems);
+		elems.nameInput.value = stat.name;
+		elems.stepEqInput.value = stat.stepEquivalent.toString();
 
-		return editStatElem;
+		elems.quotaInput.value = stat.quota.quota.toString();
+		elems.quotaTimeInput.value = stat.quota.hoursLimit.toString();
+
+		return elems;
 	}
 
-	initEditEvents(elems: EditStatElemets) {
-		removeBorderColorOnFocus(elems.nameInput);
+	initEditEvents() {
+		if (!this.editStatElems) return;
+
+		removeBorderColorOnFocus(this.editStatElems.nameInput);
 
 		// edit button click
 		editButton.addEventListener("click", () => {
-			elems.nameInput.value = this.stat.name;
-			elems.stepEqInput.value = this.stat.stepEquivalent.toString();
+			if (!this.editStatElems) return;
+			this.editStatElems.nameInput.value = this.stat.name;
+			this.editStatElems.stepEqInput.value =
+				this.stat.stepEquivalent.toString();
 
-			this.showSaveButtonIfChanged(elems);
+			this.showSaveButtonIfChanged();
 		});
 
 		// delete
-		elems.deleteButton.addEventListener("click", () => {
-			this.delete(elems);
+		this.editStatElems.deleteButton.addEventListener("click", () => {
+			this.delete();
 		});
 
 		// save
-		elems.saveButton.addEventListener("click", () => {
-			this.save(elems);
+		this.editStatElems.saveButton.addEventListener("click", () => {
+			this.save();
 		});
 
 		// name edit
-		elems.nameInput.addEventListener("input", () => {
-			this.showSaveButtonIfChanged(elems);
+		this.editStatElems.nameInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged();
 		});
 
 		// stepEq edit
-		elems.stepEqInput.addEventListener("input", () => {
-			this.showSaveButtonIfChanged(elems);
+		this.editStatElems.stepEqInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged();
 		});
 
 		// quota edit
-		elems.quotaInput.addEventListener("input", () => {
-			this.showSaveButtonIfChanged(elems);
+		this.editStatElems.quotaInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged();
 		});
 
 		// quotaTime edit
-		elems.quotaTimeInput.addEventListener("input", () => {
-			this.showSaveButtonIfChanged(elems);
+		this.editStatElems.quotaTimeInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged();
 		});
 
-		this.showSaveButtonIfChanged(elems);
+		this.showSaveButtonIfChanged();
 	}
 
-	save(elems: EditStatElemets) {
-		if (isNaN(Number(elems.stepEqInput.value))) {
-			elems.stepEqInput.value = "0";
+	save() {
+		if (!this.editStatElems) return;
+
+		if (isNaN(Number(this.editStatElems.stepEqInput.value))) {
+			this.editStatElems.stepEqInput.value = "0";
 		}
-		if (isNaN(Number(elems.quotaInput.value))) {
-			elems.quotaInput.value = "0";
+		if (isNaN(Number(this.editStatElems.quotaInput.value))) {
+			this.editStatElems.quotaInput.value = "0";
 		}
-		if (isNaN(Number(elems.quotaTimeInput.value))) {
-			elems.quotaTimeInput.value = "0";
+		if (isNaN(Number(this.editStatElems.quotaTimeInput.value))) {
+			this.editStatElems.quotaTimeInput.value = "0";
 		}
 
 		this.updater
 			.save({
-				name: elems.nameInput.value,
-				stepEquivalent: Number(elems.stepEqInput.value),
+				name: this.editStatElems.nameInput.value,
+				stepEquivalent: Number(this.editStatElems.stepEqInput.value),
 				quota: {
-					quota: Number(elems.quotaInput.value),
-					hoursLimit: Number(elems.quotaTimeInput.value),
+					quota: Number(this.editStatElems.quotaInput.value),
+					hoursLimit: Number(this.editStatElems.quotaTimeInput.value),
 				},
 			})
 			.then((message) => {
-				if (message == "") {
-					this.stat.name = elems.nameInput.value;
-					this.stat.stepEquivalent = Number(elems.stepEqInput.value);
-					this.updateStatElem(this.stat);
+				if (!this.editStatElems) return;
 
-					this.showSaveButtonIfChanged(elems);
+				if (message == "") {
+					this.stat.name = this.editStatElems.nameInput.value;
+					this.stat.stepEquivalent = Number(
+						this.editStatElems.stepEqInput.value
+					);
+					this.updateStatElems(this.stat);
+
+					this.showSaveButtonIfChanged();
 					return;
 				}
-				elems.saveButton.innerText = message;
-				setBorderColor(elems.nameInput, "err");
+				this.editStatElems.saveButton.innerText = message;
+				setBorderColor(this.editStatElems.nameInput, "err");
 			});
 	}
 
-	delete(elems: EditStatElemets) {
+	delete() {
 		this.deleter.delete().then((message) => {
+			if (!this.editStatElems) return;
+
 			if (message == "") {
-				this.statElem.remove();
-				this.editStatElem?.remove();
+				this.statElems.stat.remove();
+				this.editStatElems?.editStat.remove();
 				return;
 			}
-			elems.deleteButton.innerText = message;
+			this.editStatElems.deleteButton.innerText = message;
 		});
 	}
 
-	updateStatElem(newStat: StatInterface) {
+	updateCount() {
+		this.newCount = this.statElems.countInput.getValue();
+		this.steps = this.newCount * this.stat.stepEquivalent;
+		this.stepsUpdateCallback();
+		this.statElems.quota.innerText = `${
+			this.stat.quota.countProgress + this.newCount - this.stat.count
+		}/${this.stat.quota.quota}`;
+	}
+
+	updateStatElems(newStat: StatInterface) {
 		this.stat = newStat;
 
-		const statNameElem = this.statElem.getElementsByClassName(
-			"stat-name"
-		)[0] as HTMLDivElement;
-		const statStepEqElem = this.statElem.getElementsByClassName(
-			"stat-stepeq"
-		)[0] as HTMLDivElement;
+		this.statElems.name.innerText = this.stat.name;
+		this.statElems.stepEq.innerText = `= ${this.stat.stepEquivalent} steps`;
 
-		const statQuotaElem = this.statElem.getElementsByClassName(
-			"stat-quota"
-		)[0] as HTMLDivElement;
-		const statQuotaTimeElem = this.statElem.getElementsByClassName(
-			"stat-quota-time"
-		)[0] as HTMLDivElement;
-
-		statNameElem.innerText = this.stat.name;
-		statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
-
-		statQuotaElem.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
-		statQuotaTimeElem.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
+		this.statElems.quota.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
+		this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
 
 		this.steps = this.newCount * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();
 	}
 
-	showSaveButtonIfChanged(elems: EditStatElemets) {
+	showSaveButtonIfChanged() {
+		if (!this.editStatElems) return;
+
 		const changed = !(
-			elems.nameInput.value == this.stat.name &&
-			Number(elems.stepEqInput.value) == this.stat.stepEquivalent &&
-			Number(elems.quotaInput.value) == this.stat.quota.quota &&
-			Number(elems.quotaTimeInput.value) == this.stat.quota.hoursLimit
+			this.editStatElems.nameInput.value == this.stat.name &&
+			Number(this.editStatElems.stepEqInput.value) ==
+				this.stat.stepEquivalent &&
+			Number(this.editStatElems.quotaInput.value) ==
+				this.stat.quota.quota &&
+			Number(this.editStatElems.quotaTimeInput.value) ==
+				this.stat.quota.hoursLimit
 		);
 
-		elems.saveButton.innerText = "save";
-		elems.deleteButton.innerText = "delete";
+		this.editStatElems.saveButton.innerText = "save";
+		this.editStatElems.deleteButton.innerText = "delete";
 
-		setVisibility(elems.saveButton, changed);
-		setVisibility(elems.deleteButton, !changed);
+		setVisibility(this.editStatElems.saveButton, changed);
+		setVisibility(this.editStatElems.deleteButton, !changed);
 	}
 }

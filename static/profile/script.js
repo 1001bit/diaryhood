@@ -223,65 +223,10 @@ function fetchAndRenderPaths() {
         res.json().then(renderPaths);
     });
 }
-function setBorderColor(elem, colorVar) {
-    if (!elem) {
-        return;
+function setVisibility(elem, visible) {
+    if (elem) {
+        elem.classList.toggle("hidden", !visible);
     }
-    elem.style.borderColor = `var(--${colorVar})`;
-}
-function removeBorderColorOnFocus(elem) {
-    if (!elem) {
-        return;
-    }
-    elem.addEventListener("focus", () => {
-        elem.style.borderColor = "";
-    });
-}
-function removeBorderColor(elem) {
-    if (!elem) {
-        return;
-    }
-    elem.style.borderColor = "";
-}
-class NumberInput {
-    constructor(elem) {
-        this.inputElem = elem.getElementsByTagName("input")[0];
-        this.plus = elem.getElementsByClassName("plus")[0];
-        this.minus = elem.getElementsByClassName("minus")[0];
-        this.callback = (_num) => { };
-        this.initEvents();
-    }
-    initEvents() {
-        this.plus.addEventListener("click", () => {
-            this.inputElem.value = (Number(this.inputElem.value) + 1).toString();
-            this.callback(Number(this.inputElem.value));
-        });
-        this.minus.addEventListener("click", () => {
-            this.inputElem.value = (Number(this.inputElem.value) - 1).toString();
-            this.callback(Number(this.inputElem.value));
-        });
-        this.inputElem.addEventListener("input", () => {
-            this.inputElem.value = this.inputElem.value.replace(/[^0-9-]/g, "");
-            this.callback(Number(this.inputElem.value));
-        });
-    }
-    setValue(value) {
-        this.inputElem.value = value.toString();
-    }
-    getValue() {
-        return Number(this.inputElem.value);
-    }
-    getInputElem() {
-        return this.inputElem;
-    }
-    addInputListener(callback) {
-        this.callback = callback;
-    }
-}
-function acceptOnlyNumbers(elem) {
-    elem.addEventListener("input", () => {
-        elem.value = elem.value.replace(/[^0-9-]/g, "");
-    });
 }
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -323,13 +268,28 @@ function refresh() {
         });
     });
 }
+function setBorderColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.borderColor = `var(--${colorVar})`;
+}
+function removeBorderColorOnFocus(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.addEventListener("focus", () => {
+        elem.style.borderColor = "";
+    });
+}
+function removeBorderColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.borderColor = "";
+}
 const titleElem = document.getElementById("title");
 function setPageTitle(title) {
     titleElem.innerText = title;
     document.title = title;
-}
-function setVisibility(elem, visible) {
-    if (elem) {
-        elem.classList.toggle("hidden", !visible);
-    }
 }
