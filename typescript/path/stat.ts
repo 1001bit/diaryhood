@@ -1,6 +1,8 @@
 interface EditStatElemets {
 	nameInput: HTMLInputElement;
 	stepEqInput: HTMLInputElement;
+	quotaInput: HTMLInputElement;
+	quotaTimeInput: HTMLInputElement;
 	saveButton: HTMLElement;
 	deleteButton: HTMLElement;
 }
@@ -26,7 +28,7 @@ class Stat {
 		this.stepsUpdateCallback = () => {};
 
 		this.statElem = this.newStatElem(this.stat, editRight);
-		this.updateStat(stat);
+		this.updateStatElem(stat);
 		this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
 
 		this.deleter = new StatDeleter(pathId, stat.name);
@@ -86,10 +88,20 @@ class Stat {
 			"stat-name-input"
 		)[0] as HTMLInputElement;
 
-		// TODO: Prevent non-number input
 		const stepEqInput = editStatElem.getElementsByClassName(
 			"stat-stepeq-input"
 		)[0] as HTMLInputElement;
+		acceptOnlyNumbers(stepEqInput);
+
+		const quotaInput = editStatElem.getElementsByClassName(
+			"stat-quota-input"
+		)[0] as HTMLInputElement;
+		acceptOnlyNumbers(quotaInput);
+
+		const quotaTimeInput = editStatElem.getElementsByClassName(
+			"stat-quota-time-input"
+		)[0] as HTMLInputElement;
+		acceptOnlyNumbers(quotaTimeInput);
 
 		nameInput.value = stat.name;
 		stepEqInput.value = stat.stepEquivalent.toString();
@@ -99,6 +111,8 @@ class Stat {
 			saveButton,
 			nameInput,
 			stepEqInput,
+			quotaInput,
+			quotaTimeInput,
 		} as EditStatElemets;
 
 		this.initEditEvents(elems);
@@ -119,37 +133,12 @@ class Stat {
 
 		// delete
 		elems.deleteButton.addEventListener("click", () => {
-			this.deleter.delete().then((message) => {
-				if (message == "") {
-					this.statElem.remove();
-					this.editStatElem?.remove();
-					return;
-				}
-				elems.deleteButton.innerText = message;
-			});
+			this.delete(elems);
 		});
 
 		// save
 		elems.saveButton.addEventListener("click", () => {
-			this.updater
-				.save({
-					name: elems.nameInput.value,
-					stepEquivalent: Number(elems.stepEqInput.value),
-				})
-				.then((message) => {
-					if (message == "") {
-						this.stat.name = elems.nameInput.value;
-						this.stat.stepEquivalent = Number(
-							elems.stepEqInput.value
-						);
-						this.updateStat(this.stat);
-
-						this.showSaveButtonIfChanged(elems);
-						return;
-					}
-					elems.saveButton.innerText = message;
-					setBorderColor(elems.nameInput, "err");
-				});
+			this.save(elems);
 		});
 
 		// name edit
@@ -162,10 +151,55 @@ class Stat {
 			this.showSaveButtonIfChanged(elems);
 		});
 
+		// quota edit
+		elems.quotaInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged(elems);
+		});
+
+		// quotaTime edit
+		elems.quotaTimeInput.addEventListener("input", () => {
+			this.showSaveButtonIfChanged(elems);
+		});
+
 		this.showSaveButtonIfChanged(elems);
 	}
 
-	updateStat(newStat: StatInterface) {
+	save(elems: EditStatElemets) {
+		if (isNaN(Number(elems.stepEqInput.value))) {
+			elems.stepEqInput.value = "0";
+		}
+
+		this.updater
+			.save({
+				name: elems.nameInput.value,
+				stepEquivalent: Number(elems.stepEqInput.value),
+			})
+			.then((message) => {
+				if (message == "") {
+					this.stat.name = elems.nameInput.value;
+					this.stat.stepEquivalent = Number(elems.stepEqInput.value);
+					this.updateStatElem(this.stat);
+
+					this.showSaveButtonIfChanged(elems);
+					return;
+				}
+				elems.saveButton.innerText = message;
+				setBorderColor(elems.nameInput, "err");
+			});
+	}
+
+	delete(elems: EditStatElemets) {
+		this.deleter.delete().then((message) => {
+			if (message == "") {
+				this.statElem.remove();
+				this.editStatElem?.remove();
+				return;
+			}
+			elems.deleteButton.innerText = message;
+		});
+	}
+
+	updateStatElem(newStat: StatInterface) {
 		this.stat = newStat;
 
 		const statNameElem = this.statElem.getElementsByClassName(

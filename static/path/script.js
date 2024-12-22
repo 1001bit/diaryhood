@@ -173,7 +173,7 @@ class Stat {
         this.steps = 0;
         this.stepsUpdateCallback = () => { };
         this.statElem = this.newStatElem(this.stat, editRight);
-        this.updateStat(stat);
+        this.updateStatElem(stat);
         this.editStatElem = editRight ? this.newEditStatElem(stat) : null;
         this.deleter = new StatDeleter(pathId, stat.name);
         this.updater = new StatUpdater(stat.name, pathId);
@@ -210,6 +210,11 @@ class Stat {
         const saveButton = editStatElem.getElementsByClassName("save-stat-button")[0];
         const nameInput = editStatElem.getElementsByClassName("stat-name-input")[0];
         const stepEqInput = editStatElem.getElementsByClassName("stat-stepeq-input")[0];
+        acceptOnlyNumbers(stepEqInput);
+        const quotaInput = editStatElem.getElementsByClassName("stat-quota-input")[0];
+        acceptOnlyNumbers(quotaInput);
+        const quotaTimeInput = editStatElem.getElementsByClassName("stat-quota-time-input")[0];
+        acceptOnlyNumbers(quotaTimeInput);
         nameInput.value = stat.name;
         stepEqInput.value = stat.stepEquivalent.toString();
         const elems = {
@@ -217,6 +222,8 @@ class Stat {
             saveButton,
             nameInput,
             stepEqInput,
+            quotaInput,
+            quotaTimeInput,
         };
         this.initEditEvents(elems);
         return editStatElem;
@@ -229,33 +236,10 @@ class Stat {
             this.showSaveButtonIfChanged(elems);
         });
         elems.deleteButton.addEventListener("click", () => {
-            this.deleter.delete().then((message) => {
-                var _a;
-                if (message == "") {
-                    this.statElem.remove();
-                    (_a = this.editStatElem) === null || _a === void 0 ? void 0 : _a.remove();
-                    return;
-                }
-                elems.deleteButton.innerText = message;
-            });
+            this.delete(elems);
         });
         elems.saveButton.addEventListener("click", () => {
-            this.updater
-                .save({
-                name: elems.nameInput.value,
-                stepEquivalent: Number(elems.stepEqInput.value),
-            })
-                .then((message) => {
-                if (message == "") {
-                    this.stat.name = elems.nameInput.value;
-                    this.stat.stepEquivalent = Number(elems.stepEqInput.value);
-                    this.updateStat(this.stat);
-                    this.showSaveButtonIfChanged(elems);
-                    return;
-                }
-                elems.saveButton.innerText = message;
-                setBorderColor(elems.nameInput, "err");
-            });
+            this.save(elems);
         });
         elems.nameInput.addEventListener("input", () => {
             this.showSaveButtonIfChanged(elems);
@@ -265,7 +249,39 @@ class Stat {
         });
         this.showSaveButtonIfChanged(elems);
     }
-    updateStat(newStat) {
+    save(elems) {
+        if (isNaN(Number(elems.stepEqInput.value))) {
+            elems.stepEqInput.value = "0";
+        }
+        this.updater
+            .save({
+            name: elems.nameInput.value,
+            stepEquivalent: Number(elems.stepEqInput.value),
+        })
+            .then((message) => {
+            if (message == "") {
+                this.stat.name = elems.nameInput.value;
+                this.stat.stepEquivalent = Number(elems.stepEqInput.value);
+                this.updateStatElem(this.stat);
+                this.showSaveButtonIfChanged(elems);
+                return;
+            }
+            elems.saveButton.innerText = message;
+            setBorderColor(elems.nameInput, "err");
+        });
+    }
+    delete(elems) {
+        this.deleter.delete().then((message) => {
+            var _a;
+            if (message == "") {
+                this.statElem.remove();
+                (_a = this.editStatElem) === null || _a === void 0 ? void 0 : _a.remove();
+                return;
+            }
+            elems.deleteButton.innerText = message;
+        });
+    }
+    updateStatElem(newStat) {
         this.stat = newStat;
         const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
@@ -654,6 +670,11 @@ class NumberInput {
     addInputListener(callback) {
         this.callback = callback;
     }
+}
+function acceptOnlyNumbers(elem) {
+    elem.addEventListener("input", () => {
+        elem.value = elem.value.replace(/[^0-9-]/g, "");
+    });
 }
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {

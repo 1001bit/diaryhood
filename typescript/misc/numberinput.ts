@@ -55,3 +55,9 @@ class NumberInput {
 		this.callback = callback;
 	}
 }
+
+function acceptOnlyNumbers(elem: HTMLInputElement) {
+	elem.addEventListener("input", () => {
+		elem.value = elem.value.replace(/[^0-9-]/g, "");
+	});
+}

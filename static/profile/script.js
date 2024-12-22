@@ -278,6 +278,11 @@ class NumberInput {
         this.callback = callback;
     }
 }
+function acceptOnlyNumbers(elem) {
+    elem.addEventListener("input", () => {
+        elem.value = elem.value.replace(/[^0-9-]/g, "");
+    });
+}
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {
