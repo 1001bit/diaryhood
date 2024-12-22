@@ -64,6 +64,7 @@ class Stat {
 
 	initEvents(countInput: NumberInput) {
 		countInput.addInputListener((num: number) => {
+			// TODO: update quota count progress
 			this.newCount = num;
 			this.steps = this.newCount * this.stat.stepEquivalent;
 			this.stepsUpdateCallback();
@@ -105,6 +106,9 @@ class Stat {
 
 		nameInput.value = stat.name;
 		stepEqInput.value = stat.stepEquivalent.toString();
+
+		quotaInput.value = stat.quota.quota.toString();
+		quotaTimeInput.value = stat.quota.hoursLimit.toString();
 
 		const elems = {
 			deleteButton,
@@ -168,11 +172,21 @@ class Stat {
 		if (isNaN(Number(elems.stepEqInput.value))) {
 			elems.stepEqInput.value = "0";
 		}
+		if (isNaN(Number(elems.quotaInput.value))) {
+			elems.quotaInput.value = "0";
+		}
+		if (isNaN(Number(elems.quotaTimeInput.value))) {
+			elems.quotaTimeInput.value = "0";
+		}
 
 		this.updater
 			.save({
 				name: elems.nameInput.value,
 				stepEquivalent: Number(elems.stepEqInput.value),
+				quota: {
+					quota: Number(elems.quotaInput.value),
+					hoursLimit: Number(elems.quotaTimeInput.value),
+				},
 			})
 			.then((message) => {
 				if (message == "") {
@@ -209,8 +223,18 @@ class Stat {
 			"stat-stepeq"
 		)[0] as HTMLDivElement;
 
+		const statQuotaElem = this.statElem.getElementsByClassName(
+			"stat-quota"
+		)[0] as HTMLDivElement;
+		const statQuotaTimeElem = this.statElem.getElementsByClassName(
+			"stat-quota-time"
+		)[0] as HTMLDivElement;
+
 		statNameElem.innerText = this.stat.name;
 		statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
+
+		statQuotaElem.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
+		statQuotaTimeElem.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
 
 		this.steps = this.newCount * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();
@@ -219,7 +243,9 @@ class Stat {
 	showSaveButtonIfChanged(elems: EditStatElemets) {
 		const changed = !(
 			elems.nameInput.value == this.stat.name &&
-			Number(elems.stepEqInput.value) == this.stat.stepEquivalent
+			Number(elems.stepEqInput.value) == this.stat.stepEquivalent &&
+			Number(elems.quotaInput.value) == this.stat.quota.quota &&
+			Number(elems.quotaTimeInput.value) == this.stat.quota.hoursLimit
 		);
 
 		elems.saveButton.innerText = "save";

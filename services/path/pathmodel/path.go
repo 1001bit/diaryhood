@@ -5,23 +5,6 @@ import (
 	"database/sql"
 )
 
-type Path struct {
-	Name   string `json:"name"`
-	Public bool   `json:"public"`
-	Id     string `json:"id"`
-}
-
-type FullPath struct {
-	Path
-	Stats   []Stat `json:"stats"`
-	OwnerId string `json:"ownerId"`
-}
-
-type PathWithSteps struct {
-	Path
-	Steps int `json:"steps"`
-}
-
 func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (string, error) {
 	row, err := ps.postgresC.QueryRowContext(ctx, `
 		INSERT INTO paths (user_id, name) VALUES ($1, $2) RETURNING id

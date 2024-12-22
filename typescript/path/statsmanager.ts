@@ -35,7 +35,13 @@ class StatsManager {
 				name: name,
 				stepEquivalent: 1,
 				count: 0,
-				quota: 0,
+				quota: {
+					countProgress: 0,
+					quota: 0,
+					streak: 0,
+					hoursPassed: 0,
+					hoursLimit: 24,
+				},
 			};
 
 			const pageStat = this.initStat(stat, true);

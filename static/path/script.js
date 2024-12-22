@@ -217,6 +217,8 @@ class Stat {
         acceptOnlyNumbers(quotaTimeInput);
         nameInput.value = stat.name;
         stepEqInput.value = stat.stepEquivalent.toString();
+        quotaInput.value = stat.quota.quota.toString();
+        quotaTimeInput.value = stat.quota.hoursLimit.toString();
         const elems = {
             deleteButton,
             saveButton,
@@ -259,10 +261,20 @@ class Stat {
         if (isNaN(Number(elems.stepEqInput.value))) {
             elems.stepEqInput.value = "0";
         }
+        if (isNaN(Number(elems.quotaInput.value))) {
+            elems.quotaInput.value = "0";
+        }
+        if (isNaN(Number(elems.quotaTimeInput.value))) {
+            elems.quotaTimeInput.value = "0";
+        }
         this.updater
             .save({
             name: elems.nameInput.value,
             stepEquivalent: Number(elems.stepEqInput.value),
+            quota: {
+                quota: Number(elems.quotaInput.value),
+                hoursLimit: Number(elems.quotaTimeInput.value),
+            },
         })
             .then((message) => {
             if (message == "") {
@@ -291,14 +303,20 @@ class Stat {
         this.stat = newStat;
         const statNameElem = this.statElem.getElementsByClassName("stat-name")[0];
         const statStepEqElem = this.statElem.getElementsByClassName("stat-stepeq")[0];
+        const statQuotaElem = this.statElem.getElementsByClassName("stat-quota")[0];
+        const statQuotaTimeElem = this.statElem.getElementsByClassName("stat-quota-time")[0];
         statNameElem.innerText = this.stat.name;
         statStepEqElem.innerText = `= ${this.stat.stepEquivalent} steps`;
+        statQuotaElem.innerText = `${this.stat.quota.countProgress}/${this.stat.quota.quota}`;
+        statQuotaTimeElem.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
         this.steps = this.newCount * this.stat.stepEquivalent;
         this.stepsUpdateCallback();
     }
     showSaveButtonIfChanged(elems) {
         const changed = !(elems.nameInput.value == this.stat.name &&
-            Number(elems.stepEqInput.value) == this.stat.stepEquivalent);
+            Number(elems.stepEqInput.value) == this.stat.stepEquivalent &&
+            Number(elems.quotaInput.value) == this.stat.quota.quota &&
+            Number(elems.quotaTimeInput.value) == this.stat.quota.hoursLimit);
         elems.saveButton.innerText = "save";
         elems.deleteButton.innerText = "delete";
         setVisibility(elems.saveButton, changed);
@@ -478,7 +496,13 @@ class StatsManager {
                 name: name,
                 stepEquivalent: 1,
                 count: 0,
-                quota: 0,
+                quota: {
+                    countProgress: 0,
+                    quota: 0,
+                    streak: 0,
+                    hoursPassed: 0,
+                    hoursLimit: 24,
+                },
             };
             const pageStat = this.initStat(stat, true);
             setVisibility(pageStat.statElem, false);

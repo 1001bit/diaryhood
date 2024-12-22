@@ -1,27 +1,32 @@
+// quota
+interface QuotaEditableInterface {
+	quota: number;
+	hoursLimit: number;
+}
+
+interface QuotaInterface extends QuotaEditableInterface {
+	countProgress: number;
+	hoursPassed: number;
+	streak: number;
+}
+
 // stat
 interface StatInterface {
 	name: string;
 	count: number;
 	stepEquivalent: number;
+	quota: QuotaInterface;
 }
 
 interface CountlessStatInterface {
 	name: string;
 	stepEquivalent: number;
+	quota: QuotaEditableInterface;
 }
 
 interface StatCountInterface {
 	name: string;
 	count: number;
-}
-
-// quota
-interface QuotaInterface {
-	quota: number;
-	countProgress: number;
-	hoursLimit: number;
-	hoursPassed: number;
-	streak: number;
 }
 
 // path

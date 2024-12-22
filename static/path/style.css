@@ -73,7 +73,7 @@ main {
 	text-align: center;
 }
 
-.stat > * {
+.stat * {
 	max-width: 100%;
 }
 

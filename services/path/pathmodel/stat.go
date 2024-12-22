@@ -5,22 +5,6 @@ import (
 	"database/sql"
 )
 
-type Stat struct {
-	Name           string `json:"name"`
-	Count          int32  `json:"count"`
-	StepEquivalent int32  `json:"stepEquivalent"`
-}
-
-type CountlessStat struct {
-	Name           string `json:"name"`
-	StepEquivalent int32  `json:"stepEquivalent"`
-}
-
-type StatCount struct {
-	Name  string `json:"name"`
-	Count int    `json:"count"`
-}
-
 func (ps *PathStore) UpdateStat(ctx context.Context, pathId, statName string, stat *CountlessStat, askerId string) error {
 	result, err := ps.postgresC.ExecContext(ctx, `
 		UPDATE stats
