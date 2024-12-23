@@ -76,7 +76,7 @@
     [ ] Stat quota
         [X] Database
         [X] Get
-        [ ] Create
+        [X] Create
         [ ] Update
         [ ] Quota stuff (streak, reset)
 

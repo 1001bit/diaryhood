@@ -38,7 +38,6 @@ func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.pathstore.CreateStat(r.Context(), pathId, req.Name, userId)
-
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -47,6 +46,13 @@ func (h *Handler) HandleCreateStat(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		slog.With("err", err).Error("Failed to create stat")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = h.pathstore.CreateQuota(r.Context(), pathId, req.Name)
+	if err != nil {
+		slog.With("err", err).Error("Failed to create quota")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
