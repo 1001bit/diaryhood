@@ -326,6 +326,16 @@ class Stat {
         this.steps = this.newCount * this.stat.stepEquivalent;
         this.stepsUpdateCallback();
         this.statElems.quota.innerText = `${this.stat.quota.countProgress + this.newCount - this.stat.count}/${this.stat.quota.quota}`;
+        this.updateQuotaHighlight();
+    }
+    updateQuotaHighlight() {
+        if (this.stat.quota.countProgress + this.newCount - this.stat.count >=
+            this.stat.quota.quota) {
+            setColor(this.statElems.quota, "acc1");
+        }
+        else {
+            removeColor(this.statElems.quota);
+        }
     }
     updateStatElems(newStat) {
         this.stat = newStat;
@@ -333,6 +343,7 @@ class Stat {
         this.statElems.stepEq.innerText = `= ${this.stat.stepEquivalent} steps`;
         this.statElems.quota.innerText = `${this.stat.quota.countProgress + this.newCount - this.stat.count}/${this.stat.quota.quota}`;
         this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
+        this.updateQuotaHighlight();
         this.steps = this.newCount * this.stat.stepEquivalent;
         this.stepsUpdateCallback();
     }
@@ -700,6 +711,18 @@ function removeBorderColor(elem) {
         return;
     }
     elem.style.borderColor = "";
+}
+function setColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = `var(--${colorVar})`;
+}
+function removeColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = "";
 }
 class NumberInput {
     constructor(elem) {

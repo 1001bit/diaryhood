@@ -270,9 +270,20 @@ class Stat {
 		this.statElems.quota.innerText = `${
 			this.stat.quota.countProgress + this.newCount - this.stat.count
 		}/${this.stat.quota.quota}`;
+
+		this.updateQuotaHighlight();
 	}
 
-	// TODO: Highlight quota if it's reached
+	updateQuotaHighlight() {
+		if (
+			this.stat.quota.countProgress + this.newCount - this.stat.count >=
+			this.stat.quota.quota
+		) {
+			setColor(this.statElems.quota, "acc1");
+		} else {
+			removeColor(this.statElems.quota);
+		}
+	}
 
 	updateStatElems(newStat: StatInterface) {
 		this.stat = newStat;
@@ -284,6 +295,7 @@ class Stat {
 			this.stat.quota.countProgress + this.newCount - this.stat.count
 		}/${this.stat.quota.quota}`;
 		this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
+		this.updateQuotaHighlight();
 
 		this.steps = this.newCount * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();

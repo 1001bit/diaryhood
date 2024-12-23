@@ -122,6 +122,18 @@ function removeBorderColor(elem) {
     }
     elem.style.borderColor = "";
 }
+function setColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = `var(--${colorVar})`;
+}
+function removeColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = "";
+}
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {
         return fetch("/authenticated", {

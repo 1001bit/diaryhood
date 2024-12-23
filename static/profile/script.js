@@ -288,6 +288,18 @@ function removeBorderColor(elem) {
     }
     elem.style.borderColor = "";
 }
+function setColor(elem, colorVar) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = `var(--${colorVar})`;
+}
+function removeColor(elem) {
+    if (!elem) {
+        return;
+    }
+    elem.style.color = "";
+}
 const titleElem = document.getElementById("title");
 function setPageTitle(title) {
     titleElem.innerText = title;

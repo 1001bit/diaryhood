@@ -8,7 +8,7 @@
 		"../misc/togglableclasses.ts",
 		"../misc/refresh.ts",
 		"../misc/pathinterfaces.ts",
-		"../misc/bordercolor.ts",
+		"../misc/colors.ts",
 		"../misc/title.ts"
 	]
 }

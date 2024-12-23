@@ -1,3 +1,4 @@
+// border color
 function setBorderColor(elem: HTMLElement | null, colorVar: string) {
 	if (!elem) {
 		return;
@@ -20,4 +21,19 @@ function removeBorderColor(elem: HTMLElement | null) {
 		return;
 	}
 	elem.style.borderColor = "";
+}
+
+// color
+function setColor(elem: HTMLElement | null, colorVar: string) {
+	if (!elem) {
+		return;
+	}
+	elem.style.color = `var(--${colorVar})`;
+}
+
+function removeColor(elem: HTMLElement | null) {
+	if (!elem) {
+		return;
+	}
+	elem.style.color = "";
 }
