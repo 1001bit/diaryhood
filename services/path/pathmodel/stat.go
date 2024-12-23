@@ -116,9 +116,23 @@ func (ps *PathStore) DeleteStat(ctx context.Context, pathId string, name string,
 
 func (ps *PathStore) GetStats(ctx context.Context, pathId string) ([]Stat, error) {
 	statsRows, err := ps.postgresC.QueryContext(ctx, `
-		SELECT name, count, step_equivalent
-		FROM stats
-		WHERE path_id = $1
+		SELECT 
+			s.name, 
+			s.count, 
+			s.step_equivalent, 
+			q.quota, 
+			q.duration_hours,
+			(s.count - q.last_count) as count_progress,
+			FLOOR(( EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM q.last_done) )/3600) as hours_passed,
+			q.streak
+		FROM 
+			stats s
+		JOIN 
+			quotas q
+		ON 
+			s.name = q.stat_name AND s.path_id = q.path_id
+		WHERE 
+			s.path_id = $1;
 	`, pathId)
 	if err != nil {
 		return nil, err
@@ -128,7 +142,16 @@ func (ps *PathStore) GetStats(ctx context.Context, pathId string) ([]Stat, error
 	var stats []Stat
 	for statsRows.Next() {
 		var stat Stat
-		if err := statsRows.Scan(&stat.Name, &stat.Count, &stat.StepEquivalent); err != nil {
+		if err := statsRows.Scan(
+			&stat.Name,
+			&stat.Count,
+			&stat.StepEquivalent,
+			&stat.Quota.Quota,
+			&stat.Quota.HoursLimit,
+			&stat.Quota.CountProgress,
+			&stat.Quota.HoursPassed,
+			&stat.Quota.Streak,
+		); err != nil {
 			return nil, err
 		}
 		stats = append(stats, stat)

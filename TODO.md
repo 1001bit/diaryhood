@@ -74,6 +74,11 @@
         [X] Count update
     [X] Test
     [ ] Stat quota
+        [X] Database
+        [X] Get
+        [ ] Create
+        [ ] Update
+        [ ] Quota stuff (streak, reset)
 
 [ ] Path page
     [X] Path view
@@ -89,9 +94,8 @@
     [X] Path owner link
     [X] Change stat cards to stat lines
     [ ] Stat quota
-        [X] HTML Template
-        [X] Interactivity
-        [ ] Api request
+        [X] Quota
+        [X] Time
         [ ] Streak
 
 
