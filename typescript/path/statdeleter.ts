@@ -13,6 +13,9 @@ class StatDeleter {
 		this.name = name;
 
 		this.askedIfSure = false;
+		editButton.addEventListener("click", () => {
+			this.askedIfSure = false;
+		});
 	}
 
 	setDeleteCallback(callback: () => void) {

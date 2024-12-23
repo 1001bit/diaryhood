@@ -37,7 +37,7 @@ class StatsManager {
 				count: 0,
 				quota: {
 					countProgress: 0,
-					quota: 0,
+					quota: 1,
 					streak: 0,
 					hoursPassed: 0,
 					hoursLimit: 24,

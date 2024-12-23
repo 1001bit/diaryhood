@@ -435,6 +435,9 @@ class StatDeleter {
         this.pathId = pathId;
         this.name = name;
         this.askedIfSure = false;
+        editButton.addEventListener("click", () => {
+            this.askedIfSure = false;
+        });
     }
     setDeleteCallback(callback) {
         this.deleteCallback = callback;
@@ -538,7 +541,7 @@ class StatsManager {
                 count: 0,
                 quota: {
                     countProgress: 0,
-                    quota: 0,
+                    quota: 1,
                     streak: 0,
                     hoursPassed: 0,
                     hoursLimit: 24,

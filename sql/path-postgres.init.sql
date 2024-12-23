@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS quotas (
     path_id INTEGER NOT NULL,
     stat_name VARCHAR(31) NOT NULL,
 
-    quota INTEGER NOT NULL DEFAULT 0,
+    quota INTEGER NOT NULL DEFAULT 1,
     last_count INTEGER NOT NULL DEFAULT 0,
 
     last_done TIMESTAMP NOT NULL DEFAULT now(),
