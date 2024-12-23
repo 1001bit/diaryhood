@@ -77,7 +77,7 @@
         [X] Database
         [X] Get
         [X] Create
-        [ ] Update
+        [X] Update
         [ ] Quota stuff (streak, reset)
 
 [ ] Path page

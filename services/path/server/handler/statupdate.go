@@ -50,6 +50,13 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = h.pathstore.UpdateQuota(r.Context(), pathId, statName, req.Quota)
+	if err != nil {
+		slog.With("err", err).Error("Failed to update quota")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
