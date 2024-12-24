@@ -14,6 +14,7 @@ interface StatElements {
 	stepEq: HTMLDivElement;
 	quota: HTMLDivElement;
 	quotaTime: HTMLDivElement;
+	quotaStreak: HTMLDivElement;
 	countInput: NumberInput;
 	count: HTMLDivElement;
 }
@@ -65,6 +66,9 @@ class Stat {
 		const quotaTimeElem = statElem.getElementsByClassName(
 			"stat-quota-time"
 		)[0] as HTMLDivElement;
+		const quotaStreakElem = statElem.getElementsByClassName(
+			"stat-quota-streak"
+		)[0] as HTMLDivElement;
 		const countElem = statElem.getElementsByClassName(
 			"stat-count"
 		)[0] as HTMLDivElement;
@@ -80,6 +84,7 @@ class Stat {
 			stepEq: stepEqElem,
 			quota: quotaElem,
 			quotaTime: quotaTimeElem,
+			quotaStreak: quotaStreakElem,
 			count: countElem,
 			countInput: countInputElem,
 		} as StatElements;
@@ -280,8 +285,14 @@ class Stat {
 			this.stat.quota.quota
 		) {
 			setColor(this.statElems.quota, "acc1");
+			setColor(this.statElems.quotaStreak, "acc1");
+			this.statElems.quotaStreak.innerText = `🔥 ${
+				this.stat.quota.streak + 1
+			}`;
 		} else {
 			removeColor(this.statElems.quota);
+			removeColor(this.statElems.quotaStreak);
+			this.statElems.quotaStreak.innerText = `🔥 ${this.stat.quota.streak}`;
 		}
 	}
 

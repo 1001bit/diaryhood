@@ -188,6 +188,7 @@ class Stat {
         const stepEqElem = statElem.getElementsByClassName("stat-stepeq")[0];
         const quotaElem = statElem.getElementsByClassName("stat-quota")[0];
         const quotaTimeElem = statElem.getElementsByClassName("stat-quota-time")[0];
+        const quotaStreakElem = statElem.getElementsByClassName("stat-quota-streak")[0];
         const countElem = statElem.getElementsByClassName("stat-count")[0];
         const countInputElem = new NumberInput(statElem.getElementsByClassName("stat-count-input")[0]);
         const statElems = {
@@ -196,6 +197,7 @@ class Stat {
             stepEq: stepEqElem,
             quota: quotaElem,
             quotaTime: quotaTimeElem,
+            quotaStreak: quotaStreakElem,
             count: countElem,
             countInput: countInputElem,
         };
@@ -332,9 +334,13 @@ class Stat {
         if (this.stat.quota.countProgress + this.newCount - this.stat.count >=
             this.stat.quota.quota) {
             setColor(this.statElems.quota, "acc1");
+            setColor(this.statElems.quotaStreak, "acc1");
+            this.statElems.quotaStreak.innerText = `🔥 ${this.stat.quota.streak + 1}`;
         }
         else {
             removeColor(this.statElems.quota);
+            removeColor(this.statElems.quotaStreak);
+            this.statElems.quotaStreak.innerText = `🔥 ${this.stat.quota.streak}`;
         }
     }
     updateStatElems(newStat) {

@@ -80,7 +80,7 @@
         [X] Update
         [X] Quota stuff (streak, reset)
 
-[ ] Path page
+[X] Path page
     [X] Path view
         [X] Stats
         [X] Overall steps
@@ -93,10 +93,10 @@
     [X] Stats count update
     [X] Path owner link
     [X] Change stat cards to stat lines
-    [ ] Stat quota
+    [X] Stat quota
         [X] Quota
         [X] Time
-        [ ] Streak
+        [X] Streak
 
 
 [ ] Responsible design
