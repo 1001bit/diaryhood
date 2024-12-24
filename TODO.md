@@ -73,12 +73,12 @@
         [X] Stats create
         [X] Count update
     [X] Test
-    [ ] Stat quota
+    [X] Stat quota
         [X] Database
         [X] Get
         [X] Create
         [X] Update
-        [ ] Quota stuff (streak, reset)
+        [X] Quota stuff (streak, reset)
 
 [ ] Path page
     [X] Path view

@@ -154,6 +154,11 @@ func (ps *PathStore) GetStats(ctx context.Context, pathId string) ([]Stat, error
 		); err != nil {
 			return nil, err
 		}
+
+		if err = ps.UpdateQuotaStreak(ctx, pathId, stat.Name, stat.Count, &stat.Quota); err != nil {
+			return nil, err
+		}
+
 		stats = append(stats, stat)
 	}
 

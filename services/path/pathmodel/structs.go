@@ -2,16 +2,16 @@ package pathmodel
 
 // Quota
 type QuotaEditable struct {
-	Quota      int `json:"quota"`
-	HoursLimit int `json:"hoursLimit"`
+	Quota      int32 `json:"quota"`
+	HoursLimit int32 `json:"hoursLimit"`
 }
 
 type Quota struct {
 	QuotaEditable
 
-	CountProgress int `json:"countProgress"`
-	HoursPassed   int `json:"hoursPassed"`
-	Streak        int `json:"streak"`
+	CountProgress int32 `json:"countProgress"`
+	HoursPassed   int32 `json:"hoursPassed"`
+	Streak        int32 `json:"streak"`
 }
 
 // Stat
