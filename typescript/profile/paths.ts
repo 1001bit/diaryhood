@@ -31,7 +31,7 @@ function newPathElem(path: PathWithSteps) {
 }
 
 function renderPaths(paths: PathWithSteps[]) {
-	if (!paths) {
+	if (!paths || paths.length == 0) {
 		return;
 	}
 

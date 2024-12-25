@@ -206,7 +206,7 @@ function newPathElem(path) {
     return pathElem;
 }
 function renderPaths(paths) {
-    if (!paths) {
+    if (!paths || paths.length == 0) {
         return;
     }
     setVisibility(noPathsElem, false);
