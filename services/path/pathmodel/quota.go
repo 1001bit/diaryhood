@@ -19,7 +19,7 @@ func (p *PathStore) UpdateQuota(ctx context.Context, pathId, statName string, qu
 }
 
 func (p *PathStore) UpdateQuotaStreak(ctx context.Context, pathId, statName string, count int32, quota *Quota) error {
-	if quota.HoursPassed < quota.HoursLimit {
+	if quota.HoursPassed < quota.HoursLimit || quota.HoursLimit <= 0 || quota.Quota <= 0 {
 		return nil
 	}
 

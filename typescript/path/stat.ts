@@ -302,11 +302,17 @@ class Stat {
 		this.statElems.name.innerText = this.stat.name;
 		this.statElems.stepEq.innerText = `= ${this.stat.stepEquivalent} steps`;
 
-		this.statElems.quota.innerText = `${
-			this.stat.quota.countProgress + this.newCount - this.stat.count
-		}/${this.stat.quota.quota}`;
-		this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
-		this.updateQuotaHighlight();
+		if (newStat.quota.quota > 0 && newStat.quota.hoursLimit > 0) {
+			this.statElems.quota.innerText = `${
+				this.stat.quota.countProgress + this.newCount - this.stat.count
+			}/${this.stat.quota.quota}`;
+			this.statElems.quotaTime.innerText = `${this.stat.quota.hoursPassed}/${this.stat.quota.hoursLimit} hrs`;
+			this.updateQuotaHighlight();
+		} else {
+			this.statElems.quota.innerText = "";
+			this.statElems.quotaTime.innerText = "no quota";
+			this.statElems.quotaStreak.innerText = "";
+		}
 
 		this.steps = this.newCount * this.stat.stepEquivalent;
 		this.stepsUpdateCallback();
