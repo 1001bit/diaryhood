@@ -11,8 +11,8 @@ L1
 
 L2
     Dynamic file storage, profile picture
+    Daily quota with streak
 Doing:
-    Daily quota with streak (1 day skip per 4 days)
     Home page with quotas
 
 L3

@@ -1,6 +1,6 @@
 module github.com/1001bit/pathgoer/shared
 
-go 1.23.2
+go 1.23.4
 
 require github.com/rabbitmq/amqp091-go v1.10.0
 

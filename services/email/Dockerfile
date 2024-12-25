@@ -1,4 +1,4 @@
-FROM golang:1.23.2 AS builder
+FROM golang:1.23.4 AS builder
 
 WORKDIR /app
 
@@ -7,9 +7,6 @@ COPY go.* .
 RUN go mod download
 # other files
 COPY . .
-
-# testing
-# RUN go test -v ./...
 
 # compiling go -> ./main
 RUN go build -o main main.go
