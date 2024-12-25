@@ -23,6 +23,10 @@ function newPathElem(path: PathWithSteps) {
 	pathNameElem.innerText = path.name;
 	pathLinkElem.href = `/path/${path.id}`;
 	pathStepsElem.innerText = `${path.steps} steps`;
+
+	userSteps += path.steps;
+	userStepsElem.innerText = `${userSteps} steps`;
+
 	return pathElem;
 }
 
