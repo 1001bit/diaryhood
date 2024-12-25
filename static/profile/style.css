@@ -5,27 +5,26 @@ main {
 }
 
 .line-separator {
-	margin-block: 10px;
+	margin-block: 0.5rem;
 }
 
 /* profile box (left) */
 #profile-box {
 	display: flex;
 	flex-direction: column;
-	width: 200px;
+	width: 10rem;
 	overflow-wrap: break-word;
 }
 
 #avatar-box {
-	margin-bottom: 16px;
+	margin-bottom: 0.75rem;
 	position: relative;
 }
 
 #avatar {
-	width: 200px;
-	height: 200px;
+	width: 10rem;
+	height: 10rem;
 	border-radius: 100%;
-	border: 2px solid var(--main1-dim);
 }
 
 #change-avatar {
@@ -38,7 +37,7 @@ main {
 /* make all text elements inside #name-box in one line */
 #name-box * {
 	display: inline;
-	margin-right: 5px;
+	margin-right: 0.25rem;
 }
 
 #name-box textarea {
@@ -55,20 +54,19 @@ main {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 20px;
+	gap: 1rem;
 	width: 40%;
 	height: fit-content;
 }
 
 .path,
 #path-create-box {
-	max-width: 130px;
-	min-width: 130px;
+	width: 10rem;
+	min-width: 5rem;
 	height: fit-content;
 	display: flex;
-	padding: 20px;
+	padding: 1rem;
 	flex-direction: column;
-	width: fit-content;
 	align-items: center;
 	text-align: center;
 	overflow-wrap: break-word;

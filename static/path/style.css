@@ -12,7 +12,8 @@ main {
 	align-items: center;
 	flex-direction: column;
 	position: relative;
-	margin-bottom: 160px;
+	margin-bottom: 9rem;
+	width: 100%;
 }
 
 #edit-section * a,
@@ -22,30 +23,34 @@ main {
 
 #edit-buttons {
 	display: flex;
-	gap: 48px;
+	gap: 2rem;
 	flex-direction: row;
 }
 
 #path-data {
-	height: 50px;
-	padding-inline: 24px;
+	height: fit-content;
+	justify-content: space-between;
+	width: fit-content;
+	padding: 0.5rem 1rem;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 40px;
+	column-gap: 2rem;
+	row-gap: 0.5rem;
 	position: absolute;
-	top: 60px;
+	top: 3rem;
 }
 
 #path-data p {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.5rem;
 }
 
 #path-data p input {
-	padding-block: 0px;
+	padding-block: 0;
 	height: fit-content;
-	width: 200px;
+	width: 10rem;
 }
 
 /* stats */
@@ -53,21 +58,21 @@ main {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 20px;
+	gap: 2rem;
 	align-items: first baseline;
 	justify-content: center;
 	width: 90%;
-	margin-bottom: 80px;
+	margin-bottom: 4rem;
 }
 
 /* stat */
 .stat {
 	display: flex;
 	flex-direction: column;
-	width: 300px;
-	gap: 16px;
-	padding: 20px 16px;
-	box-sizing: border-box;
+	width: 15rem;
+	gap: 1rem;
+	padding: 1.25rem 1rem;
+
 	align-items: center;
 	word-wrap: break-word;
 	text-align: center;
@@ -78,10 +83,9 @@ main {
 }
 
 .stat-row {
-	box-sizing: border-box;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.5rem;
 	width: 100%;
 }
 
@@ -94,14 +98,14 @@ main {
 }
 
 .stat input {
-	padding-inline: 8px;
+	padding-inline: 0.5rem;
 	text-align: center;
 }
 
 .stat-count {
-	border: 2px solid var(--main1-dim);
-	padding: 4px 8px;
-	border-radius: 4px;
+	border: 0.1rem solid var(--main1-dim);
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.2rem;
 }
 
 .stat-count-input input {
@@ -126,7 +130,7 @@ main {
 }
 
 #stat-create .stat-section {
-	height: 60px;
+	height: 3rem;
 }
 
 #stat-create input {
@@ -144,7 +148,7 @@ main {
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: 0.5rem;
 }
 
 .plus,
@@ -154,5 +158,9 @@ main {
 
 /* steps count */
 #path-steps {
-	margin-bottom: 16px;
+	margin-bottom: 0.75rem;
+}
+
+#path-owner {
+	margin-bottom: 1rem;
 }

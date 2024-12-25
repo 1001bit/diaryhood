@@ -1,14 +1,16 @@
 main {
 	position: absolute;
+	display: flex;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	justify-content: center;
+	width: 100%;
 }
 
 #login-box {
-	padding-inline: 40px;
-	padding-block: 28px;
-	gap: 24px;
+	padding: 1.5rem 2rem;
+	gap: 1.5rem;
 	display: flex;
 	flex-direction: column;
 

@@ -98,5 +98,6 @@
         [X] Time
         [X] Streak
 
+[X] Responsible design
 
-[ ] Responsible design
+[ ] Home page
