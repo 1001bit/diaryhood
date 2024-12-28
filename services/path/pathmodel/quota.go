@@ -25,7 +25,7 @@ func (p *PathStore) UpdateQuotaStreak(ctx context.Context, pathId, statName stri
 
 	var err error
 
-	if quota.CountProgress >= quota.Quota {
+	if quota.CountProgress >= quota.Quota && quota.HoursPassed < quota.HoursLimit*2 {
 		_, err = p.postgresC.ExecContext(ctx, `
 			UPDATE quotas
 			SET streak = streak + 1, last_done = now(), last_count = $1
