@@ -37,4 +37,5 @@ CREATE TABLE IF NOT EXISTS quotas (
         FOREIGN KEY (path_id, stat_name) 
         REFERENCES stats (path_id, name) 
         ON DELETE CASCADE
+        ON UPDATE CASCADE
 );

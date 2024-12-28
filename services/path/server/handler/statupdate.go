@@ -37,7 +37,6 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.pathstore.UpdateStat(r.Context(), pathId, statName, req, userId)
-
 	if err == sql.ErrNoRows {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -49,6 +48,7 @@ func (h *Handler) HandleUpdateStat(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	statName = req.Name
 
 	err = h.pathstore.UpdateQuota(r.Context(), pathId, statName, req.Quota)
 	if err != nil {
