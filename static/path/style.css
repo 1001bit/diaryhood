@@ -65,57 +65,6 @@ main {
 	margin-bottom: 4rem;
 }
 
-/* stat */
-.stat {
-	display: flex;
-	flex-direction: column;
-	width: 15rem;
-	gap: 1rem;
-	padding: 1.25rem 1rem;
-
-	align-items: center;
-	word-wrap: break-word;
-	text-align: center;
-}
-
-.stat * {
-	max-width: 100%;
-}
-
-.stat-row {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	width: 100%;
-}
-
-.quota-row {
-	justify-content: center;
-}
-
-.quota-row > * {
-	width: 32%;
-}
-
-.stat input {
-	padding-inline: 0.5rem;
-	text-align: center;
-}
-
-.stat-count {
-	border: 0.1rem solid var(--main1-dim);
-	padding: 0.25rem 0.5rem;
-	border-radius: 0.2rem;
-}
-
-.stat-count-input input {
-	text-align: center;
-}
-
-.stat-quota {
-	text-align: center;
-}
-
 /* edit stat */
 .delete-stat-button,
 .save-stat-button,
@@ -140,20 +89,6 @@ main {
 #stat-create input:hover,
 #stat-create input:focus {
 	border-color: var(--acc1);
-}
-
-/* number input */
-.number-input-box {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 0.5rem;
-}
-
-.plus,
-.minus {
-	user-select: none;
 }
 
 /* steps count */

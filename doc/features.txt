@@ -13,7 +13,7 @@ L2
     Dynamic file storage, profile picture
     Daily quota with streak
 Doing:
-    Home page with quotas
+    Home page with paths + stats
 
 L3
     Some graphs

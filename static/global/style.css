@@ -61,7 +61,7 @@ a:hover {
 
 h1 {
 	font-weight: 500;
-	font-size: 2.5rem;
+	font-size: 2.25rem;
 }
 
 h2 {
@@ -75,20 +75,20 @@ h3 {
 }
 
 p,
-a,
-b {
+a {
 	font-weight: 400;
-	font-size: 1.125rem;
+	font-size: 1.25rem;
 }
 
-b,
+p.bold,
 a {
 	font-weight: 500;
 }
 
-.tiny {
+p.tiny,
+a.tiny {
 	font-weight: 400;
-	font-size: 0.875rem;
+	font-size: 0.75rem;
 }
 
 /* additionals */
@@ -210,4 +210,70 @@ button:active {
 .thin:focus,
 .thin:hover {
 	border-width: 1px;
+}
+
+/* stats */
+/* number input */
+.number-input-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+}
+
+.plus,
+.minus {
+	user-select: none;
+}
+
+/* stat */
+.stat {
+	display: flex;
+	flex-direction: column;
+	width: 15rem;
+	gap: 1rem;
+	padding: 1.25rem 1rem;
+
+	align-items: center;
+	word-wrap: break-word;
+	text-align: center;
+}
+
+.stat * {
+	max-width: 100%;
+}
+
+.stat-row {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	width: 100%;
+}
+
+.quota-row {
+	justify-content: center;
+}
+
+.quota-row > * {
+	width: 32%;
+}
+
+.stat input {
+	padding-inline: 0.5rem;
+	text-align: center;
+}
+
+.stat-count {
+	border: 0.1rem solid var(--main1-dim);
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.2rem;
+}
+
+.stat-count-input input {
+	text-align: center;
+}
+
+.stat-quota {
+	text-align: center;
 }

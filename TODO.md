@@ -101,3 +101,4 @@
 [X] Responsible design
 
 [ ] Home page
+    [X] Base layout
