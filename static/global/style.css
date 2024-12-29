@@ -111,10 +111,17 @@ a {
 /* Navbar */
 #navbar {
 	display: flex;
-	position: relative;
+	position: fixed;
 	justify-content: space-between;
-	align-items: center;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
 	width: 100%;
+	padding: 0rem 0.5rem;
+	align-items: center;
+	z-index: 1000;
+
+	background: var(--main2, #000);
 }
 
 .left {
@@ -130,6 +137,10 @@ a {
 
 .right {
 	text-align: right;
+}
+
+body {
+	padding-top: 5rem;
 }
 
 /* Input */

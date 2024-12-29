@@ -4,12 +4,20 @@ templ Home() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@baseHead("Home")
+			@baseHead("pathgoer")
+			<link rel="stylesheet" href="/static/home/style.css"/>
 		</head>
 		<body>
 			@nav("home")
+			<div id="paths">
+				<a>path1</a>
+				<a>path2</a>
+			</div>
 			<main>
-				<p>It's home!</p>
+				<h2>To do:</h2>
+				<div class="quotas" id="quotas-todo"></div>
+				<h2>Done:</h2>
+				<div class="quotas" id="quotas-done"></div>
 			</main>
 		</body>
 	</html>
