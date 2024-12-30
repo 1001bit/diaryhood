@@ -26,6 +26,7 @@ html {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	max-width: 100%;
 }
 
 body {
@@ -148,12 +149,13 @@ input,
 button,
 textarea {
 	width: 100%;
-
+	max-width: inherit;
 	border-radius: 0.2rem;
 	padding: 0.2rem 0.5rem;
 	font-family: inherit;
 	font-size: inherit;
 	font-weight: inherit;
+	transition: all 0.08s ease-in-out;
 }
 
 /* input text */
@@ -170,12 +172,6 @@ textarea:focus,
 textarea:hover {
 	outline: none;
 	border-color: var(--main1);
-}
-
-input,
-textarea,
-button {
-	transition: all 0.08s ease-in-out;
 }
 
 input::placeholder,
@@ -216,15 +212,18 @@ button:active {
 /* number input */
 .number-input-box {
 	display: flex;
-	flex-direction: row;
+	width: 100%;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	gap: 0.5rem;
+	overflow-x: hidden;
+	white-space: nowrap;
 }
 
-.plus,
-.minus {
+.number-input-box > * {
 	user-select: none;
+	flex: content;
+	text-align: center;
 }
 
 /* stat */
@@ -240,23 +239,16 @@ button:active {
 	text-align: center;
 }
 
-.stat * {
-	max-width: 100%;
-}
-
 .stat-row {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 	width: 100%;
-}
-
-.quota-row {
 	justify-content: center;
 }
 
 .quota-row > * {
-	width: 32%;
+	flex: 1;
 }
 
 .stat input {

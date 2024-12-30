@@ -42,7 +42,6 @@ main {
 
 #name-box textarea {
 	resize: none;
-	max-width: 100%;
 }
 
 #change-name {
@@ -70,10 +69,6 @@ main {
 	align-items: center;
 	text-align: center;
 	overflow-wrap: break-word;
-}
-
-.path * {
-	max-width: 100%;
 }
 
 .path a {

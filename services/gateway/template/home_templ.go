@@ -76,7 +76,7 @@ func SampleHomeStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><p class=\"stat-stepeq dim\">= 1 step</p><div class=\"stat-row quota-row\"><p class=\"stat-quota\">0/0</p><p class=\"stat-quota-time dim tiny\">0/0 hrs</p><p class=\"stat-quota-streak\">🔥 0</p></div><div class=\"number-input-box stat-count-input\"><a class=\"minus\">-</a><p class=\"bold\"><input type=\"text\" placeholder=\"0\" class=\"no-padding\"></p><a class=\"plus\">+</a></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><div class=\"stat-row quota-row\"><p class=\"stat-quota-streak\">🔥 0</p><p class=\"stat-quota-time dim tiny\">0/0 hrs</p></div><div class=\"number-input-box stat-count-input\"><a class=\"minus\">-</a><p class=\"bold\"><input type=\"text\" placeholder=\"0\" class=\"no-padding\"></p><p>/ 10</p><a class=\"plus\">+</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
