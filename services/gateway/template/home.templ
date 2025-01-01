@@ -15,24 +15,8 @@ templ Home() {
 					<div class="stats"></div>
 				</div>
 			</main>
-			@SampleHomeStat()
+			@SampleStat()
 			<script src="/static/home/script.js"></script>
 		</body>
 	</html>
-}
-
-templ SampleHomeStat() {
-	<div class="stat box" id="sample-stat">
-		<h3 class="stat-name">stat</h3>
-		<div class="stat-row quota-row">
-			<p class="stat-quota-streak">🔥 0</p>
-			<p class="stat-quota-time dim tiny">0/0 hrs</p>
-		</div>
-		<div class="number-input-box stat-count-input">
-			<a class="minus">-</a>
-			<p class="bold"><input type="text" placeholder="0" class="no-padding"/></p>
-			<p>/ 10</p>
-			<a class="plus">+</a>
-		</div>
-	</div>
 }

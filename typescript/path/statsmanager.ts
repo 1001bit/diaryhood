@@ -74,7 +74,7 @@ class StatsManager {
 		this.pageStats.push(pageStat);
 		this.renderPageStat(pageStat);
 
-		pageStat.stepsUpdateCallback = () => {
+		pageStat.stepCounter.stepsUpdateCallback = () => {
 			this.updatePathSteps();
 		};
 
@@ -85,17 +85,18 @@ class StatsManager {
 		let counts = [];
 
 		for (const stat of this.pageStats) {
-			if (stat.newCount == stat.stat.count) {
+			if (stat.countCounter.presentCount == stat.stat.count) {
 				continue;
 			}
 
 			counts.push({
 				name: stat.stat.name,
-				count: stat.newCount,
+				count: stat.countCounter.presentCount,
 			});
 
-			stat.stat.quota.countProgress += stat.newCount - stat.stat.count;
-			stat.stat.count = stat.newCount;
+			stat.stat.quota.countProgress +=
+				stat.countCounter.presentCount - stat.stat.count;
+			stat.stat.count = stat.countCounter.presentCount;
 		}
 
 		if (counts.length == 0) {
@@ -108,7 +109,7 @@ class StatsManager {
 	updatePathSteps() {
 		let steps = 0;
 		for (const stat of this.pageStats) {
-			steps += stat.newCount * stat.stat.stepEquivalent;
+			steps += stat.countCounter.presentCount * stat.stat.stepEquivalent;
 		}
 		pathStepsElem.innerText = `steps: ${steps}`;
 	}

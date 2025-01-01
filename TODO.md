@@ -100,5 +100,8 @@
 
 [X] Responsible design
 
+[X] Make stat count based on quota
+[ ] Icon 
 [ ] Home page
-    [X] Base layout
+    [ ] Paths
+    [ ] Stats for paths

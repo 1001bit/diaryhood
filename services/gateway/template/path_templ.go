@@ -80,7 +80,7 @@ func SampleEditStat() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden edit-stat\" id=\"sample-edit-stat\"><h3><input type=\"text\" placeholder=\"name\" class=\"stat-name-input no-padding\" maxlength=\"31\"></h3><div class=\"stat-row\"><p class=\"dim\">=</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-stepeq-input\"></p><p class=\"dim\">steps</p></div><div class=\"stat-row\"><p class=\"dim tiny\">task:</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-quota-input\"></p><p class=\"dim tiny\">in</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-quota-time-input\"></p><p class=\"dim tiny\">hrs</p></div><a class=\"save-stat-button hidden\">save</a> <a class=\"delete-stat-button hidden\">delete</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden edit-stat\" id=\"sample-edit-stat\"><h3><input type=\"text\" placeholder=\"name\" class=\"stat-name-input no-padding\" maxlength=\"31\"></h3><div class=\"stat-row\"><p class=\"dim\">=</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-stepeq-input\"></p><p class=\"dim\">steps</p></div><div class=\"stat-row\"><p class=\"dim\">task:</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-quota-input\"></p><p class=\"dim\">in</p><p><input type=\"text\" placeholder=\"0\" class=\"no-padding stat-quota-time-input\"></p><p class=\"dim\">hrs</p></div><a class=\"save-stat-button hidden\">save</a> <a class=\"delete-stat-button hidden\">delete</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -106,7 +106,7 @@ func SampleStat() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name\">stat</h3><p class=\"stat-stepeq dim\">= 1 step</p><div class=\"stat-row quota-row\"><p class=\"stat-quota\">0/0</p><p class=\"stat-quota-time dim tiny\">0/0 hrs</p><p class=\"stat-quota-streak\">🔥 0</p></div><div class=\"number-input-box stat-count-input hidden\"><a class=\"minus\">-</a><p class=\"bold\"><input type=\"text\" placeholder=\"0\" class=\"no-padding\"></p><a class=\"plus\">+</a></div><p class=\"stat-count hidden bold\">0</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"stat box hidden\" id=\"sample-stat\"><h3 class=\"stat-name bold\">stat</h3><p class=\"stat-stepeq\">123 x 1 👣</p><div class=\"stat-row quota-row\"><p class=\"stat-quota-streak\">🔥 1000</p><p class=\"stat-quota-time\">⏳️ 0/0 hrs</p><p class=\"stat-quota\">🚩 200</p></div><div class=\"number-input-box stat-count-input hidden\"><a class=\"minus\">-</a><p class=\"bold\"><input type=\"text\" placeholder=\"0\" class=\"no-padding\"></p><a class=\"plus\">+</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

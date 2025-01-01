@@ -2,9 +2,10 @@ package template
 
 templ nav(title string) {
 	<div id="navbar">
-		<a href="/"><h2 class="left">pathgoer</h2></a>
+		<a href="/" class="left left-long"><h2>pathgoer</h2></a>
+		<a href="/" class="left left-short"><h2>pg</h2></a>
 		<h2 class="center" id="title">{ title }</h2>
-		<a href="/user"><h2 class="right" id="login-open">you</h2></a>
+		<a href="/user" class="right"><h2>you</h2></a>
 	</div>
 }
 
