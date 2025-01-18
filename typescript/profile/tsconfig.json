@@ -7,7 +7,7 @@
 		"*.ts",
 		"../misc/togglableclasses.ts",
 		"../misc/refresh.ts",
-		"../misc/pathinterfaces.ts",
+		"../pathShared/interfaces.ts",
 		"../misc/colors.ts",
 		"../misc/title.ts"
 	]

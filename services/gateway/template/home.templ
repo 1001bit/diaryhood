@@ -10,13 +10,19 @@ templ Home() {
 		<body>
 			@nav("home")
 			<main>
-				<div class="path">
-					<a><h3>path</h3></a>
-					<div class="stats"></div>
-				</div>
+				<div id="paths"></div>
 			</main>
 			@SampleStat()
+			@SampleHomePath()
 			<script src="/static/home/script.js"></script>
 		</body>
 	</html>
+}
+
+templ SampleHomePath() {
+	<div class="path hidden" id="sample-path">
+		<a href="/path/0" class="path-name"><h3>path</h3></a>
+		<div class="line-separator"></div>
+		<div class="stats"></div>
+	</div>
 }

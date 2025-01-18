@@ -1,11 +1,11 @@
-/// <reference path="stat.ts" />
 /// <reference path="statcreator.ts" />
 /// <reference path="statdeleter.ts" />
 /// <reference path="statupdater.ts" />
 
 class StatsManager {
 	pathId: string;
-	pageStats: Array<Stat>;
+	pageStats: Array<PageStat>;
+	pageStatsEditors: Array<PageStatEditor>;
 	statCreator: StatCreator;
 
 	countUpdateTicker: number;
@@ -13,6 +13,7 @@ class StatsManager {
 	constructor(pathId: string) {
 		this.pathId = pathId;
 		this.pageStats = [];
+		this.pageStatsEditors = [];
 		this.statCreator = new StatCreator(this.pathId);
 
 		this.countUpdateTicker = 0;
@@ -45,31 +46,25 @@ class StatsManager {
 			};
 
 			const pageStat = this.initStat(stat, true);
-
+			const pageStatEditor = this.initStatEditor(pageStat);
 			setVisibility(pageStat.statElems.stat, false);
-			if (pageStat.editStatElems) {
-				setVisibility(pageStat.editStatElems.editStat, true);
-			}
+			setVisibility(pageStatEditor.editStatElems.editStat, true);
 		});
 	}
 
-	renderPageStat(pageStat: Stat) {
+	renderPageStat(pageStat: PageStat) {
 		statsElem.insertBefore(pageStat.statElems.stat, statCreateBoxElem);
-
-		if (pageStat.editStatElems) {
-			statsElem.insertBefore(
-				pageStat.editStatElems.editStat,
-				statCreateBoxElem
-			);
-		}
 	}
 
-	initStat(stat: StatInterface, editRight: boolean): Stat {
-		const pageStat = new Stat(stat, editRight, this.pathId);
-		pageStat.deleter.setDeleteCallback(() => {
-			this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-			this.updatePathSteps();
-		});
+	renderPageStatEditor(pageStatEditor: PageStatEditor) {
+		statsElem.insertBefore(
+			pageStatEditor.editStatElems.editStat,
+			statCreateBoxElem
+		);
+	}
+
+	initStat(stat: StatInterface, editRight: boolean): PageStat {
+		const pageStat = new PageStat(stat, editRight);
 
 		this.pageStats.push(pageStat);
 		this.renderPageStat(pageStat);
@@ -78,7 +73,28 @@ class StatsManager {
 			this.updatePathSteps();
 		};
 
+		if (editRight) {
+			this.initStatEditor(pageStat);
+		}
+
 		return pageStat;
+	}
+
+	initStatEditor(stat: PageStat): PageStatEditor {
+		const pageStatEditor = new PageStatEditor(stat, this.pathId);
+		pageStatEditor.deleter.setDeleteCallback(() => {
+			this.pageStats.splice(this.pageStats.indexOf(stat), 1);
+			this.updatePathSteps();
+			this.pageStatsEditors.splice(
+				this.pageStatsEditors.indexOf(pageStatEditor),
+				1
+			);
+		});
+
+		this.pageStatsEditors.push(pageStatEditor);
+		this.renderPageStatEditor(pageStatEditor);
+
+		return pageStatEditor;
 	}
 
 	updateCounts() {
@@ -145,9 +161,9 @@ class StatsManager {
 
 		for (const stat of this.pageStats) {
 			setVisibility(stat.statElems.stat, !mode);
-			if (stat.editStatElems) {
-				setVisibility(stat.editStatElems.editStat, mode);
-			}
+		}
+		for (const statEditor of this.pageStatsEditors) {
+			setVisibility(statEditor.editStatElems.editStat, mode);
 		}
 	}
 }

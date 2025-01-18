@@ -104,4 +104,3 @@
 [ ] Icon 
 [ ] Home page
     [ ] Paths
-    [ ] Stats for paths

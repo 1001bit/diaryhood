@@ -166,236 +166,6 @@ class PathEditor {
         });
     }
 }
-class EditStatElem {
-    constructor(stat) {
-        this.editStat = sampleEditStatElem.cloneNode(true);
-        this.editStat.removeAttribute("id");
-        this.deleteButton = this.editStat.getElementsByClassName("delete-stat-button")[0];
-        this.saveButton = this.editStat.getElementsByClassName("save-stat-button")[0];
-        this.nameInput = this.editStat.getElementsByClassName("stat-name-input")[0];
-        removeBorderColorOnFocus(this.nameInput);
-        this.stepEqInput = this.editStat.getElementsByClassName("stat-stepeq-input")[0];
-        acceptOnlyNumbers(this.stepEqInput);
-        this.quotaInput = this.editStat.getElementsByClassName("stat-quota-input")[0];
-        acceptOnlyNumbers(this.quotaInput);
-        this.quotaTimeInput = this.editStat.getElementsByClassName("stat-quota-time-input")[0];
-        acceptOnlyNumbers(this.quotaTimeInput);
-        this.nameInput.value = stat.name;
-        this.stepEqInput.value = stat.stepEquivalent.toString();
-        this.quotaInput.value = stat.quota.quota.toString();
-        this.quotaTimeInput.value = stat.quota.hoursLimit.toString();
-    }
-    saveButtonMode(mode) {
-        this.saveButton.innerText = "save";
-        this.deleteButton.innerText = "delete";
-        setVisibility(this.saveButton, mode);
-        setVisibility(this.deleteButton, !mode);
-    }
-}
-class StatElem {
-    constructor(editRight) {
-        this.stat = sampleStatElem.cloneNode(true);
-        this.name = this.stat.getElementsByClassName("stat-name")[0];
-        this.stepEq = this.stat.getElementsByClassName("stat-stepeq")[0];
-        this.quota = this.stat.getElementsByClassName("stat-quota")[0];
-        this.quotaTime = this.stat.getElementsByClassName("stat-quota-time")[0];
-        this.quotaStreak = this.stat.getElementsByClassName("stat-quota-streak")[0];
-        this.countInput = new NumberInput(this.stat.getElementsByClassName("stat-count-input")[0]);
-        this.stat.removeAttribute("id");
-        setVisibility(this.stat, true);
-        setVisibility(this.countInput.getElem(), editRight);
-    }
-    setQuotaHighlight(highlight, streak) {
-        if (highlight) {
-            setColor(this.quota, "acc1");
-            setColor(this.quotaStreak, "acc1");
-            this.quotaStreak.innerText = `🔥 ${streak + 1}`;
-        }
-        else {
-            removeColor(this.quota);
-            removeColor(this.quotaStreak);
-            this.quotaStreak.innerText = `🔥 ${streak}`;
-        }
-    }
-    setStepEq(count, stepEq) {
-        this.stepEq.innerText = `${count} * ${stepEq} 👣`;
-    }
-    setQuota(quota, hoursPassed, hoursLimit) {
-        if (quota > 0 && hoursLimit > 0) {
-            this.quota.innerText = `🚩 ${quota}`;
-            this.quotaTime.innerText = `⏳️ ${hoursPassed}/${hoursLimit} hrs`;
-        }
-        else {
-            this.quota.innerText = "";
-            this.quotaTime.innerText = "no quota";
-            this.quotaStreak.innerText = "";
-        }
-    }
-    setCountValue(count) {
-        this.countInput.setValue(count);
-    }
-}
-class StatStepCounter {
-    constructor() {
-        this.steps = 0;
-        this.stepsUpdateCallback = () => { };
-    }
-    updateSteps(count, stepEq) {
-        this.steps = count * stepEq;
-        this.stepsUpdateCallback();
-    }
-}
-class StatCountCounter {
-    constructor(count) {
-        this.presentCount = count;
-    }
-    updatePresentCount(inputValue, quotaProgress, statCount) {
-        if (isNaN(inputValue)) {
-            inputValue = 0;
-        }
-        this.presentCount = inputValue - quotaProgress + statCount;
-        return this.presentCount;
-    }
-    calculatePresentQuotaProgress(quotaProgress, statCount) {
-        return quotaProgress + this.presentCount - statCount;
-    }
-}
-class Stat {
-    constructor(stat, editRight, pathId) {
-        this.stat = stat;
-        this.countCounter = new StatCountCounter(stat.count);
-        this.stepCounter = new StatStepCounter();
-        this.statElems = new StatElem(editRight);
-        this.editStatElems = editRight ? new EditStatElem(stat) : null;
-        this.updateStatValues(this.stat);
-        this.initEvents();
-        if (this.editStatElems) {
-            this.initEditEvents();
-        }
-        this.deleter = new StatDeleter(pathId, stat.name);
-        this.updater = new StatUpdater(stat.name, pathId);
-    }
-    initEvents() {
-        this.statElems.countInput.addInputListener((_num) => {
-            this.updateCount();
-        });
-    }
-    initEditEvents() {
-        if (!this.editStatElems)
-            return;
-        editButton.addEventListener("click", () => {
-            if (!this.editStatElems)
-                return;
-            this.editStatElems.nameInput.value = this.stat.name;
-            this.editStatElems.stepEqInput.value =
-                this.stat.stepEquivalent.toString();
-            this.showSaveButtonIfChanged();
-        });
-        this.editStatElems.deleteButton.addEventListener("click", () => {
-            this.delete();
-        });
-        this.editStatElems.saveButton.addEventListener("click", () => {
-            this.save();
-        });
-        this.editStatElems.nameInput.addEventListener("input", () => {
-            this.showSaveButtonIfChanged();
-        });
-        this.editStatElems.stepEqInput.addEventListener("input", () => {
-            this.showSaveButtonIfChanged();
-        });
-        this.editStatElems.quotaInput.addEventListener("input", () => {
-            this.showSaveButtonIfChanged();
-        });
-        this.editStatElems.quotaTimeInput.addEventListener("input", () => {
-            this.showSaveButtonIfChanged();
-        });
-        this.showSaveButtonIfChanged();
-    }
-    save() {
-        if (!this.editStatElems)
-            return;
-        if (isNaN(Number(this.editStatElems.stepEqInput.value))) {
-            this.editStatElems.stepEqInput.value = "0";
-        }
-        if (isNaN(Number(this.editStatElems.quotaInput.value))) {
-            this.editStatElems.quotaInput.value = "0";
-        }
-        if (isNaN(Number(this.editStatElems.quotaTimeInput.value))) {
-            this.editStatElems.quotaTimeInput.value = "0";
-        }
-        this.updater
-            .save({
-            name: this.editStatElems.nameInput.value,
-            stepEquivalent: Number(this.editStatElems.stepEqInput.value),
-            quota: {
-                quota: Number(this.editStatElems.quotaInput.value),
-                hoursLimit: Number(this.editStatElems.quotaTimeInput.value),
-            },
-        })
-            .then((message) => {
-            if (!this.editStatElems)
-                return;
-            if (message == "") {
-                this.stat.name = this.editStatElems.nameInput.value;
-                this.stat.stepEquivalent = Number(this.editStatElems.stepEqInput.value);
-                this.stat.quota.quota = Number(this.editStatElems.quotaInput.value);
-                this.stat.quota.hoursLimit = Number(this.editStatElems.quotaTimeInput.value);
-                this.updateStatValues(this.stat);
-                this.showSaveButtonIfChanged();
-                return;
-            }
-            this.editStatElems.saveButton.innerText = message;
-            setBorderColor(this.editStatElems.nameInput, "err");
-        });
-    }
-    delete() {
-        this.deleter.delete().then((message) => {
-            var _a;
-            if (!this.editStatElems)
-                return;
-            if (message == "") {
-                this.statElems.stat.remove();
-                (_a = this.editStatElems) === null || _a === void 0 ? void 0 : _a.editStat.remove();
-                return;
-            }
-            this.editStatElems.deleteButton.innerText = message;
-        });
-    }
-    updateCount() {
-        const presentCount = this.countCounter.updatePresentCount(Number(this.statElems.countInput.getValue()), this.stat.quota.countProgress, this.stat.count);
-        this.stepCounter.updateSteps(presentCount, this.stat.stepEquivalent);
-        this.statElems.setStepEq(presentCount, this.stat.stepEquivalent);
-        this.updateQuotaHighlight();
-    }
-    updateQuotaHighlight() {
-        if (this.stat.quota.quota <= 0 || this.stat.quota.hoursLimit <= 0) {
-            return;
-        }
-        const currentQuotaProgress = this.countCounter.calculatePresentQuotaProgress(this.stat.quota.countProgress, this.stat.count);
-        this.statElems.setQuotaHighlight(currentQuotaProgress >= this.stat.quota.quota, this.stat.quota.streak);
-    }
-    updateStatValues(newStat) {
-        this.stat = newStat;
-        this.statElems.name.innerText = this.stat.name;
-        this.statElems.setStepEq(this.countCounter.presentCount, this.stat.stepEquivalent);
-        this.statElems.setQuota(this.stat.quota.quota, this.stat.quota.hoursPassed, this.stat.quota.hoursLimit);
-        this.updateQuotaHighlight();
-        this.statElems.setCountValue(this.countCounter.calculatePresentQuotaProgress(this.stat.quota.countProgress, this.stat.count));
-        this.stepCounter.updateSteps(this.countCounter.presentCount, this.stat.stepEquivalent);
-    }
-    showSaveButtonIfChanged() {
-        if (!this.editStatElems)
-            return;
-        const changed = !(this.editStatElems.nameInput.value == this.stat.name &&
-            Number(this.editStatElems.stepEqInput.value) ==
-                this.stat.stepEquivalent &&
-            Number(this.editStatElems.quotaInput.value) ==
-                this.stat.quota.quota &&
-            Number(this.editStatElems.quotaTimeInput.value) ==
-                this.stat.quota.hoursLimit);
-        this.editStatElems.saveButtonMode(changed);
-    }
-}
 class StatCreator {
     constructor(pathId) {
         this.pathId = pathId;
@@ -555,6 +325,7 @@ class StatsManager {
     constructor(pathId) {
         this.pathId = pathId;
         this.pageStats = [];
+        this.pageStatsEditors = [];
         this.statCreator = new StatCreator(this.pathId);
         this.countUpdateTicker = 0;
         this.initEvents();
@@ -581,30 +352,39 @@ class StatsManager {
                 },
             };
             const pageStat = this.initStat(stat, true);
+            const pageStatEditor = this.initStatEditor(pageStat);
             setVisibility(pageStat.statElems.stat, false);
-            if (pageStat.editStatElems) {
-                setVisibility(pageStat.editStatElems.editStat, true);
-            }
+            setVisibility(pageStatEditor.editStatElems.editStat, true);
         });
     }
     renderPageStat(pageStat) {
         statsElem.insertBefore(pageStat.statElems.stat, statCreateBoxElem);
-        if (pageStat.editStatElems) {
-            statsElem.insertBefore(pageStat.editStatElems.editStat, statCreateBoxElem);
-        }
+    }
+    renderPageStatEditor(pageStatEditor) {
+        statsElem.insertBefore(pageStatEditor.editStatElems.editStat, statCreateBoxElem);
     }
     initStat(stat, editRight) {
-        const pageStat = new Stat(stat, editRight, this.pathId);
-        pageStat.deleter.setDeleteCallback(() => {
-            this.pageStats.splice(this.pageStats.indexOf(pageStat), 1);
-            this.updatePathSteps();
-        });
+        const pageStat = new PageStat(stat, editRight);
         this.pageStats.push(pageStat);
         this.renderPageStat(pageStat);
         pageStat.stepCounter.stepsUpdateCallback = () => {
             this.updatePathSteps();
         };
+        if (editRight) {
+            this.initStatEditor(pageStat);
+        }
         return pageStat;
+    }
+    initStatEditor(stat) {
+        const pageStatEditor = new PageStatEditor(stat, this.pathId);
+        pageStatEditor.deleter.setDeleteCallback(() => {
+            this.pageStats.splice(this.pageStats.indexOf(stat), 1);
+            this.updatePathSteps();
+            this.pageStatsEditors.splice(this.pageStatsEditors.indexOf(pageStatEditor), 1);
+        });
+        this.pageStatsEditors.push(pageStatEditor);
+        this.renderPageStatEditor(pageStatEditor);
+        return pageStatEditor;
     }
     updateCounts() {
         let counts = [];
@@ -661,9 +441,9 @@ class StatsManager {
         setVisibility(statCreateBoxElem, mode);
         for (const stat of this.pageStats) {
             setVisibility(stat.statElems.stat, !mode);
-            if (stat.editStatElems) {
-                setVisibility(stat.editStatElems.editStat, mode);
-            }
+        }
+        for (const statEditor of this.pageStatsEditors) {
+            setVisibility(statEditor.editStatElems.editStat, mode);
         }
     }
 }
@@ -728,6 +508,134 @@ function cancelEdit() {
     editing = false;
     editButton.innerText = "edit";
     setVisibility(pathDataElem, false);
+}
+class EditStatElem {
+    constructor(stat) {
+        this.editStat = sampleEditStatElem.cloneNode(true);
+        this.editStat.removeAttribute("id");
+        this.deleteButton = this.editStat.getElementsByClassName("delete-stat-button")[0];
+        this.saveButton = this.editStat.getElementsByClassName("save-stat-button")[0];
+        this.nameInput = this.editStat.getElementsByClassName("stat-name-input")[0];
+        removeBorderColorOnFocus(this.nameInput);
+        this.stepEqInput = this.editStat.getElementsByClassName("stat-stepeq-input")[0];
+        acceptOnlyNumbers(this.stepEqInput);
+        this.quotaInput = this.editStat.getElementsByClassName("stat-quota-input")[0];
+        acceptOnlyNumbers(this.quotaInput);
+        this.quotaTimeInput = this.editStat.getElementsByClassName("stat-quota-time-input")[0];
+        acceptOnlyNumbers(this.quotaTimeInput);
+        this.nameInput.value = stat.name;
+        this.stepEqInput.value = stat.stepEquivalent.toString();
+        this.quotaInput.value = stat.quota.quota.toString();
+        this.quotaTimeInput.value = stat.quota.hoursLimit.toString();
+    }
+    saveButtonMode(mode) {
+        this.saveButton.innerText = "save";
+        this.deleteButton.innerText = "delete";
+        setVisibility(this.saveButton, mode);
+        setVisibility(this.deleteButton, !mode);
+    }
+}
+class PageStatEditor {
+    constructor(stat, pathId) {
+        this.stat = stat;
+        this.editStatElems = new EditStatElem(stat.stat);
+        this.deleter = new StatDeleter(pathId, stat.stat.name);
+        this.updater = new StatUpdater(stat.stat.name, pathId);
+        this.initEditEvents();
+    }
+    initEditEvents() {
+        if (!this.editStatElems)
+            return;
+        editButton.addEventListener("click", () => {
+            if (!this.editStatElems)
+                return;
+            this.editStatElems.nameInput.value = this.stat.stat.name;
+            this.editStatElems.stepEqInput.value =
+                this.stat.stat.stepEquivalent.toString();
+            this.showSaveButtonIfChanged();
+        });
+        this.editStatElems.deleteButton.addEventListener("click", () => {
+            this.delete();
+        });
+        this.editStatElems.saveButton.addEventListener("click", () => {
+            this.save();
+        });
+        this.editStatElems.nameInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged();
+        });
+        this.editStatElems.stepEqInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged();
+        });
+        this.editStatElems.quotaInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged();
+        });
+        this.editStatElems.quotaTimeInput.addEventListener("input", () => {
+            this.showSaveButtonIfChanged();
+        });
+        this.showSaveButtonIfChanged();
+    }
+    save() {
+        if (!this.editStatElems)
+            return;
+        if (isNaN(Number(this.editStatElems.stepEqInput.value))) {
+            this.editStatElems.stepEqInput.value = "0";
+        }
+        if (isNaN(Number(this.editStatElems.quotaInput.value))) {
+            this.editStatElems.quotaInput.value = "0";
+        }
+        if (isNaN(Number(this.editStatElems.quotaTimeInput.value))) {
+            this.editStatElems.quotaTimeInput.value = "0";
+        }
+        this.updater
+            .save({
+            name: this.editStatElems.nameInput.value,
+            stepEquivalent: Number(this.editStatElems.stepEqInput.value),
+            quota: {
+                quota: Number(this.editStatElems.quotaInput.value),
+                hoursLimit: Number(this.editStatElems.quotaTimeInput.value),
+            },
+        })
+            .then((message) => {
+            if (!this.editStatElems)
+                return;
+            if (message == "") {
+                this.stat.stat.name = this.editStatElems.nameInput.value;
+                this.stat.stat.stepEquivalent = Number(this.editStatElems.stepEqInput.value);
+                this.stat.stat.quota.quota = Number(this.editStatElems.quotaInput.value);
+                this.stat.stat.quota.hoursLimit = Number(this.editStatElems.quotaTimeInput.value);
+                this.stat.updateStatElemsValues();
+                this.showSaveButtonIfChanged();
+                return;
+            }
+            this.editStatElems.saveButton.innerText = message;
+            setBorderColor(this.editStatElems.nameInput, "err");
+        });
+    }
+    delete() {
+        this.deleter.delete().then((message) => {
+            var _a;
+            if (!this.editStatElems)
+                return;
+            if (message == "") {
+                this.stat.statElems.stat.remove();
+                (_a = this.editStatElems) === null || _a === void 0 ? void 0 : _a.editStat.remove();
+                return;
+            }
+            this.editStatElems.deleteButton.innerText = message;
+        });
+    }
+    showSaveButtonIfChanged() {
+        if (!this.editStatElems)
+            return;
+        const changed = !(this.editStatElems.nameInput.value == this.stat.stat.name &&
+            Number(this.editStatElems.stepEqInput.value) ==
+                this.stat.stat.stepEquivalent &&
+            Number(this.editStatElems.quotaInput.value) ==
+                this.stat.stat.quota.quota &&
+            Number(this.editStatElems.quotaTimeInput.value) ==
+                this.stat.stat.quota.hoursLimit);
+        this.editStatElems.saveButtonMode(changed);
+    }
 }
 function setBorderColor(elem, colorVar) {
     if (!elem) {
@@ -853,5 +761,109 @@ function setPageTitle(title) {
 function setVisibility(elem, visible) {
     if (elem) {
         elem.classList.toggle("hidden", !visible);
+    }
+}
+class StatElem {
+    constructor(countEditRight) {
+        this.stat = sampleStatElem.cloneNode(true);
+        this.name = this.stat.getElementsByClassName("stat-name")[0];
+        this.stepEq = this.stat.getElementsByClassName("stat-stepeq")[0];
+        this.quota = this.stat.getElementsByClassName("stat-quota")[0];
+        this.quotaTime = this.stat.getElementsByClassName("stat-quota-time")[0];
+        this.quotaStreak = this.stat.getElementsByClassName("stat-quota-streak")[0];
+        this.countInput = new NumberInput(this.stat.getElementsByClassName("stat-count-input")[0]);
+        this.stat.removeAttribute("id");
+        setVisibility(this.stat, true);
+        setVisibility(this.countInput.getElem(), countEditRight);
+    }
+    setQuotaHighlight(highlight, streak) {
+        if (highlight) {
+            setColor(this.quota, "acc1");
+            setColor(this.quotaStreak, "acc1");
+            this.quotaStreak.innerText = `🔥 ${streak + 1}`;
+        }
+        else {
+            removeColor(this.quota);
+            removeColor(this.quotaStreak);
+            this.quotaStreak.innerText = `🔥 ${streak}`;
+        }
+    }
+    setStepEq(count, stepEq) {
+        this.stepEq.innerText = `${count} * ${stepEq} 👣`;
+    }
+    setQuota(quota, hoursPassed, hoursLimit) {
+        if (quota > 0 && hoursLimit > 0) {
+            this.quota.innerText = `🚩 ${quota}`;
+            this.quotaTime.innerText = `⏳️ ${hoursPassed}/${hoursLimit} hrs`;
+        }
+        else {
+            this.quota.innerText = "";
+            this.quotaTime.innerText = "no quota";
+            this.quotaStreak.innerText = "";
+        }
+    }
+    setCountValue(count) {
+        this.countInput.setValue(count);
+    }
+}
+class StatStepCounter {
+    constructor() {
+        this.steps = 0;
+        this.stepsUpdateCallback = () => { };
+    }
+    updateSteps(count, stepEq) {
+        this.steps = count * stepEq;
+        this.stepsUpdateCallback();
+    }
+}
+class StatCountCounter {
+    constructor(count) {
+        this.presentCount = count;
+    }
+    updatePresentCount(inputValue, quotaProgress, statCount) {
+        if (isNaN(inputValue)) {
+            inputValue = 0;
+        }
+        this.presentCount = inputValue - quotaProgress + statCount;
+        return this.presentCount;
+    }
+    calculatePresentQuotaProgress(quotaProgress, statCount) {
+        return quotaProgress + this.presentCount - statCount;
+    }
+}
+class PageStat {
+    constructor(stat, countEditRight) {
+        this.stat = stat;
+        this.countCounter = new StatCountCounter(stat.count);
+        this.stepCounter = new StatStepCounter();
+        this.statElems = new StatElem(countEditRight);
+        this.updateStatElemsValues();
+        this.initEvents();
+    }
+    initEvents() {
+        this.statElems.countInput.addInputListener((_num) => {
+            this.updateCount();
+        });
+    }
+    updateCount() {
+        const presentCount = this.countCounter.updatePresentCount(Number(this.statElems.countInput.getValue()), this.stat.quota.countProgress, this.stat.count);
+        this.stepCounter.updateSteps(presentCount, this.stat.stepEquivalent);
+        this.statElems.setStepEq(presentCount, this.stat.stepEquivalent);
+        this.updateQuotaHighlight();
+    }
+    updateQuotaHighlight() {
+        if (this.stat.quota.quota <= 0 || this.stat.quota.hoursLimit <= 0) {
+            return;
+        }
+        const currentQuotaProgress = this.countCounter.calculatePresentQuotaProgress(this.stat.quota.countProgress, this.stat.count);
+        this.statElems.setQuotaHighlight(currentQuotaProgress >= this.stat.quota.quota, this.stat.quota.streak);
+    }
+    updateStatElemsValues() {
+        this.statElems.name.innerText = this.stat.name;
+        this.statElems.setStepEq(this.countCounter.presentCount, this.stat.stepEquivalent);
+        this.statElems.setQuota(this.stat.quota.quota, this.stat.quota.hoursPassed, this.stat.quota.hoursLimit);
+        this.updateQuotaHighlight();
+        this.statElems.setCountValue(this.countCounter.calculatePresentQuotaProgress(this.stat.quota.countProgress, this.stat.count));
+        this.stepCounter.updateSteps(this.countCounter.presentCount, this.stat.stepEquivalent);
     }
 }

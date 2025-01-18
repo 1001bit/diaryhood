@@ -7,6 +7,15 @@ main {
 
 #paths {
 	display: flex;
-	position: fixed;
+	flex-direction: row;
+	width: 100%;
+	justify-content: center;
+	gap: 2rem;
+}
+
+.path {
+	display: flex;
 	flex-direction: column;
+	width: fit-content;
+	gap: 1rem;
 }

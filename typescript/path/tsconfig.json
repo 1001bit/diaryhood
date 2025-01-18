@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"outFile": "../../static/path/script.js"
 	},
-	"include": ["*.ts", "../misc/*.ts"]
+	"include": ["*.ts", "../misc/*.ts", "../pathShared/*.ts"]
 }
