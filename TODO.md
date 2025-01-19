@@ -103,4 +103,14 @@
 [X] Make stat count based on quota
 [ ] Icon 
 [ ] Home page
-    [ ] Paths
+    [ ] Paths with incomplete quotas
+        [ ] Frontend
+            [ ] Template
+            [ ] CSS
+            [ ] JS
+                [ ] Render
+                [ ] Fetch
+        [ ] Backend
+            [ ] Handle
+            [ ] Fetch Quotas by Paths by User
+            [ ] Respond 
