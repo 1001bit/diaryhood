@@ -37,9 +37,8 @@ func (c *HTTPClient) MakeRequest(ctx context.Context, method string, url string,
 	if err != nil {
 		return 0, nil, err
 	}
-	// TODO: Add "bearer" before token
 	req = req.WithContext(ctx)
-	req.Header.Set("Authorization", c.jwt)
+	req.Header.Set("Authorization", "Bearer "+c.jwt)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
