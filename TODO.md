@@ -105,10 +105,10 @@
 [ ] Home page
     [ ] Paths with incomplete quotas
         [ ] Frontend
-            [ ] Template
-            [ ] CSS
+            [X] Template
+            [X] CSS
             [ ] JS
-                [ ] Render
+                [X] Render
                 [ ] Fetch
         [ ] Backend
             [ ] Handle

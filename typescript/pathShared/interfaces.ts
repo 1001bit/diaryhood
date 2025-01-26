@@ -41,8 +41,8 @@ interface FullPathInterface extends PathInterface {
 	ownerId: string;
 }
 
-interface HomePathInterface extends PathInterface {
-	stats: Array<StatInterface>;
+interface HomePathInterface extends PathWithSteps {
+	stats: Array<string>;
 }
 
 interface PathWithSteps extends PathInterface {

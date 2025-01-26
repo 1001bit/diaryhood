@@ -3,14 +3,17 @@ main {
 	flex-direction: column;
 	width: 100%;
 	align-items: center;
+	gap: 2rem;
 }
 
-#paths {
+#paths-met,
+#paths-met-not {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
 	justify-content: center;
 	gap: 2rem;
+	flex-wrap: wrap;
 }
 
 .path {
@@ -18,4 +21,24 @@ main {
 	flex-direction: column;
 	width: fit-content;
 	gap: 1rem;
+	border: 1px solid var(--main1-dim);
+	align-items: center;
+	padding: 1rem 2rem;
+	border-radius: 0.25rem;
+	max-width: 15rem;
+}
+
+.path-stats {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.path-stats-list {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
 }

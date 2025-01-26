@@ -42,11 +42,7 @@ func Home() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><div id=\"paths\"></div></main>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = SampleStat().Render(ctx, templ_7745c5c3_Buffer)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main><h3>Quota not met</h3><div id=\"paths-met-not\"></div><h3>Quota met</h3><div id=\"paths-met\"></div></main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +76,7 @@ func SampleHomePath() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path hidden\" id=\"sample-path\"><a href=\"/path/0\" class=\"path-name\"><h3>path</h3></a><div class=\"line-separator\"></div><div class=\"stats\"></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"path hidden\" id=\"sample-path\"><a href=\"/path/0\" class=\"path-link\"><h3 class=\"path-name\">path</h3></a><p class=\"path-steps\">0 steps</p><div class=\"path-stats hidden\"><p class=\"dim\">to do:</p><div class=\"path-stats-list\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

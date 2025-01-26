@@ -1,78 +1,51 @@
-/// <reference path="../pathShared/stat.ts" />
-/// <reference path="../misc/numberinput.ts" />
+/// <reference path="../pathShared/interfaces.ts" />
 
 function renderPath(path: HomePathInterface) {
-	const pathElem = samplePathElem.cloneNode(true) as HTMLDivElement;
-	setVisibility(pathElem, true);
-	pathElem.removeAttribute("id");
-
-	const pathNameElem = pathElem.getElementsByClassName(
+	const newPathElem = samplePathElem.cloneNode(true) as HTMLDivElement;
+	newPathElem.removeAttribute("id");
+	setVisibility(newPathElem, true);
+	const pathNameElem = newPathElem.getElementsByClassName(
 		"path-name"
-	)[0] as HTMLAnchorElement;
-	pathNameElem.href = `/path/${path.id}`;
-	pathNameElem.innerHTML = `<h3>${path.name}</h3>`;
-
-	const statsElem = pathElem.getElementsByClassName(
-		"stats"
 	)[0] as HTMLDivElement;
+	const pathLinkElem = newPathElem.getElementsByClassName(
+		"path-link"
+	)[0] as HTMLAnchorElement;
+	const pathStepsElem = newPathElem.getElementsByClassName(
+		"path-steps"
+	)[0] as HTMLDivElement;
+	pathNameElem.innerText = path.name;
+	pathLinkElem.href = `/path/${path.id}`;
+	pathStepsElem.innerText = `${path.steps} steps`;
 
-	for (const stat of path.stats) {
-		const pageStat = new PageStat(stat, true);
-
-		statsElem.appendChild(pageStat.statElems.stat);
-	}
-
-	pathsElem.appendChild(pathElem);
-}
-
-function renderPaths(paths: HomePathInterface[]) {
-	if (!paths || paths.length == 0) {
-		return;
-	}
-
-	for (const path of paths) {
-		renderPath(path);
-	}
-}
-
-renderPaths([
-	{
-		name: "test",
-		id: "0",
-		public: false,
-		stats: [
-			{
-				name: "test",
-				stepEquivalent: 1,
-				quota: {
-					countProgress: 0,
-					quota: 1,
-					hoursPassed: 0,
-					hoursLimit: 24,
-					streak: 0,
-				},
-				count: 0,
-			},
-		],
-	},
-]);
-
-function fetchAndRenderPaths() {
-	fetch(`/api/paths/home`, {
-		method: "GET",
-	}).then((res) => {
-		if (res.status == 401) {
-			refresh().then((authd) => {
-				if (authd) {
-					return fetchAndRenderPaths();
-				}
-			});
-		} else {
-			return;
+	const pathStatsElem = newPathElem.getElementsByClassName(
+		"path-stats"
+	)[0] as HTMLDivElement;
+	if (path.stats && path.stats.length > 0) {
+		setVisibility(pathStatsElem, true);
+		for (const stat of path.stats) {
+			const statElem = document.createElement("p");
+			statElem.classList.add("bold");
+			statElem.innerText = stat;
+			pathStatsElem.appendChild(statElem);
 		}
-
-		res.json().then(renderPaths);
-	});
+		pathsMetNotElem.appendChild(newPathElem);
+	} else {
+		pathsMetElem.appendChild(newPathElem);
+	}
 }
 
-fetchAndRenderPaths();
+renderPath({
+	public: true,
+	id: "0",
+	name: "donePath",
+	steps: 25,
+	stats: [],
+});
+
+renderPath({
+	public: true,
+	id: "2",
+	name: "undonePath",
+	steps: 10,
+	stats: ["stat1", "stat2"],
+});

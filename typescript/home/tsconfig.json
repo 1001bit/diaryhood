@@ -5,10 +5,9 @@
 	},
 	"include": [
 		"*.ts",
-		"../pathShared/*.ts",
 		"../misc/refresh.ts",
 		"../misc/togglableclasses.ts",
-		"../misc/numberinput.ts",
-		"../misc/colors.ts"
+		"../misc/colors.ts",
+		"../pathShared/interfaces.ts"
 	]
 }

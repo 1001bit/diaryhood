@@ -10,9 +10,11 @@ templ Home() {
 		<body>
 			@nav("home")
 			<main>
-				<div id="paths"></div>
+				<h3>Quota not met</h3>
+				<div id="paths-met-not"></div>
+				<h3>Quota met</h3>
+				<div id="paths-met"></div>
 			</main>
-			@SampleStat()
 			@SampleHomePath()
 			<script src="/static/home/script.js"></script>
 		</body>
@@ -21,8 +23,11 @@ templ Home() {
 
 templ SampleHomePath() {
 	<div class="path hidden" id="sample-path">
-		<a href="/path/0" class="path-name"><h3>path</h3></a>
-		<div class="line-separator"></div>
-		<div class="stats"></div>
+		<a href="/path/0" class="path-link"><h3 class="path-name">path</h3></a>
+		<p class="path-steps">0 steps</p>
+		<div class="path-stats hidden">
+			<p class="dim">to do:</p>
+			<div class="path-stats-list"></div>
+		</div>
 	</div>
 }
