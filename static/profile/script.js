@@ -52,9 +52,15 @@ avatarInput.addEventListener("change", () => __awaiter(void 0, void 0, void 0, f
         changeAvatarElem.innerHTML = "error";
     }
 }));
+function renderOwnerElements() {
+    setVisibility(changeAvatarElem, true);
+    setVisibility(changeNameElem, true);
+    setVisibility(noPathsElem, false);
+    setVisibility(pathCreateBoxElem, true);
+}
 checkAuthAndRefresh().then((res) => {
-    if (res.refreshed) {
-        location.reload();
+    if (res.authnd) {
+        renderOwnerElements();
     }
     fetchAndRenderPaths();
 });

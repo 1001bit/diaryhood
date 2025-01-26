@@ -1,7 +1,6 @@
 package template
 
-// TODO: Render owner-specific content on client side
-templ Profile(id, name, date string, profileOwner bool) {
+templ Profile(id, name, date string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -14,12 +13,12 @@ templ Profile(id, name, date string, profileOwner bool) {
 				<div id="profile-box">
 					<div id="avatar-box">
 						<img id="avatar" src={ "/dynamic/avatar/" + id }/>
-						<a class={ "tiny", "no-padding", templ.KV("hidden", !profileOwner) } id="change-avatar">new</a>
+						<a class="tiny no-padding hidden" id="change-avatar">new</a>
 					</div>
 					<div id="name-box">
 						<p id="name">{ name }</p>
 						<p><textarea id="name-input" class="hidden" maxlength="31" spellcheck="false" rows="3">{ name }</textarea></p>
-						<a class={ "tiny", "no-padding", templ.KV("hidden", !profileOwner) } id="change-name">change</a>
+						<a class="tiny no-padding hidden" id="change-name">change</a>
 					</div>
 					<div class="line-separator"></div>
 					<p>
@@ -31,8 +30,8 @@ templ Profile(id, name, date string, profileOwner bool) {
 					<p id="user-steps">0 steps</p>
 				</div>
 				<div id="paths">
-					@CreatePath(!profileOwner)
-					<h3 class={ "dim", templ.KV("hidden", profileOwner) } id="no-paths">no paths</h3>
+					@CreatePath()
+					<h3 class="dim hidden" id="no-paths">no paths</h3>
 				</div>
 			</main>
 			@SamplePath()
@@ -41,8 +40,8 @@ templ Profile(id, name, date string, profileOwner bool) {
 	</html>
 }
 
-templ CreatePath(hidden bool) {
-	<div id="path-create-box" class={ "box", templ.KV("hidden", hidden) }>
+templ CreatePath() {
+	<div id="path-create-box" class="box hidden">
 		<h3><input type="text" id="path-name-input" class="no-padding" placeholder="name" maxlength="31"/></h3>
 		<div class="line-separator"></div>
 		<a id="create-path">create</a>

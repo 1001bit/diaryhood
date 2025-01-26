@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/1001bit/pathgoer/services/gateway/shared/accesstoken"
 	"github.com/1001bit/pathgoer/services/gateway/shared/userpb"
 	"github.com/1001bit/pathgoer/services/gateway/template"
 	"google.golang.org/grpc/codes"
@@ -30,9 +29,7 @@ func (c *Client) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		date = "unknown"
 	}
 
-	claims, _ := accesstoken.GetClaimsFromContext(r.Context())
-
-	template.Profile(id, response.Name, date, id == claims.Id).Render(r.Context(), w)
+	template.Profile(id, response.Name, date).Render(r.Context(), w)
 }
 
 func formatPostgresDate(dateStr string) (string, error) {

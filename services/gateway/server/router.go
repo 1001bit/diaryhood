@@ -34,6 +34,8 @@ func (s *Server) newRouter() *chi.Mux {
 	// Routes
 	// Path
 	r.Get("/path/{id}", handler.HandlePath)
+	// Profile
+	r.Get("/user/{id}", s.userclient.HandleProfile)
 
 	// With JWT claims in context
 	r.Group(func(r chi.Router) {
@@ -45,8 +47,6 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Get("/login", handler.LoginPageHandler)
 		// Pseudo Profile
 		r.Get("/user", handler.HandleIDlessProfile)
-		// Profile
-		r.Get("/user/{id}", s.userclient.HandleProfile)
 		// Check if authenticated
 		r.Get("/authenticated", handler.HandleAuthenticated)
 	})
