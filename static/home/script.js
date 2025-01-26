@@ -36,19 +36,22 @@ function renderPath(path) {
         pathsMetElem.appendChild(newPathElem);
     }
 }
-renderPath({
-    public: true,
-    id: "0",
-    name: "donePath",
-    steps: 25,
-    stats: [],
-});
-renderPath({
-    public: true,
-    id: "2",
-    name: "undonePath",
-    steps: 10,
-    stats: ["stat1", "stat2"],
+function fetchAndRenderPaths() {
+    fetch("/api/path/home").then((res) => {
+        console.log(res);
+        if (res.ok) {
+            res.json().then((paths) => {
+                for (const path of paths) {
+                    renderPath(path);
+                }
+            });
+        }
+    });
+}
+checkAuthAndRefresh().then((res) => {
+    if (res.authnd) {
+        fetchAndRenderPaths();
+    }
 });
 function checkAuthAndRefresh() {
     return __awaiter(this, void 0, void 0, function* () {

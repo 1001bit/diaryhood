@@ -34,18 +34,21 @@ function renderPath(path: HomePathInterface) {
 	}
 }
 
-renderPath({
-	public: true,
-	id: "0",
-	name: "donePath",
-	steps: 25,
-	stats: [],
-});
+function fetchAndRenderPaths() {
+	fetch("/api/path/home").then((res) => {
+		console.log(res);
+		if (res.ok) {
+			res.json().then((paths: Array<HomePathInterface>) => {
+				for (const path of paths) {
+					renderPath(path);
+				}
+			});
+		}
+	});
+}
 
-renderPath({
-	public: true,
-	id: "2",
-	name: "undonePath",
-	steps: 10,
-	stats: ["stat1", "stat2"],
+checkAuthAndRefresh().then((res) => {
+	if (res.authnd) {
+		fetchAndRenderPaths();
+	}
 });

@@ -101,16 +101,17 @@
 [X] Responsible design
 
 [X] Make stat count based on quota
-[ ] Icon 
-[ ] Home page
-    [ ] Paths with incomplete quotas
-        [ ] Frontend
+[X] Home page
+    [X] Paths with incomplete quotas
+        [X] Frontend
             [X] Template
             [X] CSS
-            [ ] JS
+            [X] JS
                 [X] Render
-                [ ] Fetch
-        [ ] Backend
-            [ ] Handle
-            [ ] Fetch Quotas by Paths by User
-            [ ] Respond 
+                [X] Fetch
+        [X] Backend
+            [X] Handle
+            [X] Fetch Paths
+            [X] Respond 
+    [ ] Test
+[ ] Icon 

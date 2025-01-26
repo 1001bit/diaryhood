@@ -50,3 +50,9 @@ type PathWithSteps struct {
 	Path
 	Steps int `json:"steps"`
 }
+
+type HomePath struct {
+	PathWithSteps
+	Steps int      `json:"steps"`
+	Stats []string `json:"stats"`
+}

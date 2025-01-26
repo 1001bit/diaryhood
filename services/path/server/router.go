@@ -31,6 +31,8 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Put("/{id}/stat/{stat}", handler.HandleUpdateStat)
 		r.Put("/{id}/stats/counts", handler.HandleUpdateStatsCounts)
 		r.Post("/{id}/stat", handler.HandleCreateStat)
+
+		r.Get("/home", handler.HandleHomePaths)
 	})
 
 	return r

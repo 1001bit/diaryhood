@@ -3,6 +3,8 @@ package pathmodel
 import (
 	"context"
 	"database/sql"
+
+	"github.com/lib/pq"
 )
 
 func (ps *PathStore) CreatePath(ctx context.Context, userId, pathName string) (string, error) {
@@ -117,4 +119,51 @@ func (ps *PathStore) GetPaths(ctx context.Context, userId, askerId string) ([]Pa
 	}
 
 	return paths, err
+}
+
+func (ps *PathStore) GetHomePaths(ctx context.Context, askerId string) ([]HomePath, error) {
+	rows, err := ps.postgresC.QueryContext(ctx, `
+		SELECT 
+			p.id, 
+			p.name,
+			COALESCE(SUM(s.count * s.step_equivalent), 0) AS total_steps,
+			ARRAY(
+				SELECT 
+					s.name
+				FROM 
+					stats s
+				LEFT JOIN 
+					quotas q
+				ON 
+					s.name = q.stat_name AND s.path_id = q.path_id
+				WHERE 
+					s.path_id = p.id AND s.count < q.last_count + q.quota
+			)
+		FROM 
+			paths p
+		LEFT JOIN 
+			stats s
+		ON 
+			s.path_id = p.id
+		WHERE 
+			p.user_id = $1 
+		GROUP BY 
+			p.id, p.name, p.public;
+	`, askerId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	paths := make([]HomePath, 0)
+
+	for rows.Next() {
+		path := HomePath{}
+		if err := rows.Scan(&path.Id, &path.Name, &path.Steps, pq.Array(&path.Stats)); err != nil {
+			return nil, err
+		}
+		paths = append(paths, path)
+	}
+
+	return paths, nil
 }
