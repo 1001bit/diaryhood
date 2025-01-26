@@ -25,6 +25,10 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Post("/dynamic/avatar", handler.UploadAvatar)
 	})
 
+	r.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/static/favicon.ico", http.StatusSeeOther)
+	})
+
 	r.Get("/static/*", func(w http.ResponseWriter, r *http.Request) {
 		// Serve file with caching
 		cacheTime := time.Hour * 24
