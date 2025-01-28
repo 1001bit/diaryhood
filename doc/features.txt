@@ -12,9 +12,9 @@ L1
 L2
     Dynamic file storage, profile picture
     Daily quota with streak
-Doing:
     Home page with paths + stats
 
+Ideas:
 L3
     Some graphs
     Overall progress visualization
@@ -24,6 +24,3 @@ L4
         One-time. Example: "read a book" task consists of 200 pages
         Routine. Example: "workout" task consists of 100 pushups and 50 pullups
     Path levels
-
-Additional
-    Time along steps for stat

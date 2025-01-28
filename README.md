@@ -10,6 +10,7 @@ a productivity app made to gamify process of doing something for a long period o
 - Access JWT + Refresh UUID authN and authZ
 - Paths creation for each user
 - Stats creation for each path
+- Quota for each stat
 - Dynamic file storage, profile picture
 
 ## Environment Variables
