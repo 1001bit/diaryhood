@@ -3,24 +3,19 @@ package middleware
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	"github.com/1001bit/pathgoer/services/path/shared/accesstoken"
 )
 
-func JwtClaimsToContext(next http.Handler) http.Handler {
+func CookieJwtClaimsToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// get jwt from header
-		header := r.Header.Get("Authorization")
-		token := ""
-		if strings.HasPrefix(header, "Bearer ") {
-			token = strings.TrimPrefix(header, "Bearer ")
-		} else {
+		cookie, err := r.Cookie("access")
+		if err != nil {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		claims, ok := accesstoken.ExtractClaims(token)
+		claims, ok := accesstoken.ExtractClaims(cookie.Value)
 		if !ok {
 			next.ServeHTTP(w, r)
 			return

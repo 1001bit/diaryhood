@@ -19,7 +19,7 @@ func (s *Server) newRouter() *chi.Mux {
 	handler := handler.New(s.pathstore)
 
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.JwtClaimsToContext)
+		r.Use(middleware.CookieJwtClaimsToContext)
 
 		r.Post("/", handler.HandleCreatePath)
 		r.Get("/user/{id}", handler.HandleUserPaths)

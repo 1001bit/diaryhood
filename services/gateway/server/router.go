@@ -61,8 +61,8 @@ func (s *Server) newRouter() *chi.Mux {
 		r.Post("/change-name", middleware.CookieJwtClaimsToContext(http.HandlerFunc(s.userclient.HandleChangeUsername)).ServeHTTP)
 
 		// Path
-		r.Handle("/path", middleware.JwtToHeader(s.pathproxy.ReverseProxy("/api/path")))
-		r.Handle("/path/*", middleware.JwtToHeader(s.pathproxy.ReverseProxy("/api/path")))
+		r.Handle("/path", s.pathproxy.ReverseProxy("/api/path"))
+		r.Handle("/path/*", s.pathproxy.ReverseProxy("/api/path"))
 	})
 
 	// Routes that get refresh token
@@ -77,8 +77,7 @@ func (s *Server) newRouter() *chi.Mux {
 
 	// Storage
 	r.Get("/static/*", s.storageproxy.ReverseProxy(""))
-	r.Get("/dynamic/*", s.storageproxy.ReverseProxy(""))
-	r.Post("/dynamic/*", middleware.JwtToHeader(s.storageproxy.ReverseProxy("")).ServeHTTP)
+	r.Handle("/dynamic/*", s.storageproxy.ReverseProxy(""))
 	r.Get("/favicon.ico", s.storageproxy.ReverseProxy(""))
 
 	// 404

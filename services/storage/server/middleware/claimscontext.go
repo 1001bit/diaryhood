@@ -7,10 +7,15 @@ import (
 	"github.com/1001bit/pathgoer/services/storage/shared/accesstoken"
 )
 
-func JwtClaimsToContext(next http.Handler) http.Handler {
+func CookieJwtClaimsToContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// get jwt from header
-		claims, ok := accesstoken.ExtractClaims(r.Header.Get("Authorization"))
+		cookie, err := r.Cookie("access")
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		claims, ok := accesstoken.ExtractClaims(cookie.Value)
 		if !ok {
 			next.ServeHTTP(w, r)
 			return

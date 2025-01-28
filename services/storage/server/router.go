@@ -21,7 +21,7 @@ func (s *Server) newRouter() *chi.Mux {
 	fileServer := http.FileServer(http.Dir(storagePath))
 
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.JwtClaimsToContext)
+		r.Use(middleware.CookieJwtClaimsToContext)
 		r.Post("/dynamic/avatar", handler.UploadAvatar)
 	})
 
